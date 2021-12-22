@@ -18,7 +18,7 @@ int main(void)
             /*  if (j == i)
                 a[i][i] = 0;
             else */
-            tmp.push_back(rand() % 100 + 1.0);
+            tmp.push_back(rand() % 100);
         }
         a.push_back(tmp);
     }
@@ -58,7 +58,6 @@ int main(void)
 }
 static Dtype n_Determinant(vector<vector<Dtype>> a)
 // 行列式转换为上三角,然后再求值
-// 暂未解决主对角线有零的情况
 {
     size_t i = 0, j = 0, l = 0, n = a.size();
     Dtype k = 0;
