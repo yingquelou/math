@@ -1,4 +1,6 @@
 #pragma once
+#ifndef _Point_
+#define _Point_ 1
 //判断点/向量相同或平行时所允许的误差
 #define allowableError (1e-15)
 #include <cmath>
@@ -84,3 +86,4 @@ public: //成员函数
     Point CoordinateInBase(const Point &ex, const Point &ey) const;
 };
 using VectorOfMath = Point;
+#endif

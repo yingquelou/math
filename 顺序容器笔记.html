@@ -1,0 +1,953 @@
+<!DOCTYPE html><html><head>
+      <title>&#x987A;&#x5E8F;&#x5BB9;&#x5668;&#x7B14;&#x8BB0;</title>
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      
+      <link rel="stylesheet" href="file:///c:\Users\yingquelou\.vscode\extensions\shd101wyy.markdown-preview-enhanced-0.6.1\node_modules\@shd101wyy\mume\dependencies\katex\katex.min.css">
+      
+      
+      
+      
+      
+      
+      
+      
+      
+      <style>
+      /**
+ * prism.js Github theme based on GitHub's theme.
+ * @author Sam Clarke
+ */
+code[class*="language-"],
+pre[class*="language-"] {
+  color: #333;
+  background: none;
+  font-family: Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  text-align: left;
+  white-space: pre;
+  word-spacing: normal;
+  word-break: normal;
+  word-wrap: normal;
+  line-height: 1.4;
+
+  -moz-tab-size: 8;
+  -o-tab-size: 8;
+  tab-size: 8;
+
+  -webkit-hyphens: none;
+  -moz-hyphens: none;
+  -ms-hyphens: none;
+  hyphens: none;
+}
+
+/* Code blocks */
+pre[class*="language-"] {
+  padding: .8em;
+  overflow: auto;
+  /* border: 1px solid #ddd; */
+  border-radius: 3px;
+  /* background: #fff; */
+  background: #f5f5f5;
+}
+
+/* Inline code */
+:not(pre) > code[class*="language-"] {
+  padding: .1em;
+  border-radius: .3em;
+  white-space: normal;
+  background: #f5f5f5;
+}
+
+.token.comment,
+.token.blockquote {
+  color: #969896;
+}
+
+.token.cdata {
+  color: #183691;
+}
+
+.token.doctype,
+.token.punctuation,
+.token.variable,
+.token.macro.property {
+  color: #333;
+}
+
+.token.operator,
+.token.important,
+.token.keyword,
+.token.rule,
+.token.builtin {
+  color: #a71d5d;
+}
+
+.token.string,
+.token.url,
+.token.regex,
+.token.attr-value {
+  color: #183691;
+}
+
+.token.property,
+.token.number,
+.token.boolean,
+.token.entity,
+.token.atrule,
+.token.constant,
+.token.symbol,
+.token.command,
+.token.code {
+  color: #0086b3;
+}
+
+.token.tag,
+.token.selector,
+.token.prolog {
+  color: #63a35c;
+}
+
+.token.function,
+.token.namespace,
+.token.pseudo-element,
+.token.class,
+.token.class-name,
+.token.pseudo-class,
+.token.id,
+.token.url-reference .token.variable,
+.token.attr-name {
+  color: #795da3;
+}
+
+.token.entity {
+  cursor: help;
+}
+
+.token.title,
+.token.title .token.punctuation {
+  font-weight: bold;
+  color: #1d3e81;
+}
+
+.token.list {
+  color: #ed6a43;
+}
+
+.token.inserted {
+  background-color: #eaffea;
+  color: #55a532;
+}
+
+.token.deleted {
+  background-color: #ffecec;
+  color: #bd2c00;
+}
+
+.token.bold {
+  font-weight: bold;
+}
+
+.token.italic {
+  font-style: italic;
+}
+
+
+/* JSON */
+.language-json .token.property {
+  color: #183691;
+}
+
+.language-markup .token.tag .token.punctuation {
+  color: #333;
+}
+
+/* CSS */
+code.language-css,
+.language-css .token.function {
+  color: #0086b3;
+}
+
+/* YAML */
+.language-yaml .token.atrule {
+  color: #63a35c;
+}
+
+code.language-yaml {
+  color: #183691;
+}
+
+/* Ruby */
+.language-ruby .token.function {
+  color: #333;
+}
+
+/* Markdown */
+.language-markdown .token.url {
+  color: #795da3;
+}
+
+/* Makefile */
+.language-makefile .token.symbol {
+  color: #795da3;
+}
+
+.language-makefile .token.variable {
+  color: #183691;
+}
+
+.language-makefile .token.builtin {
+  color: #0086b3;
+}
+
+/* Bash */
+.language-bash .token.keyword {
+  color: #0086b3;
+}
+
+/* highlight */
+pre[data-line] {
+  position: relative;
+  padding: 1em 0 1em 3em;
+}
+pre[data-line] .line-highlight-wrapper {
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: transparent;
+  display: block;
+  width: 100%;
+}
+
+pre[data-line] .line-highlight {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: inherit 0;
+  margin-top: 1em;
+  background: hsla(24, 20%, 50%,.08);
+  background: linear-gradient(to right, hsla(24, 20%, 50%,.1) 70%, hsla(24, 20%, 50%,0));
+  pointer-events: none;
+  line-height: inherit;
+  white-space: pre;
+}
+
+pre[data-line] .line-highlight:before, 
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-start);
+  position: absolute;
+  top: .4em;
+  left: .6em;
+  min-width: 1em;
+  padding: 0 .5em;
+  background-color: hsla(24, 20%, 50%,.4);
+  color: hsl(24, 20%, 95%);
+  font: bold 65%/1.5 sans-serif;
+  text-align: center;
+  vertical-align: .3em;
+  border-radius: 999px;
+  text-shadow: none;
+  box-shadow: 0 1px white;
+}
+
+pre[data-line] .line-highlight[data-end]:after {
+  content: attr(data-end);
+  top: auto;
+  bottom: .4em;
+}html body{font-family:"Helvetica Neue",Helvetica,"Segoe UI",Arial,freesans,sans-serif;font-size:16px;line-height:1.6;color:#333;background-color:#fff;overflow:initial;box-sizing:border-box;word-wrap:break-word}html body>:first-child{margin-top:0}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{line-height:1.2;margin-top:1em;margin-bottom:16px;color:#000}html body h1{font-size:2.25em;font-weight:300;padding-bottom:.3em}html body h2{font-size:1.75em;font-weight:400;padding-bottom:.3em}html body h3{font-size:1.5em;font-weight:500}html body h4{font-size:1.25em;font-weight:600}html body h5{font-size:1.1em;font-weight:600}html body h6{font-size:1em;font-weight:600}html body h1,html body h2,html body h3,html body h4,html body h5{font-weight:600}html body h5{font-size:1em}html body h6{color:#5c5c5c}html body strong{color:#000}html body del{color:#5c5c5c}html body a:not([href]){color:inherit;text-decoration:none}html body a{color:#08c;text-decoration:none}html body a:hover{color:#00a3f5;text-decoration:none}html body img{max-width:100%}html body>p{margin-top:0;margin-bottom:16px;word-wrap:break-word}html body>ul,html body>ol{margin-bottom:16px}html body ul,html body ol{padding-left:2em}html body ul.no-list,html body ol.no-list{padding:0;list-style-type:none}html body ul ul,html body ul ol,html body ol ol,html body ol ul{margin-top:0;margin-bottom:0}html body li{margin-bottom:0}html body li.task-list-item{list-style:none}html body li>p{margin-top:0;margin-bottom:0}html body .task-list-item-checkbox{margin:0 .2em .25em -1.8em;vertical-align:middle}html body .task-list-item-checkbox:hover{cursor:pointer}html body blockquote{margin:16px 0;font-size:inherit;padding:0 15px;color:#5c5c5c;background-color:#f0f0f0;border-left:4px solid #d6d6d6}html body blockquote>:first-child{margin-top:0}html body blockquote>:last-child{margin-bottom:0}html body hr{height:4px;margin:32px 0;background-color:#d6d6d6;border:0 none}html body table{margin:10px 0 15px 0;border-collapse:collapse;border-spacing:0;display:block;width:100%;overflow:auto;word-break:normal;word-break:keep-all}html body table th{font-weight:bold;color:#000}html body table td,html body table th{border:1px solid #d6d6d6;padding:6px 13px}html body dl{padding:0}html body dl dt{padding:0;margin-top:16px;font-size:1em;font-style:italic;font-weight:bold}html body dl dd{padding:0 16px;margin-bottom:16px}html body code{font-family:Menlo,Monaco,Consolas,'Courier New',monospace;font-size:.85em !important;color:#000;background-color:#f0f0f0;border-radius:3px;padding:.2em 0}html body code::before,html body code::after{letter-spacing:-0.2em;content:"\00a0"}html body pre>code{padding:0;margin:0;font-size:.85em !important;word-break:normal;white-space:pre;background:transparent;border:0}html body .highlight{margin-bottom:16px}html body .highlight pre,html body pre{padding:1em;overflow:auto;font-size:.85em !important;line-height:1.45;border:#d6d6d6;border-radius:3px}html body .highlight pre{margin-bottom:0;word-break:normal}html body pre code,html body pre tt{display:inline;max-width:initial;padding:0;margin:0;overflow:initial;line-height:inherit;word-wrap:normal;background-color:transparent;border:0}html body pre code:before,html body pre tt:before,html body pre code:after,html body pre tt:after{content:normal}html body p,html body blockquote,html body ul,html body ol,html body dl,html body pre{margin-top:0;margin-bottom:16px}html body kbd{color:#000;border:1px solid #d6d6d6;border-bottom:2px solid #c7c7c7;padding:2px 4px;background-color:#f0f0f0;border-radius:3px}@media print{html body{background-color:#fff}html body h1,html body h2,html body h3,html body h4,html body h5,html body h6{color:#000;page-break-after:avoid}html body blockquote{color:#5c5c5c}html body pre{page-break-inside:avoid}html body table{display:table}html body img{display:block;max-width:100%;max-height:100%}html body pre,html body code{word-wrap:break-word;white-space:pre}}.markdown-preview{width:100%;height:100%;box-sizing:border-box}.markdown-preview .pagebreak,.markdown-preview .newpage{page-break-before:always}.markdown-preview pre.line-numbers{position:relative;padding-left:3.8em;counter-reset:linenumber}.markdown-preview pre.line-numbers>code{position:relative}.markdown-preview pre.line-numbers .line-numbers-rows{position:absolute;pointer-events:none;top:1em;font-size:100%;left:0;width:3em;letter-spacing:-1px;border-right:1px solid #999;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}.markdown-preview pre.line-numbers .line-numbers-rows>span{pointer-events:none;display:block;counter-increment:linenumber}.markdown-preview pre.line-numbers .line-numbers-rows>span:before{content:counter(linenumber);color:#999;display:block;padding-right:.8em;text-align:right}.markdown-preview .mathjax-exps .MathJax_Display{text-align:center !important}.markdown-preview:not([for="preview"]) .code-chunk .btn-group{display:none}.markdown-preview:not([for="preview"]) .code-chunk .status{display:none}.markdown-preview:not([for="preview"]) .code-chunk .output-div{margin-bottom:16px}.scrollbar-style::-webkit-scrollbar{width:8px}.scrollbar-style::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}.scrollbar-style::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode]){position:relative;width:100%;height:100%;top:0;left:0;margin:0;padding:0;overflow:auto}html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{position:relative;top:0}@media screen and (min-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em calc(50% - 457px + 2em)}}@media screen and (max-width:914px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode]) .markdown-preview{font-size:14px !important;padding:1em}}@media print{html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{display:none}}html body[for="html-export"]:not([data-presentation-mode]) #sidebar-toc-btn{position:fixed;bottom:8px;left:8px;font-size:28px;cursor:pointer;color:inherit;z-index:99;width:32px;text-align:center;opacity:.4}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] #sidebar-toc-btn{opacity:1}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc{position:fixed;top:0;left:0;width:300px;height:100%;padding:32px 0 48px 0;font-size:14px;box-shadow:0 0 4px rgba(150,150,150,0.33);box-sizing:border-box;overflow:auto;background-color:inherit}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar{width:8px}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-track{border-radius:10px;background-color:transparent}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc::-webkit-scrollbar-thumb{border-radius:5px;background-color:rgba(150,150,150,0.66);border:4px solid rgba(150,150,150,0.66);background-clip:content-box}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc a{text-decoration:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{padding:0 1.6em;margin-top:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc li{margin-bottom:.8em}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .md-sidebar-toc ul{list-style-type:none}html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{left:300px;width:calc(100% -  300px);padding:2em calc(50% - 457px -  150px);margin:0;box-sizing:border-box}@media screen and (max-width:1274px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{padding:2em}}@media screen and (max-width:450px){html body[for="html-export"]:not([data-presentation-mode])[html-show-sidebar-toc] .markdown-preview{width:100%}}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .markdown-preview{left:50%;transform:translateX(-50%)}html body[for="html-export"]:not([data-presentation-mode]):not([html-show-sidebar-toc]) .md-sidebar-toc{display:none}
+/* Please visit the URL below for more information: */
+/*   https://shd101wyy.github.io/markdown-preview-enhanced/#/customize-css */
+
+      </style>
+    </head>
+    <body for="html-export">
+      <div class="mume markdown-preview  ">
+      <table>
+<thead>
+<tr>
+<th style="text-align:center">&#x987A;&#x5E8F;&#x5BB9;&#x5668;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">vector</td>
+<td style="text-align:left">&#x53EF;&#x53D8;&#x5927;&#x5C0F;&#x6570;&#x7EC4;&#x3002;&#x652F;&#x6301;&#x5FEB;&#x901F;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#x3002;&#x5728;&#x5C3E;&#x90E8;&#x4E4B;&#x5916;&#x7684;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;/&#x5220;&#x9664;&#x5143;&#x7D20;&#x53EF;&#x80FD;&#x5F88;&#x6162;</td>
+</tr>
+<tr>
+<td style="text-align:center">queue</td>
+<td style="text-align:left">&#x53CC;&#x7AEF;&#x961F;&#x5217;&#x3002;&#x652F;&#x6301;&#x5FEB;&#x901F;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#x3002;&#x5728;&#x5934;&#x5C3E;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;/&#x5220;&#x9664;&#x901F;&#x5EA6;&#x5F88;&#x5FEB;</td>
+</tr>
+<tr>
+<td style="text-align:center">list</td>
+<td style="text-align:left">&#x53CC;&#x5411;&#x94FE;&#x8868;&#x3002;&#x53EA;&#x652F;&#x6301;&#x53CC;&#x5411;&#x987A;&#x5E8F;&#x8BBF;&#x95EE;&#x3002;&#x5728;list&#x4E2D;&#x4EFB;&#x4F55;&#x4F4D;&#x7F6E;&#x8FDB;&#x884C;&#x63D2;&#x5165;&#x3001;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x901F;&#x5EA6;&#x90FD;&#x5F88;&#x5FEB;</td>
+</tr>
+<tr>
+<td style="text-align:center">forward_list</td>
+<td style="text-align:left">&#x5355;&#x5411;&#x94FE;&#x8868;&#x3002;&#x53EA;&#x652F;&#x6301;&#x5355;&#x5411;&#x987A;&#x5E8F;&#x8BBF;&#x95EE;&#x3002;&#x5728;&#x94FE;&#x8868;&#x4EFB;&#x4F55;&#x4F4D;&#x7F6E;&#x8FDB;&#x884C;&#x63D2;&#x5165;&#x3001;&#x5220;&#x9664;&#x64CD;&#x4F5C;&#x901F;&#x5EA6;&#x90FD;&#x5F88;&#x5FEB;</td>
+</tr>
+<tr>
+<td style="text-align:center">array</td>
+<td style="text-align:left">&#x56FA;&#x5B9A;&#x5927;&#x5C0F;&#x6570;&#x7EC4;&#x3002;&#x652F;&#x6301;&#x5FEB;&#x901F;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#x3002;&#x4E0D;&#x80FD;&#x6DFB;&#x52A0;&#x3001;&#x5220;&#x9664;&#x5143;&#x7D20;</td>
+</tr>
+<tr>
+<td style="text-align:center">string</td>
+<td style="text-align:left">&#x5B57;&#x7B26;&#x4E32;&#x5BB9;&#x5668;&#x3002;&#x4E0E;vector&#x76F8;&#x4F3C;&#x7684;&#x5BB9;&#x5668;&#xFF0C;&#x4F46;&#x4E13;&#x95E8;&#x7528;&#x4E8E;&#x4FDD;&#x5B58;&#x5B57;&#x7B26;&#x3002;&#x968F;&#x673A;&#x8BBF;&#x95EE;&#x5FEB;&#x3002;&#x5728;&#x5C3E;&#x90E8;&#x63D2;&#x5165;&#x3001;&#x5220;&#x9664;&#x901F;&#x5EA6;&#x5FEB;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<h1 class="mume-header" id="%E9%A1%BA%E5%BA%8F%E5%AE%B9%E5%99%A8%E7%9A%84%E9%80%9A%E7%94%A8%E6%93%8D%E4%BD%9C">&#x987A;&#x5E8F;&#x5BB9;&#x5668;&#x7684;&#x901A;&#x7528;&#x64CD;&#x4F5C;</h1>
+
+<table>
+<thead>
+<tr>
+<th style="text-align:left">&#x7C7B;&#x578B;&#x522B;&#x540D;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">iterator</td>
+<td style="text-align:left">&#x6B64;&#x5BB9;&#x5668;&#x7C7B;&#x578B;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x7C7B;&#x578B;</td>
+</tr>
+<tr>
+<td style="text-align:left">const_iterator</td>
+<td style="text-align:left">&#x53EF;&#x4EE5;&#x8BFB;&#x53D6;&#x5143;&#x7D20;&#xFF0C;&#x4F46;&#x4E0D;&#x80FD;&#x4FEE;&#x6539;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x7C7B;&#x578B;</td>
+</tr>
+<tr>
+<td style="text-align:left">size_type</td>
+<td style="text-align:left">&#x65E0;&#x7B26;&#x53F7;&#x6574;&#x6570;&#x7C7B;&#x578B;&#xFF0C;&#x8DB3;&#x591F;&#x4FDD;&#x5B58;&#x6B64;&#x79CD;&#x5BB9;&#x5668;&#x7C7B;&#x578B;&#x6700;&#x5927;&#x53EF;&#x80FD;&#x5BB9;&#x5668;&#x7684;&#x5927;&#x5C0F;</td>
+</tr>
+<tr>
+<td style="text-align:left">difference_type</td>
+<td style="text-align:left">&#x5E26;&#x7B26;&#x53F7;&#x6574;&#x6570;&#x7C7B;&#x578B;&#xFF0C;&#x8DB3;&#x591F;&#x4FDD;&#x5B58;&#x4E24;&#x4E2A;&#x8FED;&#x4EE3;&#x5668;&#x4E4B;&#x95F4;&#x7684;&#x8DDD;&#x79BB;</td>
+</tr>
+<tr>
+<td style="text-align:left">value_type</td>
+<td style="text-align:left">&#x5143;&#x7D20;&#x7C7B;&#x578B;</td>
+</tr>
+<tr>
+<td style="text-align:left">reference</td>
+<td style="text-align:left">&#x5143;&#x7D20;&#x7684;&#x5DE6;&#x503C;&#x7C7B;&#x578B;;&#x4E0E;value_type &amp;&#x542B;&#x4E49;&#x76F8;&#x540C;</td>
+</tr>
+<tr>
+<td style="text-align:left">const_reference</td>
+<td style="text-align:left">&#x5143;&#x7D20;&#x7684;const&#x5DE6;&#x503C;&#x7C7B;&#x578B;(&#x5373;const valuetype&amp;)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">&#x6784;&#x9020;&#x51FD;&#x6570;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">C c;</td>
+<td style="text-align:left">&#x9ED8;&#x8BA4;&#x6784;&#x9020;&#x51FD;&#x6570;&#xFF0C;&#x6784;&#x9020;&#x7A7A;&#x5BB9;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:left">C c1(c2);</td>
+<td style="text-align:left">&#x6784;&#x9020;c2&#x7684;&#x62F7;&#x8D1D;c1</td>
+</tr>
+<tr>
+<td style="text-align:left">C c(b&#xFF0C;e);</td>
+<td style="text-align:left">&#x6784;&#x9020;c&#xFF0C;&#x5C06;&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x6307;&#x5B9A;&#x7684;&#x8303;&#x56F4;&#x5185;&#x7684;&#x5143;&#x7D20;&#x62F7;&#x8D1D;&#x5230;c(array&#x4E0D;&#x652F;&#x6301;)</td>
+</tr>
+<tr>
+<td style="text-align:left">C c{a,b,c...};</td>
+<td style="text-align:left">&#x5217;&#x8868;&#x521D;&#x59CB;&#x5316;c</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x8D4B;&#x503C;&#x4E0E;swap</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">c1=c2</td>
+<td style="text-align:left">&#x5C06;cl&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x66FF;&#x6362;&#x4E3A;c2&#x4E2D;&#x5143;&#x7D20;,c1 &#x548C; c2 &#x5FC5;&#x987B;&#x5177;&#x6709;&#x76F8;&#x540C;&#x7684;&#x7C7B;&#x578B;</td>
+</tr>
+<tr>
+<td style="text-align:center">cl={a,b,c...}</td>
+<td style="text-align:left">&#x5C06;cl&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x66FF;&#x6362;&#x4E3A;&#x5217;&#x8868;&#x4E2D;&#x5143;&#x7D20;(&#x4E0D;&#x9002;&#x7528;&#x4E8E;array)</td>
+</tr>
+<tr>
+<td style="text-align:center">a.swap(b)</td>
+<td style="text-align:left">&#x4EA4;&#x6362;a&#x548C;b&#x7684;&#x5143;&#x7D20;a&#x548C;b&#x5FC5;&#x987B;&#x5177;&#x6709;&#x76F8;&#x540C;&#x7684;&#x7C7B;&#x578B;&#x3002;swap&#x901A;&#x5E38;&#x6BD4;&#x4ECE;a&#x5411;b&#x62F7;&#x8D1D;&#x5143;&#x7D20;&#x5FEB;&#x5F97;&#x591A;</td>
+</tr>
+<tr>
+<td style="text-align:center">swap(a&#xFF0C;b)</td>
+<td style="text-align:left">&#x4E0E;a.swap(b)&#x7B49;&#x4EF7;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;&#xFF1A;&#x8D4B;&#x503C;&#x76F8;&#x5173;&#x8FD0;&#x7B97;&#x4F1A;&#x5BFC;&#x81F4;&#x6307;&#x5411;&#x5DE6;&#x8FB9;&#x5BB9;&#x5668;&#x5185;&#x90E8;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3001;&#x5F15;&#x7528;&#x548C;&#x6307;&#x9488;&#x5931;&#x6548;&#x3002;&#x800C;swap &#x64CD;&#x4F5C;&#x5C06;&#x5BB9;&#x5668;&#x5185;&#x5BB9;&#x4EA4;&#x6362;&#x4E0D;&#x4F1A;&#x5BFC;&#x81F4;&#x6307;&#x5411;&#x5BB9;&#x5668;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3001;&#x5F15;&#x7528;&#x548C;&#x6307;&#x9488;&#x5931;&#x6548;(&#x5BB9;&#x5668;&#x7C7B;&#x578B;&#x4E3A; array &#x548C; string &#x7684;&#x60C5;&#x51B5;&#x9664;&#x5916;)&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">assign</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">seq.assign(b,e)</td>
+<td style="text-align:left">&#x5C06;seq&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x66FF;&#x6362;&#x4E3A;&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x6240;&#x8868;&#x793A;&#x7684;&#x8303;&#x56F4;&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x4E0D;&#x80FD;&#x6307;&#x5411;seq&#x4E2D;&#x7684;&#x5143;&#x7D20;</td>
+</tr>
+<tr>
+<td style="text-align:center">seq.assign(il)</td>
+<td style="text-align:left">&#x5C06;seq&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x66FF;&#x6362;&#x4E3A;&#x521D;&#x59CB;&#x5316;&#x5217;&#x8868;il&#x4E2D;&#x7684;&#x5143;&#x7D20;</td>
+</tr>
+<tr>
+<td style="text-align:center">seq.assign(n,t)</td>
+<td style="text-align:left">&#x5C06;seq&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x66FF;&#x6362;&#x4E3A;n&#x4E2A;&#x503C;&#x4E3A;t&#x7684;&#x5143;&#x7D20;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;&#xFF1A;assign&#x64CD;&#x4F5C;&#x4E0D;&#x9002;&#x7528;&#x4E8E;&#x5173;&#x8054;&#x5BB9;&#x5668;&#x548C;array</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5927;&#x5C0F;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">c.size()</td>
+<td style="text-align:left">c&#x4E2D;&#x5143;&#x7D20;&#x7684;&#x6570;&#x76EE;(&#x4E0D;&#x652F;&#x6301;forward list)</td>
+</tr>
+<tr>
+<td style="text-align:center">cmax size()</td>
+<td style="text-align:left">c&#x53EF;&#x4FDD;&#x5B58;&#x7684;&#x6700;&#x5927;&#x5143;&#x7D20;&#x6570;&#x76EE;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.empty()</td>
+<td style="text-align:left">&#x82E5;c&#x4E2D;&#x5B58;&#x50A8;&#x4E86;&#x5143;&#x7D20;&#xFF0C;&#x8FD4;&#x56DE;false&#xFF0C;&#x5426;&#x5219;&#x8FD4;&#x56DE;true</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x6DFB;&#x52A0;/&#x5220;&#x9664;&#x5143;&#x7D20;(&#x4E0D;&#x9002;&#x7528;&#x4E8E;array)</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">c.insert(args)</td>
+<td style="text-align:left">&#x5C06;args&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x62F7;&#x8D1D;&#x8FDB;c</td>
+</tr>
+<tr>
+<td style="text-align:center">cemplace(inits)</td>
+<td style="text-align:left">&#x4F7F;&#x7528;inits&#x6784;&#x9020;c&#x4E2D;&#x7684;&#x4E00;&#x4E2A;&#x5143;&#x7D20;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.erase(args)</td>
+<td style="text-align:left">&#x5220;&#x9664;args&#x6307;&#x5B9A;&#x7684;&#x5143;&#x7D20;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.clear()</td>
+<td style="text-align:left">&#x5220;&#x9664;c&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5143;&#x7D20;&#xFF0C;&#x8FD4;&#x56DE;void</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;:&#x5728;&#x4E0D;&#x540C;&#x5BB9;&#x5668;&#x4E2D;&#xFF0C;&#x8FD9;&#x4E9B;&#x64CD;&#x4F5C;&#x7684;&#x63A5;&#x53E3;&#x90FD;&#x4E0D;&#x540C;</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">==&#xFF0C;!=</td>
+<td style="text-align:left">&#x6240;&#x6709;&#x5BB9;&#x5668;&#x90FD;&#x652F;&#x6301;&#x76F8;&#x7B49;(&#x4E0D;&#x7B49;)&#x8FD0;&#x7B97;&#x7B26;</td>
+</tr>
+<tr>
+<td style="text-align:center">&lt;&#xFF0C;&lt;=&#xFF0C;&gt;&#xFF0C;&gt;=</td>
+<td style="text-align:left">&#x5173;&#x7CFB;&#x8FD0;&#x7B97;&#x7B26;(&#x65E0;&#x5E8F;&#x5173;&#x8054;&#x5BB9;&#x5668;&#x4E0D;&#x652F;&#x6301;)</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x83B7;&#x53D6;&#x8FED;&#x4EE3;&#x5668;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">c.begin(),c.end()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;&#x6307;&#x5411;c&#x7684;&#x9996;&#x5143;&#x7D20;&#x548C;&#x5C3E;&#x5143;&#x7D20;&#x4E4B;&#x540E;&#x4F4D;&#x7F6E;&#x7684;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.cbegin()c.cend()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;const iterator</td>
+</tr>
+</tbody>
+</table>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x53CD;&#x5411;&#x5BB9;&#x5668;&#x7684;&#x989D;&#x5916;&#x6210;&#x5458;(&#x4E0D;&#x652F;&#x6301;forwardlist)</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">reverse_iterator</td>
+<td style="text-align:left">&#x6309;&#x9006;&#x5E8F;&#x5BFB;&#x5740;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">const_reverse_iterator</td>
+<td style="text-align:left">&#x4E0D;&#x80FD;&#x4FEE;&#x6539;&#x5143;&#x7D20;&#x7684;&#x9006;&#x5E8F;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.rbegin(),crend()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;&#x6307;&#x5411;c&#x7684;&#x5C3E;&#x5143;&#x7D20;&#x548C;&#x9996;&#x5143;&#x7D20;&#x4E4B;&#x524D;&#x4F4D;&#x7F6E;&#x7684;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.crbegin(),c.crend()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;const_reverseiterator</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5411;&#x987A;&#x5E8F;&#x5BB9;&#x5668;&#x6DFB;&#x52A0;&#x5143;&#x7D20;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">forward_list</td>
+<td style="text-align:left">&#x6709;&#x81EA;&#x5DF1;&#x4E13;&#x6709;&#x7248;&#x672C;&#x7684;insert&#x548C;emplace; forward_list&#x4E0D;&#x652F;&#x6301;push_back&#x548C;emplace_back&#x3002;</td>
+</tr>
+<tr>
+<td style="text-align:center">vector&#x548C;string</td>
+<td style="text-align:left">&#x4E0D;&#x652F;&#x6301;push_front&#x548C;emplace_front&#x3002;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.push_back(t)</td>
+<td style="text-align:left">&#x5728;c&#x7684;&#x5C3E;&#x90E8;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x503C;&#x4E3A;t&#x6216;&#x7531;args&#x521B;&#x5EFA;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;void</td>
+</tr>
+<tr>
+<td style="text-align:center">c.emplace_back(args)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:center">c.push_front(t)</td>
+<td style="text-align:left">&#x5728;c&#x7684;&#x5934;&#x90E8;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x503C;&#x4E3A;t&#x6216;&#x7531;args&#x521B;&#x5EFA;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;void</td>
+</tr>
+<tr>
+<td style="text-align:center">c.emplace_front(args)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:center">c.insert(p&#xFF0C;t)</td>
+<td style="text-align:left">&#x5728;&#x8FED;&#x4EE3;&#x5668;p&#x6307;&#x5411;&#x7684;&#x5143;&#x7D20;&#x4E4B;&#x524D;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x503C;&#x4E3A;t&#x6216;&#x7531;args&#x521B;&#x5EFA;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x65B0;&#x6DFB;&#x52A0;&#x7684;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.emplace(p,args)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:center">c.insert(p,n,t)</td>
+<td style="text-align:left">&#x5728;&#x8FED;&#x4EE3;&#x5668;p&#x6307;&#x5411;&#x7684;&#x5143;&#x7D20;&#x4E4B;&#x524D;&#x63D2;&#x5165;n&#x4E2A;&#x503C;&#x4E3A;t&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x65B0;&#x6DFB;&#x52A0;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;:&#x82E5;n&#x4E3A;0&#xFF0C;&#x5219;&#x8FD4;&#x56DE;p</td>
+</tr>
+<tr>
+<td style="text-align:center">c.insert(p,b,e)</td>
+<td style="text-align:left">&#x5C06;&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x6307;&#x5B9A;&#x7684;&#x8303;&#x56F4;&#x5185;&#x7684;&#x5143;&#x7D20;&#x63D2;&#x5165;&#x5230;&#x8FED;&#x4EE3;&#x5668;p&#x6307;&#x5411;&#x7684;&#x5143;&#x7D20;&#x4E4B;&#x524D;&#x3002;b&#x548C;e&#x4E0D;&#x80FD;&#x6307;&#x5411;c&#x4E2D;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x65B0;&#x6DFB;&#x52A0;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;;&#x82E5;&#x8303;&#x56F4;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;p</td>
+</tr>
+<tr>
+<td style="text-align:center">c.insert(p,il)</td>
+<td style="text-align:left">il&#x662F;&#x4E00;&#x4E2A;&#x82B1;&#x62EC;&#x53F7;&#x5305;&#x56F4;&#x7684;&#x5143;&#x7D20;&#x503C;&#x5217;&#x8868;&#x3002;&#x5C06;&#x8FD9;&#x4E9B;&#x7ED9;&#x5B9A;&#x503C;&#x63D2;&#x5165;&#x5230;&#x8FED;&#x4EE3;&#x5668;p&#x6307;&#x5411;&#x7684;&#x5143;&#x7D20;&#x4E4B;&#x524D;&#x3002;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x65B0;&#x6DFB;&#x52A0;&#x7684;&#x7B2C;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;:&#x82E5;&#x5217;&#x8868;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;p</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;:&#x5411;&#x4E00;&#x4E2A;vector string&#x6216;deque&#x63D2;&#x5165;&#x5143;&#x7D20;&#x4F1A;&#x4F7F;&#x6240;&#x6709;&#x6307;&#x5411;&#x5BB9;&#x5668;&#x7684;&#x9009;&#x4EE3;&#x5668;&#x3001;&#x5F15;&#x7528;&#x548C;&#x6307;&#x9488;&#x5931;&#x6548;&#x3002;&#x8FD9;&#x4E9B;&#x64CD;&#x4F5C;&#x4F1A;&#x6539;&#x53D8;&#x5BB9;&#x5668;&#x7684;&#x5927;&#x5C0F;;array&#x4E0D;&#x652F;&#x6301;&#x8FD9;&#x4E9B;&#x64CD;&#x4F5C;&#x3002;</p>
+<hr>
+<p>replace&#x548C;insert&#x6240;&#x5141;&#x8BB8;&#x7684;args&#x5F62;&#x5F0F;&#x4F9D;&#x8D56;&#x4E8E;range&#x548C;pos&#x662F;&#x5982;&#x4F55;&#x6307;&#x5B9A;&#x7684;&#x3002;</p>
+<table>
+<thead>
+<tr>
+<th style="text-align:left">args&#x53EF;&#x4EE5;&#x662F;</th>
+<th style="text-align:center">replace(pos,len,args)</th>
+<th style="text-align:center">replace(b,e,args)</th>
+<th style="text-align:center">insert(pos,args)</th>
+<th style="text-align:center">insert(iter,args)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:left">str</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+</tr>
+<tr>
+<td style="text-align:left">str,pos,len</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+</tr>
+<tr>
+<td style="text-align:left">cp,len</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+</tr>
+<tr>
+<td style="text-align:left">cp</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+<td style="text-align:center">&#x5426;</td>
+</tr>
+<tr>
+<td style="text-align:left">n,c</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x662F;</td>
+</tr>
+<tr>
+<td style="text-align:left">b2,e2</td>
+<td style="text-align:center">&#x5426;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+<td style="text-align:center">&#x662F;</td>
+</tr>
+<tr>
+<td style="text-align:left">&#x521D;&#x59CB;&#x5316;&#x5217;&#x8868;</td>
+<td style="text-align:center">&#x5426;</td>
+<td style="text-align:center">&#x662F;</td>
+<td style="text-align:center">&#x5426;</td>
+<td style="text-align:center">&#x662F;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5728;&#x987A;&#x5E8F;&#x5BB9;&#x5668;&#x4E2D;&#x8BBF;&#x95EE;&#x5143;&#x7D20;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">at&#x548C;&#x4E0B;&#x6807;&#x64CD;&#x4F5C;</td>
+<td style="text-align:left">&#x53EA;&#x9002;&#x7528;&#x4E8E;string&#x3001;vector&#x3001;deque&#x548C;array&#x3002; back&#x4E0D;&#x9002;&#x7528;&#x4E8E;forward_list</td>
+</tr>
+<tr>
+<td style="text-align:center">c.back()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;c&#x4E2D;&#x5C3E;&#x5143;&#x7D20;&#x7684;&#x5F15;&#x7528;&#x3002;&#x82E5;c&#x4E3A;&#x7A7A;&#xFF0C;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.front()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;c&#x4E2D;&#x9996;&#x5143;&#x7D20;&#x7684;&#x5F15;&#x7528;&#x3002;&#x82E5;c&#x4E3A;&#x7A7A;&#xFF0C;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">c[n]</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;c&#x4E2D;&#x4E0B;&#x6807;&#x4E3A;n&#x7684;&#x5143;&#x7D20;&#x7684;&#x5F15;&#x7528;n&#x662F;&#x4E00;&#x4E2A;&#x65E0;&#x7B26;&#x53F7;&#x6574;&#x6570;&#x3002;&#x82E5;n&gt;=csize()&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center"><a href="http://c.at">c.at</a>(n)</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;&#x4E0B;&#x6807;&#x4E3A;n&#x7684;&#x5143;&#x7D20;&#x7684;&#x5F15;&#x7528;&#x3002;&#x5982;&#x679C;&#x4E0B;&#x6807;&#x8D8A;&#x754C;&#xFF0C;&#x5219;&#x629B;&#x51FA;&#x4E00;out_of_range&#x5F02;&#x5E38;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;:&#x5BF9;&#x4E00;&#x4E2A;&#x7A7A;&#x5BB9;&#x5668;&#x8C03;&#x7528;front&#x548C;back&#xFF0C;&#x5C31;&#x50CF;&#x4F7F;&#x7528;&#x4E00;&#x4E2A;&#x8D8A;&#x754C;&#x7684;&#x4E0B;&#x6807;&#x4E00;&#x6837;&#xFF0C;&#x662F;&#x4E00;&#x79CD;&#x4E25;&#x91CD;&#x7684;&#x7A0B;&#x5E8F;&#x8BBE;&#x8BA1;&#x9519;&#x8BEF;&#x3002;</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x987A;&#x5E8F;&#x5BB9;&#x5668;&#x7684;&#x5220;&#x9664;&#x64CD;&#x4F5C;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">forward_list</td>
+<td style="text-align:left">&#x6709;&#x7279;&#x6B8A;&#x7248;&#x672C;&#x7684;erase</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:left">forward_list&#x4E0D;&#x652F;&#x6301;pop_back;vector&#x548C;string&#x4E0D;&#x652F;&#x6301;pop_front&#x3002;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.pop_back()</td>
+<td style="text-align:left">&#x5220;&#x9664;c&#x4E2D;&#x5C3E;&#x5143;&#x7D20;&#x3002;&#x82E5;c&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;&#x3002;&#x51FD;&#x6570;&#x8FD4;&#x56DE;void</td>
+</tr>
+<tr>
+<td style="text-align:center">c.pop_front()</td>
+<td style="text-align:left">&#x5220;&#x9664;c&#x4E2D;&#x9996;&#x5143;&#x7D20;&#x3002;&#x82E5;c&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;&#x3002;&#x627F;&#x6570;&#x8FD4;&#x56DE;void</td>
+</tr>
+<tr>
+<td style="text-align:center">c.erase(p)</td>
+<td style="text-align:left">&#x5220;&#x9664;&#x8FED;&#x4EE3;&#x5668;p&#x6240;&#x6307;&#x5B9A;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x88AB;&#x5220;&#x5143;&#x7D20;&#x4E4B;&#x540E;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x82E5;p&#x6307;&#x5411;&#x5C3E;&#x5143;&#x7D20;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;&#x5C3E;&#x540E;(off-the-end)&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x82E5;p&#x662F;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.erase(b,e)</td>
+<td style="text-align:left">&#x5220;&#x9664;&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x6240;&#x6307;&#x5B9A;&#x8303;&#x56F4;&#x5185;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x88AB;&#x5220;&#x5143;&#x7D20;&#x4E4B;&#x540E;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x82E5;e&#x672C;&#x8EAB;&#x5C31;&#x662F;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x4E5F;&#x8FD4;&#x56DE;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.clear()</td>
+<td style="text-align:left">&#x5220;&#x9664;c&#x4E2D;&#x7684;&#x6240;&#x6709;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;void</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;:&#x5220;&#x9664;deque&#x4E2D;&#x9664;&#x9996;&#x5C3E;&#x4F4D;&#x7F6E;&#x4E4B;&#x5916;&#x7684;&#x4EFB;&#x4F55;&#x5143;&#x7D20;&#x90FD;&#x4F1A;&#x4F7F;&#x6240;&#x6709;&#x8FED;&#x4EE3;&#x5668;&#x3001;&#x5F15;&#x7528;&#x548C;&#x6307;&#x9488;&#x5931;&#x6548;&#x3002;&#x6307;&#x5411;vector&#x6216;string&#x4E2D;&#x5220;&#x9664;&#x70B9;&#x4E4B;&#x540E;&#x4F4D;&#x7F6E;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3001;&#x5F15;&#x7528;&#x548C;&#x6307;&#x9488;&#x90FD;&#x4F1A;&#x5931;&#x6548;&#x3002;&#x8FD9;&#x4E9B;&#x64CD;&#x4F5C;&#x4F1A;&#x6539;&#x53D8;&#x5BB9;&#x5668;&#x7684;&#x5927;&#x5C0F;&#xFF0C;&#x6240;&#x4EE5;&#x4E0D;&#x9002;&#x7528;&#x4E8E;arrayo</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5728;forward_list&#x4E2D;&#x63D2;&#x5165;&#x6216;&#x5220;&#x9664;&#x5143;&#x7D20;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">lst.before_begin()</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x94FE;&#x8868;&#x9996;&#x5143;&#x7D20;&#x4E4B;&#x524D;&#x4E0D;&#x5B58;&#x5728;&#x7684;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x6B64;&#x8FED;&#x4EE3;&#x5668;&#x4E0D;&#x80FD;&#x89E3;&#x5F15;&#x7528;&#x3002;</td>
+</tr>
+<tr>
+<td style="text-align:center">lst.cbefore_begin()</td>
+<td style="text-align:left">cbefore_begin()&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;const_iterator</td>
+</tr>
+<tr>
+<td style="text-align:center">lst.insert_after(p,t)</td>
+<td style="text-align:left">&#x5728;&#x8FED;&#x4EE3;&#x5668;p&#x4E4B;&#x540E;&#x7684;&#x4F4D;&#x7F6E;&#x63D2;&#x5165;&#x5143;&#x7D20;&#x3002;t&#x662F;&#x4E00;&#x4E2A;&#x5BF9;&#x8C61;&#xFF0C;n&#x662F;&#x6570;&#x91CF;&#xFF0C;b&#x548C;e&#x662F;&#x8868;&#x793A;&#x8303;&#x56F4;&#x7684;&#x4E00;&#x5BF9;&#x8FED;&#x4EE3;&#x5668;(b&#x548C;e&#x4E0D;&#x80FD;&#x6307;&#x5411;lst&#x5185;)</td>
+</tr>
+<tr>
+<td style="text-align:center">lst.insert_after(p,n,t)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:center">lst_insert_after(p,b,e)</td>
+<td style="text-align:left"></td>
+</tr>
+<tr>
+<td style="text-align:center">lst.insert_after(p,il)</td>
+<td style="text-align:left">il&#x662F;&#x4E00;&#x4E2A;&#x82B1;&#x62EC;&#x53F7;&#x5217;&#x8868;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x6700;&#x540E;&#x4E00;&#x4E2A;&#x63D2;&#x5165;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x5982;&#x679C;&#x8303;&#x56F4;&#x4E3A;&#x7A7A;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;p&#x3002;&#x82E5;p&#x4E3A;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">emplace_after(p,args)</td>
+<td style="text-align:left">&#x4F7F;&#x7528;args&#x5728;p&#x6307;&#x5B9A;&#x7684;&#x4F4D;&#x7F6E;&#x4E4B;&#x540E;&#x521B;&#x5EFA;&#x4E00;&#x4E2A;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x8FD9;&#x4E2A;&#x65B0;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x82E5;p&#x4E3A;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">lst.erase_after(p)</td>
+<td style="text-align:left">&#x5220;&#x9664;p&#x6307;&#x5411;&#x7684;&#x4F4D;&#x7F6E;&#x4E4B;&#x540E;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x6216;&#x5220;&#x9664;&#x4ECE;b&#x4E4B;&#x540E;&#x76F4;&#x5230;e(&#x4F46;&#x4E0D;&#x5305;&#x542B;)&#x4E4B;&#x95F4;&#x7684;&#x5143;&#x7D20;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;&#x88AB;&#x5220;&#x5143;&#x7D20;&#x4E4B;&#x540E;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x82E5;&#x4E0D;&#x5B58;&#x5728;&#x8FD9;&#x6837;&#x7684;&#x5143;&#x7D20;&#xFF0C;&#x5219;&#x8FD4;&#x56DE;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x5982;&#x679C;p&#x6307;&#x5411; lst&#x7684;&#x5C3E;&#x5143;&#x7D20;&#x6216;&#x8005;&#x662F;&#x4E00;&#x4E2A;&#x5C3E;&#x540E;&#x8FED;&#x4EE3;&#x5668;&#xFF0C;&#x5219;&#x51FD;&#x6570;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">lst.erase_after(b,e)</td>
+<td style="text-align:left"></td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5BB9;&#x5668;&#x5927;&#x5C0F;&#x7BA1;&#x7406;&#x64CD;&#x4F5C;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">shrink_to_fit</td>
+<td style="text-align:left">&#x53EA;&#x9002;&#x7528;&#x4E8E;vector&#x3001;string&#x548C;deque&#x3002;</td>
+</tr>
+<tr>
+<td style="text-align:center">capacity&#x548C;reserve</td>
+<td style="text-align:left">&#x53EA;&#x9002;&#x7528;&#x4E8E;vector&#x548C;string&#x3002;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.shrink_to_fit()</td>
+<td style="text-align:left">&#x8BF7;&#x5C06;capacity()&#x51CF;&#x5C11;&#x4E3A;&#x4E0E;size()&#x76F8;&#x540C;&#x5927;&#x5C0F;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.capacity()</td>
+<td style="text-align:left">&#x4E0D;&#x91CD;&#x65B0;&#x5206;&#x914D;&#x5185;&#x5B58;&#x7A7A;&#x95F4;&#x7684;&#x8BDD;&#xFF0C;c&#x53EF;&#x4EE5;&#x4FDD;&#x5B58;&#x591A;&#x5C11;&#x5143;&#x7D20;</td>
+</tr>
+<tr>
+<td style="text-align:center">c.reserve(n)</td>
+<td style="text-align:left">&#x5206;&#x914D;&#x81F3;&#x5C11;&#x80FD;&#x5BB9;&#x7EB3;n&#x4E2A;&#x5143;&#x7D20;&#x7684;&#x5185;&#x5B58;&#x7A7A;&#x95F4;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x987A;&#x5E8F;&#x5BB9;&#x5668;&#x5927;&#x5C0F;&#x64CD;&#x4F5C;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">c.resize(n)</td>
+<td style="text-align:left">&#x8C03;&#x6574;c&#x7684;&#x5927;&#x5C0F;&#x4E3A;n&#x4E2A;&#x5143;&#x7D20;&#x3002;&#x82E5;n&lt;c.size()&#xFF0C;&#x5219;&#x591A;&#x51FA;&#x7684;&#x5143;&#x7D20;&#x88AB;&#x4E22;&#x5F03;&#x3002;&#x82E5;&#x5FC5;&#x987B;&#x6DFB;&#x52A0;&#x65B0;&#x5143;&#x7D20;&#xFF0C;&#x5BF9;&#x65B0;&#x5143;&#x7D20;&#x8FDB;&#x884C;&#x503C;&#x521D;&#x59CB;&#x5316;</td>
+</tr>
+<tr>
+<td style="text-align:center"></td>
+<td style="text-align:left">resize&#x4E0D;&#x9002;&#x7528;&#x4E8E;array</td>
+</tr>
+<tr>
+<td style="text-align:center">c.resize(n,t)</td>
+<td style="text-align:left">&#x8C03;&#x6574;c&#x7684;&#x5927;&#x5C0F;&#x4E3A;n&#x4E2A;&#x5143;&#x7D20;&#x3002;&#x4EFB;&#x4F55;&#x65B0;&#x6DFB;&#x52A0;&#x7684;&#x5143;&#x7D20;&#x90FD;&#x521D;&#x59CB;&#x5316;&#x4E3A;&#x503C;t</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;:&#x5982;&#x679C;resize&#x7F29;&#x5C0F;&#x5BB9;&#x5668;&#xFF0C;&#x5219;&#x6307;&#x5411;&#x88AB;&#x5220;&#x9664;&#x5143;&#x7D20;&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3001;&#x5F15;&#x7528;&#x548C;&#x6307;&#x9488;&#x90FD;&#x4F1A;&#x5931;&#x6548;;&#x5BF9;vector&#x3001;string&#x6216;deque&#x8FDB;&#x884C;resize&#x53EF;&#x80FD;&#x5BFC;&#x81F4;&#x8FED;&#x4EE3;&#x5668;&#x3001;&#x6307;&#x9488;&#x548C;&#x5F15;&#x7528;&#x5931;&#x6548;&#x3002;</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x6784;&#x9020;string&#x7684;&#x5176;&#x4ED6;&#x65B9;&#x6CD5;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">string s(cp&#xFF0C;n)</td>
+<td style="text-align:left">s&#x662F;cp&#x6307;&#x5411;&#x7684;&#x6570;&#x7EC4;&#x4E2D;&#x524D;n&#x4E2A;&#x5B57;&#x7B26;&#x7684;&#x62F7;&#x8D1D;&#x3002;&#x6B64;&#x6570;&#x7EC4;&#x81F3;&#x5C11;&#x5E94;&#x8BE5;&#x5305;&#x542B;n&#x4E2A;&#x5B57;&#x7B26;</td>
+</tr>
+<tr>
+<td style="text-align:center">string s(s2,pos2)</td>
+<td style="text-align:left">s&#x662F;string s2&#x4ECE;&#x4E0B;&#x6807;pos2&#x5F00;&#x59CB;&#x7684;&#x5B57;&#x7B26;&#x7684;&#x62F7;&#x8D1D;&#x3002;&#x82E5;pos2&gt;s2.size(),&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;</td>
+</tr>
+<tr>
+<td style="text-align:center">string s(s2,pos2,len2)</td>
+<td style="text-align:left">s&#x662F;string s2&#x4ECE;&#x4E0B;&#x6807;pos2&#x5F00;&#x59CB;len2&#x4E2A;&#x5B57;&#x7B26;&#x7684;&#x62F7;&#x8D1D;&#x3002;&#x82E5;pos2&gt;s2.size()&#x6784;&#x9020;&#x51FD;&#x6570;&#x7684;&#x884C;&#x4E3A;&#x672A;&#x5B9A;&#x4E49;&#x3002;&#x4E0D;&#x7BA1;len2&#x7684;&#x503C;&#x662F;&#x591A;&#x5C11;&#xFF0C;&#x6784;&#x9020;&#x51FD;&#x6570;&#x81F3;&#x591A;&#x62F7;&#x8D1D;s2.size()-pos2&#x4E2A;&#x5B57;&#x7B26;</td>
+</tr>
+</tbody>
+</table>
+<p>&#x6CE8;:n&#x3001;len2&#x548C;pos2&#x90FD;&#x662F;&#x65E0;&#x7B26;&#x53F7;&#x503C;</p>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x4FEE;&#x6539;string&#x7684;&#x64CD;&#x4F5C;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">s.insert(pos,args)</td>
+<td style="text-align:left">&#x5728;pos&#x4E4B;&#x524D;&#x63D2;&#x5165;args&#x6307;&#x5B9A;&#x7684;&#x5B57;&#x7B26;&#x3002;pos&#x53EF;&#x4EE5;&#x662F;&#x4E00;&#x4E2A;&#x4E0B;&#x6807;&#x6216;&#x4E00;&#x4E2A;&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x63A5;&#x53D7;&#x4E0B;&#x6807;&#x7684;&#x7248;&#x672C;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;s&#x7684;&#x5F15;&#x7528;;&#x63A5;&#x53D7;&#x8FED;&#x4EE3;&#x5668;&#x7684;&#x7248;&#x672C;&#x8FD4;&#x56DE;&#x6307;&#x5411;&#x7B2C;&#x4E00;&#x4E2A;&#x63D2;&#x5165;&#x5B57;&#x7B26;&#x7684;&#x8FED;&#x4EE3;&#x5668;</td>
+</tr>
+<tr>
+<td style="text-align:center">s.erase(pos,len)</td>
+<td style="text-align:left">&#x5220;&#x9664;&#x4ECE;&#x4F4D;&#x7F6E;pos&#x5F00;&#x59CB;&#x7684;len&#x4E2A;&#x5B57;&#x7B26;&#x3002;&#x5982;&#x679C;len&#x88AB;&#x7701;&#x7565;&#xFF0C;&#x5219;&#x5220;&#x9664;&#x4ECE;pos&#x5F00;&#x59CB;&#x76F4;&#x81F3;s&#x672B;&#x5C3E;&#x7684;&#x6240;&#x6709;&#x5B57;&#x7B26;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;s&#x7684;&#x5F15;&#x7528;</td>
+</tr>
+<tr>
+<td style="text-align:center">s.assign(args)</td>
+<td style="text-align:left">&#x5C06;s&#x4E2D;&#x7684;&#x5B57;&#x7B26;&#x66FF;&#x6362;&#x4E3A;args&#x6307;&#x5B9A;&#x7684;&#x5B57;&#x7B26;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;s&#x7684;&#x5F15;&#x7528;</td>
+</tr>
+<tr>
+<td style="text-align:center">s.append(args)</td>
+<td style="text-align:left">&#x5C06;args&#x8FFD;&#x52A0;&#x5230;s&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;s&#x7684;&#x5F15;&#x7528;</td>
+</tr>
+<tr>
+<td style="text-align:center">s.replace(range,args)</td>
+<td style="text-align:left">&#x5220;&#x9664;s&#x4E2D;&#x8303;&#x56F4;range&#x5185;&#x7684;&#x5B57;&#x7B26;,&#x66FF;&#x6362;&#x4E3A;args&#x6307;&#x5B9A;&#x7684;&#x5B57;&#x7B26;&#x3002;range&#x6216;&#x8005;&#x662F;&#x4E00;&#x4E2A;&#x4E0B;&#x6807;&#x548C;&#x4E00;&#x4E2A;&#x957F;&#x5EA6;&#xFF0C;&#x6216;&#x8005;&#x662F;&#x4E00;&#x5BF9;&#x6307;&#x5411;s&#x7684;&#x8FED;&#x4EE3;&#x5668;&#x3002;&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;&#x6307;&#x5411;s&#x7684;&#x5F15;&#x7528;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<ul>
+<li>args&#x53EF;&#x4EE5;&#x662F;&#x4E0B;&#x5217;&#x5F62;&#x5F0F;&#x4E4B;&#x4E00;;</li>
+<li>append&#x548C;assign&#x53EF;&#x4EE5;&#x4F7F;&#x7528;&#x6240;&#x6709;&#x5F62;&#x5F0F;&#x3002;</li>
+<li>str&#x4E0D;&#x80FD;&#x4E0E;s&#x76F8;&#x540C;&#xFF0C;&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x4E0D;&#x80FD;&#x6307;&#x5411;s&#x3002;</li>
+</ul>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">args</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">str</td>
+<td style="text-align:left">&#x5B57;&#x7B26;&#x4E32;str</td>
+</tr>
+<tr>
+<td style="text-align:center">str,pos,len</td>
+<td style="text-align:left">str&#x4E2D;&#x4ECE;pos&#x5F00;&#x59CB;&#x6700;&#x591A;len&#x4E2A;&#x5B57;</td>
+</tr>
+<tr>
+<td style="text-align:center">cp,len</td>
+<td style="text-align:left">&#x4ECE;cp&#x6307;&#x5411;&#x7684;&#x5B57;&#x7B26;&#x6570;&#x7EC4;&#x7684;&#x524D;(&#x6700;&#x591A;)len&#x4E2A;&#x5B57;&#x7B26;</td>
+</tr>
+<tr>
+<td style="text-align:center">cp</td>
+<td style="text-align:left">cp&#x6307;&#x5411;&#x7684;&#x4EE5;&#x7A7A;&#x5B57;&#x7B26;&#x7ED3;&#x5C3E;&#x7684;&#x5B57;&#x7B26;&#x6570;&#x7EC4;</td>
+</tr>
+<tr>
+<td style="text-align:center">n,c</td>
+<td style="text-align:left">n&#x4E2A;&#x5B57;&#x7B26;c</td>
+</tr>
+<tr>
+<td style="text-align:center">b,e</td>
+<td style="text-align:left">&#x8FED;&#x4EE3;&#x5668;b&#x548C;e&#x6307;&#x5B9A;&#x7684;&#x8303;&#x56F4;&#x5185;&#x7684;&#x5B57;&#x7B26;</td>
+</tr>
+<tr>
+<td style="text-align:center">&#x521D;&#x59CB;&#x5316;&#x5217;&#x8868;</td>
+<td style="text-align:left">&#x82B1;&#x62EC;&#x53F7;&#x5305;&#x56F4;&#x7684;&#xFF0C;&#x4EE5;&#x9017;&#x53F7;&#x5206;&#x9694;&#x7684;&#x5B57;&#x7B26;&#x5217;&#x8868;</td>
+</tr>
+</tbody>
+</table>
+<hr>
+<table>
+<thead>
+<tr>
+<th style="text-align:center">&#x5B50;&#x5B57;&#x7B26;&#x4E32;&#x64CD;&#x4F5C;</th>
+<th style="text-align:left">&#x89E3;&#x91CA;&#x8BF4;&#x660E;</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">s.substr(pos,n)</td>
+<td style="text-align:left">&#x8FD4;&#x56DE;&#x4E00;&#x4E2A;string&#xFF0C;&#x5305;&#x542B;s&#x4E2D;&#x4ECE;pos&#x5F00;&#x59CB;&#x7684;n&#x4E2A;&#x5B57;&#x7B26;&#x7684;&#x62F7;&#x8D1D;&#x3002;pos&#x7684;&#x9ED8;&#x8BA4;&#x503C;&#x4E3A;0&#x3002;n&#x7684;&#x9ED8;&#x8BA4;&#x503C;&#x4E3A;s.size()-pos&#xFF0C;&#x5373;&#x62F7;&#x8D1D;&#x4ECE;pos&#x5F00;&#x59CB;&#x7684;&#x6240;&#x6709;&#x5B57;&#x7B26;</td>
+</tr>
+</tbody>
+</table>
+
+      </div>
+      
+      
+    
+    
+    
+    
+    
+    
+    
+    
+  
+    </body></html>

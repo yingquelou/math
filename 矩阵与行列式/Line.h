@@ -1,6 +1,8 @@
 #pragma once
+#ifndef _Line_
+#define _Line_ 1
 #include "Point.h"
-#include "Point.cpp"
+// #include "Point.cpp"
 #include <cstdbool>
 using namespace std;
 //平面直线类
@@ -73,3 +75,4 @@ public: //成员函数
     //注意当两直线重合、相交以及直线不存在时都会返回0
     double DistanceOfParallelLines(const Line &L) const;
 };
+#endif

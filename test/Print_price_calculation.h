@@ -1,3 +1,6 @@
+#pragma once
+#ifndef _Print_price_calculation_
+#define _Print_price_calculation_ 1
 #include <stdio.h>
 #include <ctype.h>
 #include <math.h>
@@ -126,3 +129,4 @@ void menu(void)
     printf(A B C D);
     return;
 }
+#endif

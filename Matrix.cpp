@@ -1,34 +1,22 @@
 #include "Matrix.h"
 bool Matrix::IsLegitimate(void) const
 {
-    auto Column = begin()->size();
     // 检查是否是合法矩阵
     if (empty())
         return false;
-    for (auto i : *this)
+    auto Column = begin()->size();
+    for (auto &i : *this)
         if (Column != i.size())
             return false;
     return true;
 }
-size_t Matrix::GetRows(void) const
+inline size_t Matrix::GetRows(void) const
 {
-    if (IsLegitimate())
-        return size();
-    else
-    {
-        cout << "It isn't a legitimate matrix!" << endl;
-        exit(EXIT_FAILURE);
-    }
+    return size();
 }
-size_t Matrix::GetColumn(void) const
+inline size_t Matrix::GetColumn(void) const
 {
-    if (IsLegitimate())
-        return begin()->size();
-    else
-    {
-        cout << "It isn't a legitimate matrix!" << endl;
-        exit(EXIT_FAILURE);
-    }
+    return begin()->size();
 }
 /* Matrix Matrix::RowEchelonMatrix(void) const
 {
@@ -93,8 +81,8 @@ ostream &operator<<(ostream &cout, const Matrix &mat)
         for (auto j : mat[i])
         {
             ++m;
-            printf("%+6.3llf", j);
-            // cout << j;
+            // printf("%+.3llf", j);
+            cout << setfill(' ') << setprecision(3) << j;
             if (m < L)
                 cout << ",";
         }
@@ -103,90 +91,122 @@ ostream &operator<<(ostream &cout, const Matrix &mat)
     }
     return cout;
 }
+Matrix &Matrix::operator=(const Matrix &mat)
+{
+    const auto be = begin(), en = end();
+    erase(be, en);
+    for (auto &i : mat)
+    {
+        push_back(i);
+        // cout << size() << string(2, ' ') << capacity() << endl;
+    }
+    shrink_to_fit();
+    return *this;
+}
 Matrix Matrix::operator+(const Matrix &mat) const
 {
     size_t p = GetRows(), q = GetColumn();
-    if (p == mat.GetRows() && q == mat.GetColumn())
+    Matrix tmp;
+    for (size_t i = 0; i < p; ++i)
     {
-        Matrix tmp;
-        for (size_t i = 0; i < p; ++i)
+        Mat1 line;
+        for (size_t j = 0; j < q; ++j)
         {
-            Mat1 line;
-            for (size_t j = 0; j < q; ++j)
-            {
-                line.push_back((*this)[i][j] + mat[i][j]);
-            }
-            tmp.push_back(line);
+            line.push_back((*this)[i][j] + mat[i][j]);
         }
-        return tmp;
+        tmp.push_back(line);
     }
-    else
-    {
-        cerr << "The both isn't the same type of matrix!" << endl;
-        exit(EXIT_FAILURE);
-    }
+    return tmp;
+}
+Matrix &Matrix::operator+=(const Matrix &mat)
+{
+    auto p = GetRows(), q = GetColumn();
+    for (decltype(p) i = 0; i < p; ++i)
+        for (decltype(p) j = 0; j < q; ++j)
+            (*this)[i][j] += mat[i][j];
+    return *this;
 }
 Matrix Matrix::operator*(const LDouble &k) const
 {
-    if (IsLegitimate())
+    Matrix result;
+    for (auto &i : *this)
     {
-        Matrix result;
-        for (auto i : *this)
+        Mat1 Rows;
+        for (auto &j : i)
         {
-            Mat1 Rows;
-            for (auto j : i)
-            {
-                Rows.push_back(k * j);
-            }
-            result.push_back(Rows);
+            Rows.push_back(k * j);
         }
-        return result;
+        result.push_back(Rows);
     }
-    else
-    {
-        cerr << "It is not a matrix" << endl;
-        exit(EXIT_FAILURE);
-    }
+    return result;
 }
-Matrix operator*(const LDouble &k, const Matrix &mat)
+Matrix &Matrix::operator*=(const LDouble &k)
+{
+    for (auto &i : *this)
+        for (auto &j : i)
+            j *= k;
+    return *this;
+}
+inline Matrix operator*(const LDouble &k, const Matrix &mat)
 {
     return mat * k;
 }
 Matrix Matrix::operator*(const Matrix &mat) const
 {
-    if (!(IsLegitimate() && mat.IsLegitimate()))
-        exit(EXIT_FAILURE);
     // A(m*p)*B(p*n)
-    auto m = size(), p = begin()[0].size(), n = mat[0].size();
-    // 检查两个矩阵能否相乘
-    if (p == mat.size())
+    auto m = size(), p = GetColumn(), n = mat.GetColumn();
+    Matrix result;
+    MyType tmp;
+    size_t i, j, k;
+    // 开始计算
+    for (i = 0; i < m; ++i)
     {
-        Matrix result;
-        MyType tmp;
-        size_t i, j, k;
-        // 开始计算
-        for (i = 0; i < m; ++i)
+        Mat1 Rows;
+        for (j = 0; j < n; ++j)
         {
-            Mat1 Rows;
-            for (j = 0; j < n; ++j)
+            for (k = 0, tmp = 0; k < p; ++k)
             {
-                for (k = 0, tmp = 0; k < p; ++k)
-                {
-                    tmp += (*this)[i][k] * mat[k][j];
-                }
-                Rows.push_back(tmp);
+                tmp += (*this)[i][k] * mat[k][j];
             }
-            result.push_back(Rows);
+            Rows.push_back(tmp);
         }
-        return result;
+        result.push_back(Rows);
     }
-    else
-    {
-        cerr << "The second is not a matrix." << endl;
-        exit(EXIT_FAILURE);
-    }
+    return result;
 }
-Matrix Matrix::LineExchange(const size_t i, const size_t j) const
+Matrix &Matrix::operator*=(const Matrix &mat)
+{
+    auto m = size(), p = GetColumn(), n = mat.GetColumn();
+    Matrix result;
+    MyType tmp;
+    decltype(m) i, j, k;
+    // 开始计算
+    for (i = 0; i < m; ++i)
+    {
+        Mat1 Rows;
+        for (j = 0; j < n; ++j)
+        {
+            for (k = 0, tmp = 0; k < p; ++k)
+            {
+                tmp += (*this)[i][k] * mat[k][j];
+            }
+            Rows.push_back(tmp);
+        }
+        result.push_back(Rows);
+    }
+    *this = result;
+    return *this;
+}
+inline Matrix Matrix::operator-(const Matrix &mat) const { return -1.0 * mat + (*this); }
+Matrix &Matrix::operator-=(const Matrix &mat)
+{
+    auto p = GetRows(), q = GetColumn();
+    for (decltype(p) i = 0; i < p; ++i)
+        for (decltype(p) j = 0; j < q; ++j)
+            (*this)[i][j] -= mat[i][j];
+    return *this;
+}
+Matrix Matrix::LineExchange(const size_t &i, const size_t &j) const
 {
     if (IsLegitimate() && i != j && i <= size() && j <= size())
     {
@@ -205,7 +225,7 @@ Matrix Matrix::LineExchange(const size_t i, const size_t j) const
         exit(EXIT_FAILURE);
     }
 }
-Matrix Matrix::LineMul(const size_t i, const LDouble k) const
+Matrix Matrix::LineMul(const size_t &i, const LDouble &k) const
 {
     if (IsLegitimate() && i <= size() && k)
     {
@@ -223,7 +243,7 @@ Matrix Matrix::LineMul(const size_t i, const LDouble k) const
         exit(EXIT_FAILURE);
     }
 }
-Matrix Matrix::LineMulToLine(const size_t i, const LDouble k, const size_t j) const
+Matrix Matrix::LineMulToLine(const size_t &i, const LDouble &k, const size_t &j) const
 {
     if (IsLegitimate() && i <= size() && j <= size())
     {
@@ -240,59 +260,40 @@ Matrix Matrix::LineMulToLine(const size_t i, const LDouble k, const size_t j) co
         exit(EXIT_FAILURE);
     }
 }
-Matrix Matrix::LeftMulUnitMatrix(void) const
+Matrix UnitMatrix(const size_t &n)
 {
-    if (IsLegitimate())
+    Mat1 Rows(n, 0);
+    Matrix result;
+    for (size_t i = 0; i < n; ++i)
     {
-        Matrix result;
-        auto n = size();
-        for (size_t i = 0; i < n; ++i)
-        {
-            Mat1 Rows;
-            for (size_t j = 0; j < n; ++j)
-            {
-                if (i == j)
-                {
-                    Rows.push_back(1);
-                }
-                else
-                    Rows.push_back(0);
-            }
-            result.push_back(Rows);
-        }
-        return result;
+        result.push_back(Rows);
+        result[i][i] = 1;
     }
-    else
-    {
-        cerr << "It is not a matrix" << endl;
-        exit(EXIT_FAILURE);
-    }
+    result.shrink_to_fit();
+    return result;
 }
-Matrix Matrix::RightMulUnitMatrix(void) const
+inline Matrix Matrix::LeftMulUnitMatrix(void) const
 {
-    if (IsLegitimate())
+    auto n = GetRows();
+    return UnitMatrix(n);
+}
+inline Matrix Matrix::RightMulUnitMatrix(void) const
+{
+    auto n = GetColumn();
+    return UnitMatrix(n);
+}
+Matrix Matrix::TransposeMatrix(void) const
+{
+    Matrix result;
+    auto R = GetRows(), C = GetColumn();
+    for (decltype(R) i = 0; i < C; ++i)
     {
-        Matrix result;
-        auto n = begin()[0].size();
-        for (size_t i = 0; i < n; ++i)
+        Mat1 Rows;
+        for (decltype(R) j = 0; j < R; j++)
         {
-            Mat1 Rows;
-            for (size_t j = 0; j < n; ++j)
-            {
-                if (i == j)
-                {
-                    Rows.push_back(1);
-                }
-                else
-                    Rows.push_back(0);
-            }
-            result.push_back(Rows);
+            Rows.push_back((*this)[j][i]);
         }
-        return result;
+        result.push_back(Rows);
     }
-    else
-    {
-        cerr << "It is not a matrix" << endl;
-        exit(EXIT_FAILURE);
-    }
+    return result;
 }
