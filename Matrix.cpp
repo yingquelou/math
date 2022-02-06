@@ -1,4 +1,6 @@
 #include "Matrix.h"
+#include <algorithm>
+#include <map>
 bool Matrix::IsLegitimate(void) const
 {
     // 检查是否是合法矩阵
@@ -18,7 +20,69 @@ inline size_t Matrix::GetColumn(void) const
 {
     return begin()->size();
 }
-/* Matrix Matrix::RowEchelonMatrix(void) const
+Matrix Matrix::RowSimplestFormOfMatrix(void) const
+{
+    auto r = GetRows(), c = GetColumn();
+    auto result = *this;
+    size_t SwapPos = r - 1;
+    auto setlog = new int[r];
+    size_t ZeroLine = 0;
+    for (size_t i = 0; i < r;)
+    {
+        size_t j = 0;
+        while (j < c && !result[i][j])
+            ++j;
+        if (j < c)
+        // 找到当前行的第一个非零项时:
+        {
+            setlog[i] = j;
+            auto times = result[i][j];
+            result[i][j] = 1;
+            for (size_t k = j + 1; k < c; ++k)
+            {
+                result[i][k] /= times;
+            }
+            for (size_t l = 0; l < r; ++l)
+            {
+                if (l != i)
+                {
+                    times = result[l][j];
+                    for (size_t x = 0; x < c; ++x)
+                    {
+                        result[l][x] -= times * result[i][x];
+                    }
+                }
+            }
+            ++i;
+        }
+        else if (i < SwapPos)
+        // 找到一个全零行且满足行交换条件
+        {
+            result = result.LineExchange(i, SwapPos);
+            setlog[SwapPos] = -1;
+            ++ZeroLine;
+            --SwapPos;
+        }
+        else
+            break;
+    }
+    map<int, decltype(r)> ma;
+    for (size_t i = 0; i < r; ++i)
+        ma[setlog[i]] = i;
+    Matrix ret;
+    /* for (auto &i : ma)
+        ret.push_back(result[i.second]); */
+    for_each(ma.cbegin(), ma.cend(), [&](decltype(ma)::value_type it)
+             {if(it.first>=0)ret.push_back(result[it.second]); });
+    Matrix::value_type tmp(c, 0);
+    for (size_t i = 0; i < ZeroLine; ++i)
+        ret.push_back(tmp);
+    delete setlog;
+    setlog = nullptr;
+    // ret.shrink_to_fit();
+    return ret;
+}
+/* Matrix Matrix::RowSimplestFormOfMatrix(void) const
 {
     size_t p = GetRows(), q = GetColumn(), r = p;
     if (r > q)
@@ -49,27 +113,35 @@ inline size_t Matrix::GetColumn(void) const
             do
             {
                 ++l;
-                result = result.LineExchange(j + 1, l + 1);
-            } while (!result[j][j] || l == p);
+                result = result.LineExchange(j, l);
+            } while (!result[j][j] && l < p - 1);
+            // 当某列对角线下均为零且此列对角线亦为零时，如何处理？
         }
     }
     for (i = 0; i < r; ++i)
-        for (j = 0; j < q;)
+    {
+        Matrix::value_type::value_type tmp = result[i][i];
+        if (tmp)
         {
-            auto tmp = result[i][j];
-            if (tmp)
+            result[i][i] = 1.0;
+            for (j = i + 1; j < q; ++j)
             {
-                if (tmp != 1)
-                {
-                    result = result.LineMul(i, 1.0 / tmp);
-                    break;
-                }
-            }
-            else
-            {
-                ++j;
+                result[i][j] /= tmp;
             }
         }
+    }
+    for (i = 1; i < r; ++i)
+    {
+        for (j = 0; j < i; ++j)
+        {
+            k = result[j][i];
+            result[j][i] = 0;
+            for (l = i + 1; l < q; ++l)
+            {
+                result[j][l] -= k * result[i][l];
+            }
+        }
+    }
     return result;
 } */
 ostream &operator<<(ostream &cout, const Matrix &mat)
@@ -208,14 +280,15 @@ Matrix &Matrix::operator-=(const Matrix &mat)
 }
 Matrix Matrix::LineExchange(const size_t &i, const size_t &j) const
 {
-    if (IsLegitimate() && i != j && i <= size() && j <= size())
+    if (IsLegitimate() && i != j && i < size() && j < size())
     {
         Matrix result = *this;
-        for (size_t k = 0; k < size(); ++k)
+        auto c = GetColumn();
+        for (size_t k = 0; k < c; ++k)
         {
-            auto tmp = result[i - 1][k];
-            result[i - 1][k] = result[j - 1][k];
-            result[j - 1][k] = tmp;
+            auto tmp = result[i][k];
+            result[i][k] = result[j][k];
+            result[j][k] = tmp;
         }
         return result;
     }

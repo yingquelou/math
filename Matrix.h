@@ -28,6 +28,7 @@ public: //构造与析构
     // Matrix(const Matrix &);
     // Matrix(...);
     /*~Matrix(); */
+public:
 
 public:
     // 检验矩阵的合法性/存在性
@@ -72,7 +73,9 @@ public: // 初等变换
     inline Matrix RightMulUnitMatrix(void) const;
 
 public:
-    //求行阶梯形矩阵
+    //求行最简形矩阵
+    Matrix RowSimplestFormOfMatrix(void) const;
+    // 求行阶梯形矩阵
     // Matrix RowEchelonMatrix(void) const;
     // 求逆
 
