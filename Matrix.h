@@ -1,4 +1,4 @@
-﻿#ifndef _Matrix_
+#ifndef _Matrix_
 #define _Matrix_ 1
 #include <iostream>
 #include <iomanip>
@@ -40,17 +40,18 @@ public: //构造与析构
     Matrix(Matrix::const_iterator &, Matrix::const_iterator &);
     /*~Matrix(); */
 
-public:
+private:
     // 检验矩阵的合法性/存在性
     bool IsLegitimate(void) const;
-    // 获取矩阵的行数 注意在使用之前请检查矩阵的合法性
+
+public: // 获取矩阵的行数 注意在使用之前请检查矩阵的合法性
     inline size_t GetRows(void) const;
     // 获取矩阵的列数 注意在使用之前请检查矩阵的合法性
     inline size_t GetColumn(void) const;
 
 public: //定义矩阵的某些运算/重载运算符
-    // 拷贝赋值
-    Matrix &operator=(const Matrix &);
+    // 拷贝赋值 (可自赋值)
+    Matrix &operator=(const Matrix);
     // 加法 注意在使用之前请检查矩阵的合法性,以及两矩阵是否是同型矩阵
     Matrix operator+(const Matrix &) const;
     // 加法(复合运算) 注意在使用之前请检查矩阵的合法性,以及两矩阵是否是同型矩阵
@@ -73,6 +74,10 @@ public: //定义矩阵的某些运算/重载运算符
     bool operator==(const Matrix &) const;
     // 幂运算
     // Matrix operator^(const MyType &) const;
+
+    // 向布尔类型转换(显示地) 效果等同于IsLegitimate
+    // 当*this为非空矩阵时返回true,否则返回false
+    explicit operator bool() const { return IsLegitimate(); };
 
 public: //
     /* 行交换 注意矩阵的合法性*/

@@ -45,8 +45,14 @@ bool Matrix::IsLegitimate(void) const
     else
     {
         auto c = cbegin()->size();
-        for_each(cbegin() + 1, cend(), [&c, &ret](const Matrix::value_type &val)
-                 {if (c!=val.size())ret = false; });
+        if (!c)
+            return false;
+        for (auto i = cbegin() + 1; i != cend(); ++i)
+            if (i->size() != c)
+            {
+                ret = false;
+                break;
+            }
     }
     return ret;
 }
@@ -138,7 +144,7 @@ Matrix &Matrix::RSFM_REM(bool TF)
     for (size_t i = 0; i < ZeroLine; ++i)
         ret.push_back(tmp);
     // 动态内存释放
-    delete NotZeroLog;
+    delete[] NotZeroLog;
     NotZeroLog = nullptr;
     // ret.shrink_to_fit();
     return ret;
@@ -174,10 +180,10 @@ ostream &operator<<(ostream &cout, const Matrix &mat)
     }
     return cout;
 }
-Matrix &Matrix::operator=(const Matrix &mat)
+Matrix &Matrix::operator=(const Matrix mat)
 {
     clear();
-    for (auto &i : mat)
+    for (auto &&i : mat)
     {
         push_back(i);
         // cout << size() << string(2, ' ') << capacity() << endl;
@@ -187,18 +193,8 @@ Matrix &Matrix::operator=(const Matrix &mat)
 }
 Matrix Matrix::operator+(const Matrix &mat) const
 {
-    size_t p = GetRows(), q = GetColumn();
-    Matrix tmp;
-    for (size_t i = 0; i < p; ++i)
-    {
-        Mat1 line;
-        for (size_t j = 0; j < q; ++j)
-        {
-            line.push_back((*this)[i][j] + mat[i][j]);
-        }
-        tmp.push_back(line);
-    }
-    return tmp;
+    Matrix ret(*this);
+    return ret += mat;
 }
 Matrix &Matrix::operator+=(const Matrix &mat)
 {
@@ -292,7 +288,7 @@ Matrix &Matrix::operator-=(const Matrix &mat)
 }
 Matrix &Matrix::operator&=(const Matrix &mat)
 {
-    if (IsLegitimate() && mat.IsLegitimate() && size() == mat.size())
+    if (*this && mat && size() == mat.size())
     {
         auto &ret = *this;
         for (size_t i = 0; i < size(); ++i)
@@ -309,7 +305,7 @@ Matrix &Matrix::operator&=(const Matrix &mat)
 bool Matrix::operator==(const Matrix &mat) const
 {
     auto ret = true;
-    if (IsLegitimate() && mat.IsLegitimate())
+    if (*this && mat)
     {
         auto r = mat.size(), c = mat.GetColumn();
         if (r != size() || c != GetColumn())
@@ -329,7 +325,7 @@ bool Matrix::operator==(const Matrix &mat) const
 }
 Matrix &Matrix::RefLineExchange(const size_t &i, const size_t &j)
 {
-    if (IsLegitimate() && i != j && i < size() && j < size())
+    if (*this && i != j && i < size() && j < size())
     {
         Matrix &result = *this;
         auto c = GetColumn();
@@ -355,7 +351,7 @@ Matrix Matrix::LineExchange(const size_t &i, const size_t &j) const
 }
 Matrix &Matrix::RefLineMul(const size_t &i, const MyType &k)
 {
-    if (IsLegitimate() && i < size() && k)
+    if (*this && i < size() && k)
     {
         Matrix &result = *this;
         for_each(result[i].begin(), result[i].end(), [&k](Matrix::basic_type &ba)
@@ -375,7 +371,7 @@ Matrix Matrix::LineMul(const size_t &i, const MyType &k) const
 }
 Matrix &Matrix::RefLineMulToLine(const size_t &i, const MyType &k, const size_t &j)
 {
-    if (IsLegitimate() && i < size() && k && j < size())
+    if (*this && i < size() && k && j < size())
     {
         Matrix &ret = *this;
         Matrix::value_type ik;

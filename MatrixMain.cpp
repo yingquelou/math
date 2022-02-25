@@ -1,19 +1,20 @@
-﻿#include "Matrix.h"
+#include "Matrix.h"
 #include "Matrix.cpp"
 #include <Windows.h>
 int main(void)
 {
-     /* Matrix A;
-     AssignValuesRandomly(A); */
      Matrix B{{-1, 1, -1},
               {1, -1, -1},
               {-1, -1, 1}};
+     Matrix A;
+     if (A || B)
+          cout << "OK" << endl;
      // Matrix C(B.begin(),B.end());
-     for (size_t i = 0; i < 10; ++i)
+     /* for (size_t i = 0; i < 10; ++i)
      {
           Matrix D = AssignValuesRandomly(10, 7, -100, 100).RefRowSimplestFormOfMatrix();
           MessageBoxA(nullptr, MatrixToString(D).c_str(), "Matrix", MB_OK);
-     }
+     } */
 
      /* cout << D.RankOfMatrix() << endl;
      cout << B * B.GetInverseMatrix(); */
