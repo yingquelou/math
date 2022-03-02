@@ -9,9 +9,9 @@
 using namespace std;
 using MyDouble = long double;
 // 行/列矩阵
-using Mat1 = vector<MyDouble>;
+using Value_Type = vector<MyDouble>;
 // 二维矩阵
-using Mat2 = vector<Mat1>;
+using Mat2 = vector<Value_Type>;
 ostream &operator<<(ostream &, const Mat2 &);
 Mat2 MulOfMatrix(const Mat2 &, const Mat2 &);
 int main(void)
@@ -28,7 +28,7 @@ int main(void)
     Mat2 m1, m2;
     for (size_t i = 0; i < M; ++i)
     {
-        Mat1 rows;
+        Value_Type rows;
         for (size_t j = 0; j < P; ++j)
         {
             rows.push_back(rand() % Mod);
@@ -37,7 +37,7 @@ int main(void)
     }
     for (size_t i = 0; i < P; ++i)
     {
-        Mat1 rows;
+        Value_Type rows;
         for (size_t j = 0; j < N; ++j)
         {
             rows.push_back(rand() % Mod);
@@ -101,7 +101,7 @@ Mat2 MulOfMatrix(const Mat2 &Matrix1, const Mat2 &Matrix2)
     // 开始计算
     for (i = 0; i < m; ++i)
     {
-        Mat1 Rows;
+        Value_Type Rows;
         for (j = 0; j < n; ++j)
         {
             for (k = 0, tmp = 0; k < p; ++k)

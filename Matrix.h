@@ -8,9 +8,9 @@ using namespace std;
 using std::vector;
 using MyType = double;
 // 行/列矩阵
-using Mat1 = vector<MyType>;
+using Value_Type = vector<MyType>;
 // 二维矩阵
-using Mat2 = vector<Mat1>;
+using Mat2 = vector<Value_Type>;
 // 矩阵类
 class Matrix : private Mat2
 {

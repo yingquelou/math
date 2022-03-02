@@ -34,7 +34,7 @@ Matrix::Matrix(Matrix::const_iterator &be, Matrix::const_iterator &en)
 }
 Matrix::Matrix(const initializer_list<Matrix::value_type> &il)
 {
-    for (auto &e : il)
+    for (auto &&e : il)
         push_back(e);
 }
 bool Matrix::IsLegitimate(void) const
@@ -209,7 +209,7 @@ Matrix Matrix::operator*(const MyType &k) const
     Matrix result;
     for (auto &i : *this)
     {
-        Mat1 Rows;
+        Value_Type Rows;
         for (auto &j : i)
         {
             Rows.push_back(k * j);
@@ -241,7 +241,7 @@ Matrix Matrix::operator*(const Matrix &mat) const
     // 开始计算
     for (i = 0; i < m; ++i)
     {
-        Mat1 Rows;
+        Value_Type Rows;
         for (j = 0; j < n; ++j)
         {
             for (k = 0, tmp = 0; k < p; ++k)
@@ -263,7 +263,7 @@ Matrix &Matrix::operator*=(const Matrix &mat)
     // 开始计算
     for (i = 0; i < m; ++i)
     {
-        Mat1 Rows;
+        Value_Type Rows;
         for (j = 0; j < n; ++j)
         {
             for (k = 0, tmp = 0; k < p; ++k)
@@ -409,7 +409,7 @@ Matrix Matrix::TransposeMatrix(void) const
     auto R = GetRows(), C = GetColumn();
     for (decltype(R) i = 0; i < C; ++i)
     {
-        Mat1 Rows;
+        Value_Type Rows;
         for (decltype(R) j = 0; j < R; j++)
         {
             Rows.push_back((*this)[j][i]);
@@ -437,7 +437,7 @@ size_t Matrix::RankOfMatrix(void) const
 
 Matrix UnitMatrix(const size_t &n)
 {
-    Mat1 Rows(n, 0);
+    Value_Type Rows(n, 0);
     Matrix result;
     for (size_t i = 0; i < n; ++i)
     {
@@ -506,7 +506,7 @@ Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const MyType &inf,
         ++range; */
     for (int i = 0; i < r; ++i)
     {
-        Mat1 Rows;
+        Value_Type Rows;
         for (int j = 0; j < c; ++j)
         {
             Rows.push_back(dis(gen));
