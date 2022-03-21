@@ -3,6 +3,11 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <algorithm>
+#include <iterator>
+#include <random>
+#include <string>
+#include <map>
 using namespace std;
 #define Mod 10;
 using std::vector;

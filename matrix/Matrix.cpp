@@ -1,9 +1,4 @@
 #include "Matrix.h"
-#include <algorithm>
-#include <iterator>
-#include <random>
-#include <string>
-#include <map>
 // 类成员函数
 
 Matrix Matrix::GetInverseMatrix(void) const
@@ -166,6 +161,7 @@ ostream &operator<<(ostream &cout, const Matrix &mat)
     size_t Rows = mat.GetRows();
     for (size_t i = 0; i < Rows; ++i)
     {
+        cout << '{';
         size_t L = mat[i].size(), m = 0;
         for (auto j : mat[i])
         {
@@ -175,8 +171,9 @@ ostream &operator<<(ostream &cout, const Matrix &mat)
             if (m < L)
                 cout << ",";
         }
+        cout << '}';
         if (i < Rows - 1)
-            cout << endl;
+            cout << ',' << endl;
     }
     return cout;
 }
@@ -483,11 +480,11 @@ string LdoubleToString(long double val)
     // cout << std::strtold(ret.c_str(), nullptr);
     return ret;
 }
-std::random_device rd;  // 将用于获得随机数引擎的种子
-std::mt19937 gen(rd()); // 以 rd() 播种的标准 mersenne_twister_engine
+
 Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const MyType &inf, const MyType &sup)
 {
-
+    std::random_device rd;  // 将用于获得随机数引擎的种子
+    std::mt19937 gen(rd()); // 以 rd() 播种的标准 mersenne_twister_engine
     Matrix ret;
     if (!r || !c || inf >= sup)
         return ret;

@@ -1,4 +1,3 @@
-#include "Matrix.h"
 #include "Matrix.cpp"
 #include <Windows.h>
 int main(void)
@@ -36,6 +35,6 @@ int main(void)
           << endl; */
      // cout << A << endl;
      // cout << endl;
-     // cout << A.RowSimplestFormOfMatrix() << endl;
+     cout << AssignValuesRandomly(6,6) << endl;
      return 0;
 }
