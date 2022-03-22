@@ -38,7 +38,7 @@ int main(void)
     catch (runtime_error)
     {
     }
-    catch (invalid_argument)
+    catch (const invalid_argument &)
     {
         cout << "please" << endl;
     }
