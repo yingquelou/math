@@ -35,6 +35,8 @@ int main(void)
           << endl; */
      // cout << A << endl;
      // cout << endl;
-     cout << AssignValuesRandomly(6,6) << endl;
+     /* cout << AssignValuesRandomly(6, 6) << endl
+          << endl; */
+     cout << AssignValuesRandomly(6, 6,-5,0) << endl;
      return 0;
 }

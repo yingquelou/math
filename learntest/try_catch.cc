@@ -28,20 +28,16 @@ int main(void)
         cin >> x >> y;
         if (!y)
         {
-            auto p = invalid_argument("The divisor cannot be zero");
+            /* auto p = invalid_argument("The divisor cannot be zero");
             cout << p.what() << endl;
-            throw p;
-            // throw invalid_argument("y isn't zero!"); //以上两三步与此句等价
+            throw p; */
+            throw invalid_argument("y isn't zero!"); //以上两三步与此句等价
         }
         cout << x / y;
     }
-    catch (runtime_error)
+    catch (const invalid_argument &ia)
     {
+        cout << ia.what() << endl;
     }
-    catch (const invalid_argument &)
-    {
-        cout << "please" << endl;
-    }
-    cout << "hello" << endl;
     return 0;
 }
