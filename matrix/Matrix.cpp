@@ -1,4 +1,8 @@
 #include "Matrix.h"
+#include <algorithm>
+#include <random>
+#include <map>
+#include <sstream>
 // 类成员函数
 
 Matrix Matrix::GetInverseMatrix(void) const
@@ -27,7 +31,7 @@ Matrix::Matrix(Matrix::const_iterator &be, Matrix::const_iterator &en)
         for (auto it = be; it != en; ++it)
             push_back(*it);
 }
-Matrix::Matrix(const initializer_list<Matrix::value_type> &il)
+Matrix::Matrix(const std::initializer_list<Matrix::row_type> &il)
 {
     for (auto &&e : il)
         push_back(e);
@@ -124,7 +128,7 @@ Matrix &Matrix::RSFM_REM(bool TF)
         // 当外循环条件为假时，亦将退出外循环
     }
     // 利用NotZeroLog数组生成result的特征map
-    map<int, size_t> ma;
+    std::map<int, size_t> ma;
     for (size_t i = 0; i < r; ++i)
         ma[NotZeroLog[i]] = i;
     Matrix &ret = *this;
@@ -135,7 +139,7 @@ Matrix &Matrix::RSFM_REM(bool TF)
     for_each(ma.cbegin(), ma.cend(), [&ret, &result](decltype(ma)::value_type it)
              {if(it.first>=0)ret.push_back(result[it.second]); });
     //  再放置好ZeroLine个全零行
-    Matrix::value_type tmp(c, 0);
+    Matrix::row_type tmp(c, 0);
     for (size_t i = 0; i < ZeroLine; ++i)
         ret.push_back(tmp);
     // 动态内存释放
@@ -156,26 +160,9 @@ Matrix Matrix::RowEchelonMatrix(void) const
     auto ret = *this;
     return ret.RSFM_REM(false);
 }
-ostream &operator<<(ostream &cout, const Matrix &mat)
+std::ostream &operator<<(std::ostream &cout, const Matrix &mat)
 {
-    size_t Rows = mat.GetRows();
-    for (size_t i = 0; i < Rows; ++i)
-    {
-        // cout << '{';
-        size_t L = mat[i].size(), m = 0;
-        for (auto j : mat[i])
-        {
-            ++m;
-            // printf("%+.3llf", j);
-            cout << setfill(' ') << setprecision(3) << setw(5) << j;
-            if (m < L)
-                cout << ",";
-        }
-        // cout << '}';
-        if (i < Rows - 1)
-            cout /* << ',' */ << endl;
-    }
-    return cout;
+    return cout << mat.toString();
 }
 Matrix &Matrix::operator=(const Matrix mat)
 {
@@ -201,12 +188,12 @@ Matrix &Matrix::operator+=(const Matrix &mat)
             (*this)[i][j] += mat[i][j];
     return *this;
 }
-Matrix Matrix::operator*(const MyType &k) const
+Matrix Matrix::operator*(const element_type &k) const
 {
     Matrix result;
     for (auto &i : *this)
     {
-        Value_Type Rows;
+        row_type Rows;
         for (auto &j : i)
         {
             Rows.push_back(k * j);
@@ -215,14 +202,14 @@ Matrix Matrix::operator*(const MyType &k) const
     }
     return result;
 }
-Matrix &Matrix::operator*=(const MyType &k)
+Matrix &Matrix::operator*=(const element_type &k)
 {
     for (auto &i : *this)
         for (auto &j : i)
             j *= k;
     return *this;
 }
-inline Matrix operator*(const MyType &k, const Matrix &mat)
+inline Matrix operator*(const Matrix::element_type &k, const Matrix &mat)
 {
     return mat * k;
 }
@@ -233,12 +220,12 @@ Matrix Matrix::operator*(const Matrix &mat) const
     Matrix result;
     if (p != GetColumn())
         return result;
-    MyType tmp;
+    element_type tmp;
     size_t i, j, k;
     // 开始计算
     for (i = 0; i < m; ++i)
     {
-        Value_Type Rows;
+        row_type Rows;
         for (j = 0; j < n; ++j)
         {
             for (k = 0, tmp = 0; k < p; ++k)
@@ -255,12 +242,12 @@ Matrix &Matrix::operator*=(const Matrix &mat)
 {
     auto m = size(), p = GetColumn(), n = mat.GetColumn();
     Matrix result;
-    MyType tmp;
+    element_type tmp;
     decltype(m) i, j, k;
     // 开始计算
     for (i = 0; i < m; ++i)
     {
-        Value_Type Rows;
+        row_type Rows;
         for (j = 0; j < n; ++j)
         {
             for (k = 0, tmp = 0; k < p; ++k)
@@ -295,7 +282,7 @@ Matrix &Matrix::operator&=(const Matrix &mat)
     }
     else
     {
-        cerr << "Splicing failed" << endl;
+        std::cerr << "Splicing failed" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -337,7 +324,7 @@ Matrix &Matrix::RefLineExchange(const size_t &i, const size_t &j)
     }
     else
     {
-        cerr << "It is not a matrix,or Not exchangeable!" << endl;
+        std::cerr << "It is not a matrix,or Not exchangeable!" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
@@ -346,33 +333,33 @@ Matrix Matrix::LineExchange(const size_t &i, const size_t &j) const
     auto ret = *this;
     return ret.RefLineExchange(i, j);
 }
-Matrix &Matrix::RefLineMul(const size_t &i, const MyType &k)
+Matrix &Matrix::RefLineMul(const size_t &i, const element_type &k)
 {
     if (*this && i < size() && k)
     {
         Matrix &result = *this;
-        for_each(result[i].begin(), result[i].end(), [&k](Matrix::basic_type &ba)
+        for_each(result[i].begin(), result[i].end(), [&k](element_type &ba)
                  { ba *= k; });
         return result;
     }
     else
     {
-        cerr << "It is not a matrix,or the \"k\" is zero,or the \"i\" is too large!" << endl;
+        std::cerr << "It is not a matrix,or the \"k\" is zero,or the \"i\" is too large!" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
-Matrix Matrix::LineMul(const size_t &i, const MyType &k) const
+Matrix Matrix::LineMul(const size_t &i, const element_type &k) const
 {
     auto ret = *this;
     return ret.RefLineMul(i, k);
 }
-Matrix &Matrix::RefLineMulToLine(const size_t &i, const MyType &k, const size_t &j)
+Matrix &Matrix::RefLineMulToLine(const size_t &i, const element_type &k, const size_t &j)
 {
     if (*this && i < size() && k && j < size())
     {
         Matrix &ret = *this;
-        Matrix::value_type ik;
-        for_each(ret[i].cbegin(), ret[i].cend(), [&ik, &k](const Matrix::basic_type &ba)
+        Matrix::row_type ik;
+        for_each(ret[i].cbegin(), ret[i].cend(), [&ik, &k](const element_type &ba)
                  { ik.push_back(ba * k); });
         auto c = GetColumn();
         for (size_t t = 0; t < c; ++t)
@@ -381,11 +368,11 @@ Matrix &Matrix::RefLineMulToLine(const size_t &i, const MyType &k, const size_t 
     }
     else
     {
-        cerr << "It is not a matrix,or the \"i\" is too large,or the \"j\" is too large,or the \"k\" is zero!" << endl;
+        std::cerr << "It is not a matrix,or the \"i\" is too large,or the \"j\" is too large,or the \"k\" is zero!" << std::endl;
         exit(EXIT_FAILURE);
     }
 }
-Matrix Matrix::LineMulToLine(const size_t &i, const MyType &k, const size_t &j) const
+Matrix Matrix::LineMulToLine(const size_t &i, const element_type &k, const size_t &j) const
 {
     auto ret = *this;
     return ret.RefLineMulToLine(i, k, j);
@@ -406,7 +393,7 @@ Matrix Matrix::TransposeMatrix(void) const
     auto R = GetRows(), C = GetColumn();
     for (decltype(R) i = 0; i < C; ++i)
     {
-        Value_Type Rows;
+        row_type Rows;
         for (decltype(R) j = 0; j < R; j++)
         {
             Rows.push_back((*this)[j][i]);
@@ -430,11 +417,9 @@ size_t Matrix::RankOfMatrix(void) const
     }
     return r - ret;
 }
-// 类的相关函数
-
-Matrix UnitMatrix(const size_t &n)
+Matrix Matrix ::UnitMatrix(const size_t &n)
 {
-    Value_Type Rows(n, 0);
+    Matrix::row_type Rows(n, 0);
     Matrix result;
     for (size_t i = 0; i < n; ++i)
     {
@@ -444,50 +429,13 @@ Matrix UnitMatrix(const size_t &n)
     result.shrink_to_fit();
     return result;
 }
-string LdoubleToString(long double val)
-{
-    const char Nat[11] = "0123456789";
-    string ret;
-    int i, x;
-    decltype(val) f;
-    if (val < 0)
-    {
-        ret += '-';
-        val *= -1;
-    }
-    else if (!val)
-        ret += "+0";
-    else
-        ret += '+';
-    i = val;
-    f = val - i;
-    if (!i && val)
-        ret += '0';
-    while (i)
-    {
-        x = i % 10;
-        i /= 10;
-        ret.insert(ret.begin() + 1, Nat[x]);
-    }
-    ret += '.';
-    for (size_t j = 0; j < 6; ++j)
-    {
-        f *= 10;
-        x = f;
-        f -= x;
-        ret += Nat[x];
-    }
-    // cout << std::strtold(ret.c_str(), nullptr);
-    return ret;
-}
-
 static std::default_random_engine rd; // 将用于获得随机数引擎的种子
-Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const MyType &inf, const MyType &sup)
+Matrix Matrix::AssignValuesRandomly(const size_t &r = 3, const size_t &c = 3, const element_type &inf = 0, const element_type &sup = 10)
 {
     Matrix ret;
     if (!r || !c || inf >= sup)
         return ret;
-    std::uniform_real_distribution<MyType> dis(inf, sup); // 以 rd() 播种的标准 mersenne_twister_engine
+    std::uniform_real_distribution<element_type> dis(inf, sup); // 以 rd() 播种的标准 mersenne_twister_engine
     /*     auto range = sup - inf;
         decltype(range) base;
         if (range > 0)
@@ -502,7 +450,7 @@ Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const MyType &inf,
         ++range; */
     for (int i = 0; i < r; ++i)
     {
-        Value_Type Rows;
+        row_type Rows;
         for (int j = 0; j < c; ++j)
         {
             Rows.push_back(dis(rd));
@@ -511,19 +459,22 @@ Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const MyType &inf,
     }
     return ret;
 }
-string MatrixToString(const Matrix &mat)
+std::string Matrix::toString() const
 {
-    string ret;
-    auto r = mat.size();
-    for (size_t i = 0; i < r; ++i)
+    std::stringstream ret;
+    ret << "[\n";
+    for (auto &r : *this)
     {
-        for (auto &j : mat[i])
-        {
-            ret += LdoubleToString(j);
-            ret += ',';
-        }
-        ret.replace(ret.end() - 1, ret.end(), {'\n'});
+        ret << "[";
+        std::stringstream tmp;
+        for (auto &v : r)
+            tmp << v << ", ";
+        std::string &&s = tmp.str();
+        auto pos = s.find_last_of(',');
+        if (pos != std::string::npos)
+            s.erase(pos, 2);
+        ret << s << "]\n";
     }
-    ret.erase(ret.end() - 1);
-    return ret;
+    ret << ']';
+    return ret.str();
 }

@@ -3,7 +3,7 @@ typedef double Dtype;
 // 1 2 1 2
 // 3 4 3 4
 //二、三阶行列式求解
-static Dtype Determinant(int Order, Dtype a[Order][Order])
+static Dtype Determinant(int Order, Dtype **a)
 {
     if (Order < 2)
     {

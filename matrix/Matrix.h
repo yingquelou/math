@@ -1,47 +1,39 @@
-#ifndef _Matrix_
-#define _Matrix_ 1
+#ifndef MATRIX_H
+#define MATRIX_H
 #include <iostream>
-#include <iomanip>
 #include <vector>
-#include <algorithm>
-#include <iterator>
-#include <random>
 #include <string>
-#include <map>
-using namespace std;
 #define Mod 10;
-using std::vector;
-using MyType = double;
-// 行/列矩阵
-using Value_Type = vector<MyType>;
-// 二维矩阵
-using Mat2 = vector<Value_Type>;
-// 矩阵类
-class Matrix : private Mat2
+// 矩阵
+class Matrix : private std::vector<std::vector<long double>>
 {
+public:                                         //类型别名
+    using element_type = long double;           // 矩阵元素类型
+    using row_type = std::vector<element_type>; // 行/列矩阵
+    using super_type = std::vector<row_type>;
+    using super_type::const_iterator;
+    using super_type::const_pointer;
+    using super_type::const_reference;
+    using super_type::const_reverse_iterator;
+    using super_type::iterator;
+    using super_type::pointer;
+    using super_type::reference;
+    using super_type::reverse_iterator;
     // 友元
     // 显示矩阵到标准输出
-    friend ostream &operator<<(ostream &, const Matrix &);
+    friend std::ostream &operator<<(std::ostream &, const Matrix &);
     // 数乘(数前置)
-    friend inline Matrix operator*(const MyType &, const Matrix &);
+    friend inline Matrix operator*(const element_type &, const Matrix &);
     friend Matrix UnitMatrix(const size_t &n);
-    // 将矩阵的内容储存到一个串里
-    friend string MatrixToString(const Matrix &mat);
     // 可以使用指定范围内的数以指定的行高、列宽随机生成一个矩阵
-    friend Matrix AssignValuesRandomly(const size_t &r = 3, const size_t &c = 3, const MyType &inf = 0, const MyType &sup = 10);
-
-public: //类型别名
-    using iterator = Mat2::iterator;
-    using const_iterator = Mat2::const_iterator;
-    using value_type = vector<MyType>;
-    using basic_type = MyType;
+    friend Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const element_type &inf, const element_type &sup);
 
 public: //构造与析构
         // 默认构造
     Matrix(void);
     // 拷贝构造
     // Matrix(const Matrix &);
-    Matrix(const initializer_list<Matrix::value_type> &);
+    Matrix(const std::initializer_list<Matrix::row_type> &);
     Matrix(Matrix::const_iterator &, Matrix::const_iterator &);
     /*~Matrix(); */
 
@@ -53,6 +45,7 @@ public: // 获取矩阵的行数 注意在使用之前请检查矩阵的合法�
     inline size_t GetRows(void) const;
     // 获取矩阵的列数 注意在使用之前请检查矩阵的合法性
     inline size_t GetColumn(void) const;
+    using super_type::operator[];
 
 public: //定义矩阵的某些运算/重载运算符
     // 拷贝赋值 (可自赋值)
@@ -66,9 +59,9 @@ public: //定义矩阵的某些运算/重载运算符
     // 乘法 注意在使用之前请检查矩阵的合法性,以及两矩阵的可乘性
     Matrix &operator*=(const Matrix &);
     // 数乘(复合运算) 注意在使用之前请检查矩阵的合法性、参数的非零性
-    Matrix operator*(const MyType &) const;
+    Matrix operator*(const element_type &) const;
     // 数乘(复合运算) 注意在使用之前请检查矩阵的合法性、参数的非零性
-    Matrix &operator*=(const MyType &);
+    Matrix &operator*=(const element_type &);
     // 减法 注意在使用之前请检查矩阵的合法性,以及两矩阵是否是同型矩阵
     inline Matrix operator-(const Matrix &) const;
     // 减法(复合运算) 注意在使用之前请检查矩阵的合法性,以及两矩阵是否是同型矩阵
@@ -78,25 +71,27 @@ public: //定义矩阵的某些运算/重载运算符
     // 比较两个矩阵是否相同
     bool operator==(const Matrix &) const;
     // 幂运算
-    // Matrix operator^(const MyType &) const;
+    // Matrix operator^(const element_type &) const;
 
     // 向布尔类型转换(显示地) 效果等同于IsLegitimate
     // 当*this为非空矩阵时返回true,否则返回false
     explicit operator bool() const { return IsLegitimate(); };
 
 public: //
+    // 将矩阵的内容储存到一个串里
+    std::string toString() const;
     /* 行交换 注意矩阵的合法性*/
     Matrix LineExchange(const size_t &i, const size_t &j) const;
     // 行交换 引用版本
     Matrix &RefLineExchange(const size_t &i, const size_t &j);
     /* 初等变换——某行倍增 注意矩阵的合法性*/
-    Matrix LineMul(const size_t &i, const MyType &k) const;
+    Matrix LineMul(const size_t &i, const element_type &k) const;
     // 初等变换——某行倍增 引用版本
-    Matrix &RefLineMul(const size_t &i, const MyType &k);
+    Matrix &RefLineMul(const size_t &i, const element_type &k);
     /* 初等变换——某行倍增所得加到某行上去 注意矩阵的合法性*/
-    Matrix LineMulToLine(const size_t &i, const MyType &k, const size_t &j) const;
+    Matrix LineMulToLine(const size_t &i, const element_type &k, const size_t &j) const;
     // 初等变换——某行倍增所得加到某行上去 引用版本
-    Matrix &RefLineMulToLine(const size_t &i, const MyType &k, const size_t &j);
+    Matrix &RefLineMulToLine(const size_t &i, const element_type &k, const size_t &j);
     // 求可左乘当前矩阵的单位矩阵 注意矩阵的合法性
     inline Matrix LeftMulUnitMatrix(void) const;
     // 求可右乘当前矩阵的单位矩阵 注意矩阵的合法性
@@ -122,9 +117,10 @@ public:
     Matrix TransposeMatrix(void) const;
     // 求矩阵的秩
     size_t RankOfMatrix(void) const;
+
+public:
+    // 创建n阶单位矩阵
+    static Matrix UnitMatrix(const size_t &n);
+    static Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const element_type &inf, const element_type &sup);
 };
-// 浮点型转换为字符串
-string LdoubleToString(long double);
-// 创建n阶单位矩阵
-Matrix UnitMatrix(const size_t &n);
 #endif
