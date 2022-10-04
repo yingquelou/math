@@ -3,14 +3,13 @@
 #include <iostream>
 #include <vector>
 #include <string>
-#define Mod 10;
 // 矩阵
 class Matrix : private std::vector<std::vector<long double>>
 {
-public:                                         //类型别名
+public:                                         // 类型别名
     using element_type = long double;           // 矩阵元素类型
     using row_type = std::vector<element_type>; // 行/列矩阵
-    using super_type = std::vector<row_type>;
+    using super_type = std::vector<row_type>;   // 超类/父类
     using super_type::const_iterator;
     using super_type::const_pointer;
     using super_type::const_reference;
@@ -19,39 +18,35 @@ public:                                         //类型别名
     using super_type::pointer;
     using super_type::reference;
     using super_type::reverse_iterator;
-    // 友元
-    // 显示矩阵到标准输出
-    friend std::ostream &operator<<(std::ostream &, const Matrix &);
-    // 数乘(数前置)
-    friend inline Matrix operator*(const element_type &, const Matrix &);
-    friend Matrix UnitMatrix(const size_t &n);
-    // 可以使用指定范围内的数以指定的行高、列宽随机生成一个矩阵
-    friend Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const element_type &inf, const element_type &sup);
 
 public: //构造与析构
         // 默认构造
-    Matrix(void);
-    // 拷贝构造
-    // Matrix(const Matrix &);
-    Matrix(const std::initializer_list<Matrix::row_type> &);
-    Matrix(Matrix::const_iterator &, Matrix::const_iterator &);
-    /*~Matrix(); */
+    using super_type::super_type; //使用父类的构造
 
-private:
-    // 检验矩阵的合法性/存在性
-    bool IsLegitimate(void) const;
+    // 友元
+    // 输出矩阵内容
+    friend std::ostream &operator<<(std::ostream &, const Matrix &);
+    // 数乘(数前置)
+    friend inline Matrix operator*(const element_type &, const Matrix &);
 
-public: // 获取矩阵的行数 注意在使用之前请检查矩阵的合法性
-    inline size_t GetRows(void) const;
-    // 获取矩阵的列数 注意在使用之前请检查矩阵的合法性
-    inline size_t GetColumn(void) const;
-    using super_type::operator[];
+public:
+    /**
+     * \brief 获取当前矩阵的行数
+     * \return 矩阵的行数
+     * \date by yingquelou at 2022-10-04 18:12:02
+     */
+    size_t GetRow() const { return size(); }
+    /**
+     * \brief 获取当前矩阵的列数
+     * \return 矩阵的列数
+     * \date by yingquelou at 2022-10-04 18:35:29
+     */
+    inline size_t GetColumn() const;
 
-public: //定义矩阵的某些运算/重载运算符
-    // 拷贝赋值 (可自赋值)
-    Matrix &operator=(const Matrix);
+public: // 重载运算符 定义矩阵的某些运算
     // 加法 注意在使用之前请检查矩阵的合法性,以及两矩阵是否是同型矩阵
     Matrix operator+(const Matrix &) const;
+    using super_type::operator=; // 使用父类的运算符
     // 加法(复合运算) 注意在使用之前请检查矩阵的合法性,以及两矩阵是否是同型矩阵
     Matrix &operator+=(const Matrix &);
     // 乘法 注意在使用之前请检查矩阵的合法性,以及两矩阵的可乘性
@@ -68,14 +63,30 @@ public: //定义矩阵的某些运算/重载运算符
     Matrix &operator-=(const Matrix &);
     //在矩阵右侧拼接另一个行数相同的矩阵
     Matrix &operator&=(const Matrix &);
-    // 比较两个矩阵是否相同
+    /**
+     * \brief 判断两个矩阵是否是同型矩阵
+     * \b 注意:如果要判断矩阵的内容是否相等,请使用"!="运算符
+     * \return 如果是同型矩阵返回true,否则返回false
+     * \date by yingquelou at 2022-10-04 19:28:24
+     */
     bool operator==(const Matrix &) const;
+    /**
+     * \brief 判断矩阵的内容是否相等
+     * \return  不相等返回true,相等返回false
+     * \date by yingquelou at 2022-10-04 19:49:50
+     */
+    bool operator!=(const Matrix &) const;
+
+    using super_type::operator[]; // 使用父类的运算符
+
     // 幂运算
     // Matrix operator^(const element_type &) const;
-
-    // 向布尔类型转换(显示地) 效果等同于IsLegitimate
-    // 当*this为非空矩阵时返回true,否则返回false
-    explicit operator bool() const { return IsLegitimate(); };
+    /**
+     * \brief 转换函数 当前矩阵非空且有效时为true,否则false
+     * 所谓有效是指满足矩阵的数学定义
+     * \date by yingquelou at 2022-10-04 17:18:21
+     */
+    explicit operator bool() const;
 
 public: //
     // 将矩阵的内容储存到一个串里
@@ -121,6 +132,7 @@ public:
 public:
     // 创建n阶单位矩阵
     static Matrix UnitMatrix(const size_t &n);
+    // 可以使用指定范围内的数以指定的行高、列宽随机生成一个矩阵
     static Matrix AssignValuesRandomly(const size_t &r, const size_t &c, const element_type &inf, const element_type &sup);
 };
 #endif
