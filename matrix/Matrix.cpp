@@ -3,9 +3,16 @@
 #include <random>
 #include <map>
 #include <sstream>
-#include <exception>
-// 类成员函数
-
+#include <stdexcept>
+#define $ << '|' <<
+#define reportException(msg)                   \
+    ((std::stringstream()                      \
+      << __DATE__                              \
+             $ __TIME__                        \
+                 $ __FILE__                    \
+                     $ __FUNCTION__ $ __LINE__ \
+                         $ msg)                \
+         .str())
 Matrix Matrix::GetInverseMatrix(void) const
 {
     const auto c = GetColumn();
@@ -79,7 +86,7 @@ Matrix &Matrix::RSFM_REM(bool TF)
         // 行交换条件:SwapPos标记了下一次用于交换的行(如果有全零行,从尾行开始交换)
         // 当浮标i与SwapPos未相遇(即i<SwapPos),
         {
-            result = result.LineExchange(i, SwapPos);
+            result = result.lineExchange(i, SwapPos);
             NotZeroLog[SwapPos] = -1; // NotZeroLog数组中值为-1的元素的下标表明对应行为全零行
             ++ZeroLine;               // ZeroLine最终记录了全零行的数目
             --SwapPos;                //已经完成了某次交换,SwapPos改变,将标记下一次用于交换的行
@@ -135,163 +142,92 @@ Matrix::operator bool() const
     if (empty())
         return false;
     auto &&sz = begin()->size();
-    if (sz > 0)
-    {
-        auto &&e = end();
-        for (auto it = begin() + 1; it != e; ++it)
-            if (sz != it->size())
-                return false;
-    }
-    else
-        return false;
-    return true;
-}
-Matrix Matrix::operator+(const Matrix &mat) const
-{
-    Matrix ret(*this);
-    return ret += mat;
+    if (sz > 0 && std::all_of(cbegin() + 1, cend(),
+                              [&sz](const row_type &r)
+                              { return r.size() == sz; }))
+        return true;
+    return false;
 }
 Matrix &Matrix::operator+=(const Matrix &mat)
 {
-    try
+    if (*this == mat)
     {
-        auto p = mat.GetRow(), q = mat.GetColumn();
-        if (p > 0 && q > 0 && p == size() && q == GetColumn())
+        auto &m = const_cast<Matrix &>(mat);
+        auto &&sz = size();
+        for (size_t i = 0; i < sz; i++)
         {
-            for (decltype(p) i = 0; i < p; ++i)
-                for (decltype(p) j = 0; j < q; ++j)
-                    (*this)[i][j] += mat[i][j];
-            return *this;
+            auto &&be = at(i).begin();
+            std::transform(be, at(i).end(), m[i].begin(), be,
+                           [](element_type &x, element_type &y)
+                           { return x + y; });
         }
-        else
-            throw std::logic_error("");
+        return *this;
     }
-    catch (const std::exception &e)
-    {
-        throw e;
-    }
-}
-Matrix Matrix::operator*(const element_type &k) const
-{
-    Matrix result;
-    for (auto &i : *this)
-    {
-        row_type Rows;
-        for (auto &j : i)
-        {
-            Rows.push_back(k * j);
-        }
-        result.push_back(Rows);
-    }
-    return result;
+    else
+        throw std::invalid_argument(reportException("Both must be Homotypic matrix"));
 }
 Matrix &Matrix::operator*=(const element_type &k)
 {
-    for (auto &i : *this)
-        for (auto &j : i)
-            j *= k;
-    return *this;
-}
-inline Matrix operator*(const Matrix::element_type &k, const Matrix &mat)
-{
-    return mat * k;
-}
-Matrix Matrix::operator*(const Matrix &mat) const
-{
-    // A(m*p)*B(p*n)
-    auto m = size(), p = mat.size(), n = mat.GetColumn();
-    Matrix result;
-    if (p != GetColumn())
-        return result;
-    element_type tmp;
-    size_t i, j, k;
-    // 开始计算
-    for (i = 0; i < m; ++i)
+    if (*this)
     {
-        row_type Rows;
-        for (j = 0; j < n; ++j)
-        {
-            for (k = 0, tmp = 0; k < p; ++k)
-            {
-                tmp += (*this)[i][k] * mat[k][j];
-            }
-            Rows.push_back(tmp);
-        }
-        result.push_back(Rows);
+        for (auto &i : *this)
+            for (auto &j : i)
+                j *= k;
+        return *this;
     }
-    return result;
+    else
+        throw std::invalid_argument(reportException("Is a matrix?"));
 }
 Matrix &Matrix::operator*=(const Matrix &mat)
 {
-    auto m = size(), p = GetColumn(), n = mat.GetColumn();
-    Matrix result;
-    element_type tmp;
-    decltype(m) i, j, k;
-    // 开始计算
-    for (i = 0; i < m; ++i)
+    // A(pm) * B(mq)
+    if (mat && *this)
     {
-        row_type Rows;
-        for (j = 0; j < n; ++j)
+        auto &&p = size();
+        auto &&m = mat.GetRow();
+        auto &&q = mat.GetColumn();
+        if (m == GetColumn())
         {
-            for (k = 0, tmp = 0; k < p; ++k)
+            Matrix left(*this);
+            Matrix right(mat); // 预防自赋值问题
+            for (size_type i = 0; i < p; ++i)
             {
-                tmp += (*this)[i][k] * mat[k][j];
+                auto &r = at(i);
+                r.clear();
+                for (size_type j = 0; j < q; j++)
+                {
+                    element_type sum = 0;
+                    for (size_t k = 0; k < m; k++)
+                        sum += left[i][k] * right[k][j];
+                    r.push_back(sum);
+                }
             }
-            Rows.push_back(tmp);
+            return *this;
         }
-        result.push_back(Rows);
+        else
+            throw std::invalid_argument(reportException("The matrix can be multiplied?"));
     }
-    *this = result;
-    return *this;
-}
-inline Matrix Matrix::operator-(const Matrix &mat) const { return -1.0 * mat + (*this); }
-Matrix &Matrix::operator-=(const Matrix &mat)
-{
-    auto p = GetRow(), q = GetColumn();
-    for (decltype(p) i = 0; i < p; ++i)
-        for (decltype(p) j = 0; j < q; ++j)
-            (*this)[i][j] -= mat[i][j];
-    return *this;
+    else
+        throw std::invalid_argument(reportException("matrix is null?"));
 }
 Matrix &Matrix::operator&=(const Matrix &mat)
 {
-    try
+    if (*this && mat && size() == mat.size())
     {
-        if (*this && mat && size() == mat.size())
-        {
-            auto &ret = *this;
-            for (size_t i = 0; i < size(); ++i)
-                for (auto &j : mat[i])
-                    ret[i].push_back(j);
-            return ret;
-        }
-        else
-            throw std::invalid_argument("invalid_argument");
+        auto &ret = *this;
+        for (size_t i = 0; i < size(); ++i)
+            for (auto &j : mat[i])
+                ret[i].push_back(j);
+        return ret;
     }
-    catch (std::exception &e)
-    {
-        throw e;
-    }
+    else
+        throw std::invalid_argument(reportException("invalid_argument"));
 }
 bool Matrix::operator==(const Matrix &mat) const
 {
-    try
-    {
-        auto &&p = mat.GetRow();
-        auto &&q = mat.GetColumn();
-        if (q > 0 && GetColumn() > 0)
-        {
-            if (p == GetRow() && q == GetColumn())
-                return true;
-            return false;
-        }
-        else
-            throw std::invalid_argument("matrix is null?");
-    }
-    catch (const std::exception &e)
-    {
-        throw e;
-    }
+    if (*this && mat && mat.GetRow() == GetRow() && mat.GetColumn() == GetColumn())
+        return true;
+    return false;
 }
 bool Matrix::operator!=(const Matrix &mat) const
 {
@@ -304,97 +240,65 @@ bool Matrix::operator!=(const Matrix &mat) const
         return true;
     return false;
 }
-Matrix &Matrix::RefLineExchange(const size_t &i, const size_t &j)
+Matrix &Matrix::lineExchange(const size_t &i, const size_t &j)
 {
-    try
+    if (*this)
     {
-        if (*this && i != j && i < size() && j < size())
+        if (i < size() && j < size())
+        {
+            auto &m = *this;
+            if (i != j)
+                std::swap_ranges(m[i].begin(), m[i].end(), m[j].begin());
+            return m;
+        }
+        else
+            throw std::out_of_range(reportException(""));
+    }
+    else
+        throw std::invalid_argument(reportException("Is a matrix?"));
+}
+Matrix &Matrix::lineMul(const size_t &i, const element_type &k)
+{
+    if (*this)
+    {
+        if (i < size())
         {
             Matrix &result = *this;
-            auto c = GetColumn();
-            for (size_t k = 0; k < c; ++k)
-                if (result[j][k] || result[i][k])
-                {
-                    auto tmp = result[i][k];
-                    result[i][k] = result[j][k];
-                    result[j][k] = tmp;
-                }
+            if (k != 1)
+            {
+                for_each(result[i].begin(), result[i].end(), [&k](element_type &ba)
+                         { ba *= k; });
+            }
             return result;
         }
         else
-            throw std::invalid_argument("invalid_argument");
+            throw std::out_of_range(reportException(""));
     }
-    catch (std::exception &e)
-    {
-        throw e;
-    }
+    else
+        throw std::invalid_argument(reportException("Is a matrix?"));
 }
-Matrix Matrix::LineExchange(const size_t &i, const size_t &j) const
+Matrix &Matrix::lineMulToLine(const size_t &i, const element_type &k, const size_t &j)
 {
-    auto ret = *this;
-    return ret.RefLineExchange(i, j);
-}
-Matrix &Matrix::RefLineMul(const size_t &i, const element_type &k)
-{
-    try
+
+    if (*this)
     {
-        if (*this && i < size() && k)
-        {
-            Matrix &result = *this;
-            for_each(result[i].begin(), result[i].end(), [&k](element_type &ba)
-                     { ba *= k; });
-            return result;
-        }
-        else
-            throw std::invalid_argument("invalid_argument");
-    }
-    catch (std::exception &e)
-    {
-        throw e;
-    }
-}
-Matrix Matrix::LineMul(const size_t &i, const element_type &k) const
-{
-    auto ret = *this;
-    return ret.RefLineMul(i, k);
-}
-Matrix &Matrix::RefLineMulToLine(const size_t &i, const element_type &k, const size_t &j)
-{
-    try
-    {
-        if (*this && i < size() && k && j < size())
+        if (i < size() && j < size())
         {
             Matrix &ret = *this;
-            Matrix::row_type ik;
-            for_each(ret[i].cbegin(), ret[i].cend(), [&ik, &k](const element_type &ba)
-                     { ik.push_back(ba * k); });
-            auto c = GetColumn();
-            for (size_t t = 0; t < c; ++t)
-                ret[j][t] += ik[t];
+            if (k)
+            {
+                auto &&it = ret[j].begin();
+                std::transform(ret[i].begin(), ret[i].end(), it, it,
+                               [&k](const element_type &x, const element_type &y)
+                               { return x * k + y; });
+            }
             return ret;
         }
         else
-            throw std::invalid_argument("invalid_argument");
+            throw std::out_of_range(reportException(""));
     }
-    catch (std::exception &e)
-    {
-        throw e;
-    }
-}
-Matrix Matrix::LineMulToLine(const size_t &i, const element_type &k, const size_t &j) const
-{
-    auto ret = *this;
-    return ret.RefLineMulToLine(i, k, j);
-}
-inline Matrix Matrix::LeftMulUnitMatrix(void) const
-{
-    auto n = GetRow();
-    return UnitMatrix(n);
-}
-inline Matrix Matrix::RightMulUnitMatrix(void) const
-{
-    auto n = GetColumn();
-    return UnitMatrix(n);
+    else
+        throw std::invalid_argument(reportException("Is a matrix?"));
 }
 Matrix Matrix::TransposeMatrix(void) const
 {

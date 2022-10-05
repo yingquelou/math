@@ -1,10 +1,9 @@
-#include "Matrix.h"
+#include "Matrix.cpp"
 int main(int argc, char *argv[])
 {
-     auto &os = std::cout;
-     Matrix A{{1, 1}, {1, 1}}, B{{0, 1, 1}, {1, 0, -1}, {1, 1, 0}},
-         C(Matrix::AssignValuesRandomly(2, 2, -10, 10)), D(C);
+    auto &os = std::cout;
+    Matrix A{{1, 1}, {1, 0}}, B(A);
 
-     os << (C != D) << '\n';
-     return 0;
+    os << A.lineMulToLine(0, 0, 1) << '\n';
+    return 0;
 }
