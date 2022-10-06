@@ -13,125 +13,81 @@
                      $ __FUNCTION__ $ __LINE__ \
                          $ msg)                \
          .str())
-Matrix Matrix::GetInverseMatrix(void) const
+Matrix Matrix::GetInverseMatrix() const
 {
-    const auto c = GetColumn();
+    const auto c = getColumn();
     auto UM = UnitMatrix(c);
-    if (UM == RowSimplestFormOfMatrix())
+    if (UM == standardShape())
     {
         auto ret = *this;
         ret &= UM;
-        ret.RefRowSimplestFormOfMatrix();
-        for (size_t i = 0; i < c; ++i)
+        ret.standardShape();
+        for (size_type i = 0; i < c; ++i)
             ret[i].erase(ret[i].begin(), ret[i].begin() + c);
         return ret;
     }
     else
         return Matrix();
 }
-inline size_t Matrix::GetColumn(void) const
+inline Matrix::size_type Matrix::getColumn() const
 {
     if (size() > 0)
         return begin()->size();
     else
         return 0;
 }
-Matrix &Matrix::RSFM_REM(bool TF)
+Matrix &Matrix::rowEchelonMatrix()
 {
-    const auto r = GetRow(), c = GetColumn();
-    auto result = *this;
-    size_t SwapPos = r - 1;
-    auto NotZeroLog = new int[r];
-    size_t ZeroLine = 0;
-    for (size_t i = 0; i < r;)
+    if (*this)
     {
-        size_t j = 0;
-        while (j < c && !result[i][j])
-            ++j;
-        if (j < c)
-        // 找到当前行的第一个非零元素时:
-        { // NotZeroLog数组记录每一行第一个非零元素的位置
-            NotZeroLog[i] = j;
-            auto times = result[i][j];
-            result[i][j] = 1; //该非零元素置为1
-            for (size_t k = j + 1; k < c; ++k)
-            // 处理该非零元同行的元素 初等行变换——行倍增(减)
+        const auto &&r = size();
+        const auto &&c = getColumn();
+        auto &m = *this;
+        std::map<size_type, row_type> maps;
+        size_type j;
+        for (size_type i = 0; j = 0, i < r; ++i)
+        {
+            while (j < c && !m[i][j])
+                ++j;
+            if (j != c)
+            // 找到当前行首非零元的位置 j
             {
-                result[i][k] /= times;
-            }
-            // 处理该非零元同列的元素(置为0) 初等行变换——行倍增(减)并加到另一行
-            if (TF)
-                for (size_t u = 0; u < i; ++u)
-                // 1.处理该非零元上方的同列元素
+                auto &curLine = m[i];
+                auto &&it = curLine.begin() + j;
+                auto k = *it;
+                if (k != 1) // 当前行首非零元化为1
+                    std::for_each_n(it, c - j, [&k](element_type &e)
+                                    { e /= k; });
+                // 行之间要排序,map以当前行首非零元的位置为键保存当前行
+                // 但全零行不会被保存
+                maps[j] = curLine;
+                // 利用"初等变换——某行倍增所得加到某行上去"将当前首非零元下方的同列非零元化为零
+                for (size_type n = i + 1; n < r; ++n)
                 {
-                    if (times = result[u][j])
-                        for (size_t x = j; x < c; ++x)
-                        {
-                            result[u][x] -= times * result[i][x];
-                        }
+                    // 倍增的比例
+                    auto &&proportion = -1 * m[n][j];
+                    if (proportion)
+                        lineMulToLine(i, proportion, n);
                 }
-            for (size_t d = i + 1; d < r; ++d)
-            // 2.处理该非零元下方的同列元素
-            {
-                if (times = result[d][j])
-                    for (size_t x = j; x < c; ++x)
-                    {
-                        result[d][x] -= times * result[i][x];
-                    }
             }
-            ++i;
         }
-        else if (i < SwapPos)
-        // 找到一个全零行且满足行交换条件(可能未找出所有全零行的情况下)
-        // 行交换条件:SwapPos标记了下一次用于交换的行(如果有全零行,从尾行开始交换)
-        // 当浮标i与SwapPos未相遇(即i<SwapPos),
+        j = 0;
+        // 处理非全零行
+        for (auto &i : maps)
         {
-            result = result.lineExchange(i, SwapPos);
-            NotZeroLog[SwapPos] = -1; // NotZeroLog数组中值为-1的元素的下标表明对应行为全零行
-            ++ZeroLine;               // ZeroLine最终记录了全零行的数目
-            --SwapPos;                //已经完成了某次交换,SwapPos改变,将标记下一次用于交换的行
+            m[j] = std::move(i.second);
+            ++j;
         }
-        else
+        // 处理全零行
+        while (r > j)
         {
-            ++ZeroLine;
-            NotZeroLog[i] = -1;
-            // 已经找到最后一个全零行,将退出外循环
-            break;
+            m[j] = std::move(row_type(c, 0));
+            ++j;
         }
-        // 当外循环条件为假时，亦将退出外循环
+        return m;
     }
-    // 利用NotZeroLog数组生成result的特征map
-    std::map<int, size_t> ma;
-    for (size_t i = 0; i < r; ++i)
-        ma[NotZeroLog[i]] = i;
-    Matrix &ret = *this;
-    ret.clear();
-    /* for (auto &i : ma)
-        ret.push_back(result[i.second]); */
-    // for_each利用特征map放置好非零行向量
-    for_each(ma.cbegin(), ma.cend(), [&ret, &result](decltype(ma)::value_type it)
-             {if(it.first>=0)ret.push_back(result[it.second]); });
-    //  再放置好ZeroLine个全零行
-    Matrix::row_type tmp(c, 0);
-    for (size_t i = 0; i < ZeroLine; ++i)
-        ret.push_back(tmp);
-    // 动态内存释放
-    delete[] NotZeroLog;
-    NotZeroLog = nullptr;
-    // ret.shrink_to_fit();
-    return ret;
-}
-Matrix &Matrix::RefRowSimplestFormOfMatrix(void) { return RSFM_REM(true); }
-Matrix Matrix::RowSimplestFormOfMatrix(void) const
-{
-    auto ret = *this;
-    return ret.RSFM_REM(true);
-}
-Matrix &Matrix::RefRowEchelonMatrix(void) { return RSFM_REM(false); }
-Matrix Matrix::RowEchelonMatrix(void) const
-{
-    auto ret = *this;
-    return ret.RSFM_REM(false);
+    else
+        throw std::invalid_argument(reportException("Is a matrix?"));
 }
 std::ostream &operator<<(std::ostream &cout, const Matrix &mat)
 {
@@ -154,7 +110,7 @@ Matrix &Matrix::operator+=(const Matrix &mat)
     {
         auto &m = const_cast<Matrix &>(mat);
         auto &&sz = size();
-        for (size_t i = 0; i < sz; i++)
+        for (size_type i = 0; i < sz; i++)
         {
             auto &&be = at(i).begin();
             std::transform(be, at(i).end(), m[i].begin(), be,
@@ -184,9 +140,9 @@ Matrix &Matrix::operator*=(const Matrix &mat)
     if (mat && *this)
     {
         auto &&p = size();
-        auto &&m = mat.GetRow();
-        auto &&q = mat.GetColumn();
-        if (m == GetColumn())
+        auto &&m = mat.getRow();
+        auto &&q = mat.getColumn();
+        if (m == getColumn())
         {
             Matrix left(*this);
             Matrix right(mat); // 预防自赋值问题
@@ -197,7 +153,7 @@ Matrix &Matrix::operator*=(const Matrix &mat)
                 for (size_type j = 0; j < q; j++)
                 {
                     element_type sum = 0;
-                    for (size_t k = 0; k < m; k++)
+                    for (size_type k = 0; k < m; k++)
                         sum += left[i][k] * right[k][j];
                     r.push_back(sum);
                 }
@@ -215,7 +171,7 @@ Matrix &Matrix::operator&=(const Matrix &mat)
     if (*this && mat && size() == mat.size())
     {
         auto &ret = *this;
-        for (size_t i = 0; i < size(); ++i)
+        for (size_type i = 0; i < size(); ++i)
             for (auto &j : mat[i])
                 ret[i].push_back(j);
         return ret;
@@ -225,7 +181,7 @@ Matrix &Matrix::operator&=(const Matrix &mat)
 }
 bool Matrix::operator==(const Matrix &mat) const
 {
-    if (*this && mat && mat.GetRow() == GetRow() && mat.GetColumn() == GetColumn())
+    if (*this && mat && mat.getRow() == getRow() && mat.getColumn() == getColumn())
         return true;
     return false;
 }
@@ -240,7 +196,7 @@ bool Matrix::operator!=(const Matrix &mat) const
         return true;
     return false;
 }
-Matrix &Matrix::lineExchange(const size_t &i, const size_t &j)
+Matrix &Matrix::lineExchange(const size_type &i, const size_type &j)
 {
     if (*this)
     {
@@ -257,7 +213,7 @@ Matrix &Matrix::lineExchange(const size_t &i, const size_t &j)
     else
         throw std::invalid_argument(reportException("Is a matrix?"));
 }
-Matrix &Matrix::lineMul(const size_t &i, const element_type &k)
+Matrix &Matrix::lineMul(const size_type &i, const element_type &k)
 {
     if (*this)
     {
@@ -277,14 +233,13 @@ Matrix &Matrix::lineMul(const size_t &i, const element_type &k)
     else
         throw std::invalid_argument(reportException("Is a matrix?"));
 }
-Matrix &Matrix::lineMulToLine(const size_t &i, const element_type &k, const size_t &j)
+Matrix &Matrix::lineMulToLine(const size_type &i, const element_type &k, const size_type &j)
 {
-
-    if (*this)
+    Matrix &ret = *this;
+    if (ret)
     {
         if (i < size() && j < size())
         {
-            Matrix &ret = *this;
             if (k)
             {
                 auto &&it = ret[j].begin();
@@ -300,53 +255,58 @@ Matrix &Matrix::lineMulToLine(const size_t &i, const element_type &k, const size
     else
         throw std::invalid_argument(reportException("Is a matrix?"));
 }
-Matrix Matrix::TransposeMatrix(void) const
+Matrix &Matrix::transpose()
 {
-    Matrix result;
-    auto R = GetRow(), C = GetColumn();
-    for (decltype(R) i = 0; i < C; ++i)
+    auto &m = *this;
+    if (m)
     {
-        row_type Rows;
-        for (decltype(R) j = 0; j < R; j++)
+        Matrix result;
+        auto &&R = size();
+        auto &&C = getColumn();
+        decltype(R) j = 0;
+        for (decltype(R) i = 0; i < C; ++i)
         {
-            Rows.push_back((*this)[j][i]);
+            row_type Rows;
+            for (j = 0; j < R; ++j)
+            {
+                Rows.push_back(m[j][i]);
+            }
+            result.push_back(Rows);
         }
-        result.push_back(Rows);
+        return m = std::move(result);
     }
-    return result;
+    else
+        throw std::invalid_argument(reportException("Is a matrix?"));
 }
-size_t Matrix::RankOfMatrix(void) const
+Matrix::size_type Matrix::RankOfMatrix() const
 {
-    if (empty())
-        return 0;
-    auto mat = *this;
-    mat.RSFM_REM(false);
-    size_t ret = 0, r = size(), c = GetColumn();
-    auto tmp = Matrix::value_type(c, 0.0);
-    for (const auto &val : mat)
+    auto &&m = rowEchelonMatrix();
+    auto &&r = size() - 1;
+    size_type ret = 0;
+    row_type row(getColumn(), 0);
+    while (m[r] == row)
     {
-        if (val == tmp)
-            ++ret;
+        ++ret;
+        --r;
     }
-    return r - ret;
+    return ret;
 }
-Matrix Matrix ::UnitMatrix(const size_t &n)
+Matrix Matrix ::UnitMatrix(const size_type &n)
 {
     Matrix::row_type Rows(n, 0);
     Matrix result;
-    for (size_t i = 0; i < n; ++i)
+    for (size_type i = 0; i < n; ++i)
     {
         result.push_back(Rows);
         result[i][i] = 1;
     }
-    result.shrink_to_fit();
     return result;
 }
-Matrix Matrix::AssignValuesRandomly(const size_t &r = 3, const size_t &c = 3, const element_type &inf = 0, const element_type &sup = 10)
+Matrix Matrix::AssignValuesRandomly(const size_type &r = 3, const size_type &c = 3, const element_type &inf = 0, const element_type &sup = 10)
 {
     static std::default_random_engine rd(static_cast<unsigned>(time(nullptr))); // 将用于获得随机数引擎的种子
     Matrix ret;
-    if (!r || !c || inf >= sup)
+    if (!r || !c)
         return ret;
     std::uniform_real_distribution<element_type> dis(inf, sup); // 以 rd() 播种的标准 mersenne_twister_engine
     for (int i = 0; i < r; ++i)
