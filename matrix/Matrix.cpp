@@ -13,22 +13,6 @@
                      $ __FUNCTION__ $ __LINE__ \
                          $ msg)                \
          .str())
-Matrix Matrix::GetInverseMatrix() const
-{
-    const auto c = getColumn();
-    auto UM = UnitMatrix(c);
-    if (UM == standardShape())
-    {
-        auto ret = *this;
-        ret &= UM;
-        ret.standardShape();
-        for (size_type i = 0; i < c; ++i)
-            ret[i].erase(ret[i].begin(), ret[i].begin() + c);
-        return ret;
-    }
-    else
-        return Matrix();
-}
 inline Matrix::size_type Matrix::getColumn() const
 {
     if (size() > 0)
@@ -36,54 +20,48 @@ inline Matrix::size_type Matrix::getColumn() const
     else
         return 0;
 }
-Matrix &Matrix::rowEchelonMatrix()
+Matrix &Matrix::rowSimplestForm()
 {
-    if (*this)
+    auto &m = *this;
+    if (m)
     {
         const auto &&r = size();
         const auto &&c = getColumn();
-        auto &m = *this;
-        std::map<size_type, row_type> maps;
-        size_type j;
-        for (size_type i = 0; j = 0, i < r; ++i)
+        size_type i, j;
+        std::vector<size_type> vs;
+        for (i = 0; j = 0, i < r; ++i)
         {
-            while (j < c && !m[i][j])
+            auto &curLine = m[i];
+            while (j < c && !curLine[j])
                 ++j;
+            // 保存当前行首非零元的位置
+            // 如果当前行是全零行,保存的是列宽 c
+            vs.push_back(j);
             if (j != c)
-            // 找到当前行首非零元的位置 j
+            // 如果不是全零行,进入
             {
-                auto &curLine = m[i];
                 auto &&it = curLine.begin() + j;
                 auto k = *it;
                 if (k != 1) // 当前行首非零元化为1
                     std::for_each_n(it, c - j, [&k](element_type &e)
                                     { e /= k; });
-                // 行之间要排序,map以当前行首非零元的位置为键保存当前行
-                // 但全零行不会被保存
-                maps[j] = curLine;
-                // 利用"初等变换——某行倍增所得加到某行上去"将当前首非零元下方的同列非零元化为零
-                for (size_type n = i + 1; n < r; ++n)
-                {
-                    // 倍增的比例
-                    auto &&proportion = -1 * m[n][j];
-                    if (proportion)
-                        lineMulToLine(i, proportion, n);
-                }
+                // 利用"初等变换——某行倍增所得加到某行上去"将当前首非零元的同列非零元化为零
+                for (size_type n = 0; n < r; ++n)
+                    if (n != i)
+                    { // 倍增的比例
+                        auto &&proportion = -1 * m[n][j];
+                        if (proportion)
+                            lineMulToLine(i, proportion, n);
+                    }
             }
         }
-        j = 0;
-        // 处理非全零行
-        for (auto &i : maps)
-        {
-            m[j] = std::move(i.second);
-            ++j;
-        }
-        // 处理全零行
-        while (r > j)
-        {
-            m[j] = std::move(row_type(c, 0));
-            ++j;
-        }
+        // 行之间要排序,multimap以每行首非零元的位置为键保存相应的行
+        std::multimap<size_type, row_type> maps;
+        for (i = 0; i < r; ++i)
+            maps.emplace(std::move(vs[i]), std::move(m[i]));
+        clear();
+        for (auto &&i : maps)
+            push_back(std::move(i.second));
         return m;
     }
     else
@@ -187,6 +165,8 @@ bool Matrix::operator==(const Matrix &mat) const
 }
 bool Matrix::operator!=(const Matrix &mat) const
 {
+    if (this == &mat)
+        return false;
     if (*this == mat)
     {
         if (!std::equal(cbegin(), cend(), mat.cbegin()))
@@ -278,9 +258,9 @@ Matrix &Matrix::transpose()
     else
         throw std::invalid_argument(reportException("Is a matrix?"));
 }
-Matrix::size_type Matrix::RankOfMatrix() const
+Matrix::size_type Matrix::rankOfMatrix()
 {
-    auto &&m = rowEchelonMatrix();
+    auto &m = rowSimplestForm();
     auto &&r = size() - 1;
     size_type ret = 0;
     row_type row(getColumn(), 0);
@@ -291,6 +271,44 @@ Matrix::size_type Matrix::RankOfMatrix() const
     }
     return ret;
 }
+Matrix Matrix::getInverseMatrix() const
+{
+    const auto c = getColumn();
+    auto UM = UnitMatrix(c);
+    if (UM == standardShape())
+    {
+        auto ret = *this;
+        ret &= UM;
+        ret.standardShape();
+        for (size_type i = 0; i < c; ++i)
+            ret[i].erase(ret[i].begin(), ret[i].begin() + c);
+        return ret;
+    }
+    else
+        return Matrix();
+}
+std::string Matrix::toString() const
+{
+    std::stringstream ret;
+    ret << '[';
+    for (auto &r : *this)
+    {
+        ret << '[';
+        std::stringstream tmp;
+        for (auto &v : r)
+            tmp << v << ',';
+        std::string &&s = tmp.str();
+        auto pos = s.rfind(',');
+        if (pos != std::string::npos)
+            s.erase(pos, 1);
+        ret << s << "],";
+    }
+    ret << ']';
+    std::string s(ret.str());
+    auto &&pos = s.rfind(',');
+    return std::move(s.erase(pos, 1));
+}
+// 类的静态成员
 Matrix Matrix ::UnitMatrix(const size_type &n)
 {
     Matrix::row_type Rows(n, 0);
@@ -318,24 +336,5 @@ Matrix Matrix::AssignValuesRandomly(const size_type &r = 3, const size_type &c =
         }
         ret.push_back(Rows);
     }
-    return ret;
-}
-std::string Matrix::toString() const
-{
-    std::stringstream ret;
-    ret << "[\n";
-    for (auto &r : *this)
-    {
-        ret << "[";
-        std::stringstream tmp;
-        for (auto &v : r)
-            tmp << v << ", ";
-        std::string &&s = tmp.str();
-        auto pos = s.find_last_of(',');
-        if (pos != std::string::npos)
-            s.erase(pos, 2);
-        ret << s << "]\n";
-    }
-    ret << ']';
-    return ret.str();
+    return std::move(ret);
 }

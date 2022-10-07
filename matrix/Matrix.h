@@ -24,6 +24,9 @@ public: //构造与析构
         // 默认构造
     using super_type::super_type; //使用父类的构造
 
+    // Matrix(Matrix &&m) noexcept : super_type(std::move(m)) { std::cout << "&&"; }
+    // Matrix(const Matrix &m) : super_type(m) { std::cout << "&"; }
+
     // 友元
     // 输出矩阵内容
     friend std::ostream &operator<<(std::ostream &, const Matrix &);
@@ -48,6 +51,7 @@ public:
 public: // 重载运算符 定义矩阵的某些运算
     // 使用父类的运算符=
     using super_type::operator=;
+    Matrix &operator=(Matrix m) { return swap(m), *this; }
 
     /**
      * \brief 转换函数 判断当前矩阵是否符合数学定义
@@ -161,16 +165,14 @@ public: //
 
 public:
     /**
-     * \brief 求行阶梯形矩阵
+     * \brief 行最简形矩阵
      * 运算结果被保存在当前对象中
-     * \returns 当前对象的引用
-     * 数学上,行阶梯形矩阵每一非全零行的首非零元不一定是1,
-     * 但为计算方便,本函数将其化为1(用初等行变换化)
-     * \date by yingquelou at 2022-10-06 09:02:59
+     * \return 当前对象的引用
+     * \date by yingquelou at 2022-10-07 10:46:42
      */
-    Matrix &rowEchelonMatrix();
-    // 求行阶梯形矩阵
-    Matrix rowEchelonMatrix() const { return Matrix(*this).rowEchelonMatrix(); }
+    Matrix &rowSimplestForm();
+    // 行最简形矩阵
+    Matrix rowSimplestForm() const { return Matrix(*this).rowSimplestForm(); }
 
     /**
      * \brief 矩阵的转置运算
@@ -187,15 +189,16 @@ public:
      * \return 当前对象的引用
      * \date by yingquelou at 2022-10-06 14:21:55
      */
-    Matrix &standardShape() { return rowEchelonMatrix().transpose().rowEchelonMatrix().transpose(); }
+    Matrix &standardShape() { return rowSimplestForm().transpose().rowSimplestForm().transpose(); }
     // 求矩阵的标准形
-    Matrix standardShape() const { return rowEchelonMatrix().transpose().rowEchelonMatrix().transpose(); }
+    Matrix standardShape() const { return rowSimplestForm().transpose().rowSimplestForm().transpose(); }
 
     // 求矩阵的秩
-    size_type RankOfMatrix() const;
+    size_type rankOfMatrix();
+    size_type rankOfMatrix() const { return Matrix(*this).rankOfMatrix(); }
 
     // 求逆
-    Matrix GetInverseMatrix() const;
+    Matrix getInverseMatrix() const;
 
 public:
     // 创建n阶单位矩阵
