@@ -15,7 +15,7 @@
          .str())
 inline Matrix::size_type Matrix::getColumn() const
 {
-    if (size() > 0)
+    if (*this)
         return begin()->size();
     else
         return 0;
@@ -67,10 +67,6 @@ Matrix &Matrix::rowSimplestForm()
     else
         throw std::invalid_argument(reportException("Is a matrix?"));
 }
-std::ostream &operator<<(std::ostream &cout, const Matrix &mat)
-{
-    return cout << mat.toString();
-}
 Matrix::operator bool() const
 {
     if (empty())
@@ -104,9 +100,10 @@ Matrix &Matrix::operator*=(const element_type &k)
 {
     if (*this)
     {
-        for (auto &i : *this)
-            for (auto &j : i)
-                j *= k;
+        if (k != 1)
+            for (auto &i : *this)
+                for (auto &j : i)
+                    j *= k;
         return *this;
     }
     else
@@ -117,24 +114,19 @@ Matrix &Matrix::operator*=(const Matrix &mat)
     // A(pm) * B(mq)
     if (mat && *this)
     {
-        auto &&p = size();
-        auto &&m = mat.getRow();
-        auto &&q = mat.getColumn();
-        if (m == getColumn())
+        if (mat.size() == getColumn())
         {
-            Matrix left(*this);
-            Matrix right(mat); // 预防自赋值问题
-            for (size_type i = 0; i < p; ++i)
+            const Matrix left(*this), right(mat.transpose());
+            auto &&it = begin();
+            element_type sum = 0;
+            for (auto &i : left)
             {
-                auto &r = at(i);
-                r.clear();
-                for (size_type j = 0; j < q; j++)
-                {
-                    element_type sum = 0;
-                    for (size_type k = 0; k < m; k++)
-                        sum += left[i][k] * right[k][j];
-                    r.push_back(sum);
-                }
+                it->clear();
+                auto &&b = i.begin();
+                auto &&e = i.end();
+                for (auto &j : right)
+                    it->push_back(std::inner_product(b, e, j.begin(), sum));
+                ++it;
             }
             return *this;
         }
@@ -251,7 +243,7 @@ Matrix &Matrix::transpose()
             {
                 Rows.push_back(m[j][i]);
             }
-            result.push_back(Rows);
+            result.push_back(std::move(Rows));
         }
         return m = std::move(result);
     }
@@ -274,18 +266,18 @@ Matrix::size_type Matrix::rankOfMatrix()
 Matrix Matrix::getInverseMatrix() const
 {
     const auto c = getColumn();
-    auto UM = UnitMatrix(c);
-    if (UM == standardShape())
-    {
-        auto ret = *this;
-        ret &= UM;
-        ret.standardShape();
-        for (size_type i = 0; i < c; ++i)
-            ret[i].erase(ret[i].begin(), ret[i].begin() + c);
-        return ret;
-    }
-    else
+    auto &&UM = UnitMatrix(c);
+    if (UM != rowSimplestForm())
         return Matrix();
+    else
+    {
+        Matrix ret(*this);
+        ret &= UM;
+        ret.rowSimplestForm();
+        for (auto &row : ret)
+            row.erase(row.begin(), row.begin() + c);
+        return std::move(ret);
+    }
 }
 std::string Matrix::toString() const
 {
@@ -306,16 +298,17 @@ std::string Matrix::toString() const
     ret << ']';
     std::string s(ret.str());
     auto &&pos = s.rfind(',');
-    return std::move(s.erase(pos, 1));
+    if (pos != std::string::npos)
+        s.erase(pos, 1);
+    return std::move(s);
 }
 // 类的静态成员
 Matrix Matrix ::UnitMatrix(const size_type &n)
 {
-    Matrix::row_type Rows(n, 0);
     Matrix result;
     for (size_type i = 0; i < n; ++i)
     {
-        result.push_back(Rows);
+        result.push_back(row_type(n, 0));
         result[i][i] = 1;
     }
     return result;
@@ -334,7 +327,7 @@ Matrix Matrix::AssignValuesRandomly(const size_type &r = 3, const size_type &c =
         {
             Rows.push_back(dis(rd));
         }
-        ret.push_back(Rows);
+        ret.push_back(std::move(Rows));
     }
     return std::move(ret);
 }

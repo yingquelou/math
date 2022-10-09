@@ -29,7 +29,7 @@ public: //构造与析构
 
     // 友元
     // 输出矩阵内容
-    friend std::ostream &operator<<(std::ostream &, const Matrix &);
+    friend std::ostream &operator<<(std::ostream &os, const Matrix &m) { return os << m.toString(); }
 
 public:
     /**
@@ -197,7 +197,11 @@ public:
     size_type rankOfMatrix();
     size_type rankOfMatrix() const { return Matrix(*this).rankOfMatrix(); }
 
-    // 求逆
+    /**
+     * \brief 矩阵的逆矩阵
+     * \returns 如果存在返回当前矩阵的逆矩阵,否则返回空对象,即Matrix()
+     * \date by yingquelou at 2022-10-09 23:14:46
+     */
     Matrix getInverseMatrix() const;
 
 public:
