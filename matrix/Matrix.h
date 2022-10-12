@@ -47,6 +47,8 @@ public:
 
     // 将矩阵的内容储存到一个串里
     std::string toString() const;
+    // 返回当前矩阵对应的LeTex源码
+    std::string toLaTeX() const;
 
 public: // 重载运算符 定义矩阵的某些运算
     // 使用父类的运算符=

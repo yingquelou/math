@@ -302,6 +302,32 @@ std::string Matrix::toString() const
         s.erase(pos, 1);
     return std::move(s);
 }
+std::string Matrix::toLaTeX() const
+{
+    /*
+    \begin{pmatrix}
+    a_1 \\ a_2 \\ \dots \\
+    \end{pmatrix}
+    */
+    std::stringstream ss;
+    ss << "\\begin{pmatrix}";
+    for (auto &&i : *this)
+    {
+        std::stringstream s;
+        for (auto &&num : i)
+        {
+            s << num << '&';
+        }
+        std::string curline(s.str());
+        if (curline.length() > 0)
+        {
+            curline.erase(curline.rfind('&'), 1);
+        }
+        ss << curline << "\\\\";
+    }
+    ss << "\\end{pmatrix}";
+    return ss.str();
+}
 // 类的静态成员
 Matrix Matrix ::UnitMatrix(const size_type &n)
 {
