@@ -7,15 +7,6 @@
 static char *toRomanNum(int num);
 int main(void)
 {
-    /*  char *str;
-    int num;
-    printf("Please enter a positive integer :");
-    while (1 == scanf("%d", &num))
-    {
-        printf("It's %s\n", str = toRomanNum(num));
-        free(str);
-        str = NULL;
-    } */
     FILE *pf;
     if (pf = fopen("log.txt", "w"))
     {

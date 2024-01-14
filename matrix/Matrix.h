@@ -3,11 +3,12 @@
 #include <iostream>
 #include <vector>
 #include <string>
+typedef double MatrixType;
 // 矩阵
-class Matrix : private std::vector<std::vector<long double>>
+class Matrix : private std::vector<std::vector<MatrixType>>
 {
 public:                                         // 类型别名
-    using element_type = long double;           // 矩阵元素类型
+    using element_type = MatrixType;            // 矩阵元素类型
     using row_type = std::vector<element_type>; // 行/列矩阵
     using super_type = std::vector<row_type>;   // 超类/父类
     using super_type::const_iterator;
@@ -20,12 +21,14 @@ public:                                         // 类型别名
     using super_type::reverse_iterator;
     using super_type::size_type;
 
-public: //构造与析构
-        // 默认构造
-    using super_type::super_type; //使用父类的构造
+public: // 构造与析构
+        //  默认构造
+    using super_type::super_type; // 使用父类的构造
 
     // Matrix(Matrix &&m) noexcept : super_type(std::move(m)) { std::cout << "&&"; }
-    // Matrix(const Matrix &m) : super_type(m) { std::cout << "&"; }
+    Matrix(const Matrix &m) : super_type(m) { std::cout << "&"; }
+    template <typename Arr, size_type r, size_type c>
+    Matrix(const Arr (&)[r][c]);
 
     // 友元
     // 输出矩阵内容
@@ -116,9 +119,9 @@ public: // 重载运算符 定义矩阵的某些运算
     // 矩阵的减法运算
     Matrix operator-(const Matrix &mat) const { return (mat * -1) += *this; }
 
-    //在矩阵右侧拼接另一个行数相同的矩阵
+    // 在矩阵右侧拼接另一个行数相同的矩阵
     Matrix &operator&=(const Matrix &);
-    //在矩阵右侧拼接另一个行数相同的矩阵
+    // 在矩阵右侧拼接另一个行数相同的矩阵
     Matrix operator&(const Matrix &mat) { return Matrix(*this) &= mat; }
 
     // 使用父类的运算符
@@ -210,6 +213,6 @@ public:
     // 创建n阶单位矩阵
     static Matrix UnitMatrix(const size_type &n);
     // 可以使用指定范围内的数以指定的行高、列宽随机生成一个矩阵
-    static Matrix AssignValuesRandomly(const size_type &, const size_type &, const element_type &, const element_type &);
+    static Matrix AssignValuesRandomly(const size_type &r = 3, const size_type &c = 3, const element_type &inf = 0, const element_type &sup = 10);
 };
 #endif

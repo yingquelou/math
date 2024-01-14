@@ -4,8 +4,9 @@
 #include <map>
 #include <sstream>
 #include <stdexcept>
+#include <numeric>
 #define $ << '|' <<
-#define reportException(msg)                   \
+#define LOGMESSAGE(msg)                   \
     ((std::stringstream()                      \
       << __DATE__                              \
              $ __TIME__                        \
@@ -13,6 +14,17 @@
                      $ __FUNCTION__ $ __LINE__ \
                          $ msg)                \
          .str())
+template <class Arr, Matrix::size_type r, Matrix::size_type c>
+Matrix::Matrix(const Arr (&arr)[r][c])
+{
+    resize(r);
+    auto &m = *this;
+    for (size_t i = 0; i < r; i++)
+    {
+        for (size_t j = 0; j < c; j++)
+            m[i].push_back(arr[i][j]);
+    }
+}
 inline Matrix::size_type Matrix::getColumn() const
 {
     if (*this)
@@ -65,7 +77,7 @@ Matrix &Matrix::rowSimplestForm()
         return m;
     }
     else
-        throw std::invalid_argument(reportException("Is a matrix?"));
+        throw std::invalid_argument(LOGMESSAGE("Is a matrix?"));
 }
 Matrix::operator bool() const
 {
@@ -94,7 +106,7 @@ Matrix &Matrix::operator+=(const Matrix &mat)
         return *this;
     }
     else
-        throw std::invalid_argument(reportException("Both must be Homotypic matrix"));
+        throw std::invalid_argument(LOGMESSAGE("Both must be Homotypic matrix"));
 }
 Matrix &Matrix::operator*=(const element_type &k)
 {
@@ -107,7 +119,7 @@ Matrix &Matrix::operator*=(const element_type &k)
         return *this;
     }
     else
-        throw std::invalid_argument(reportException("Is a matrix?"));
+        throw std::invalid_argument(LOGMESSAGE("Is a matrix?"));
 }
 Matrix &Matrix::operator*=(const Matrix &mat)
 {
@@ -131,10 +143,10 @@ Matrix &Matrix::operator*=(const Matrix &mat)
             return *this;
         }
         else
-            throw std::invalid_argument(reportException("The matrix can be multiplied?"));
+            throw std::invalid_argument(LOGMESSAGE("The matrix can be multiplied?"));
     }
     else
-        throw std::invalid_argument(reportException("matrix is null?"));
+        throw std::invalid_argument(LOGMESSAGE("matrix is null?"));
 }
 Matrix &Matrix::operator&=(const Matrix &mat)
 {
@@ -147,7 +159,7 @@ Matrix &Matrix::operator&=(const Matrix &mat)
         return ret;
     }
     else
-        throw std::invalid_argument(reportException("invalid_argument"));
+        throw std::invalid_argument(LOGMESSAGE("invalid_argument"));
 }
 bool Matrix::operator==(const Matrix &mat) const
 {
@@ -180,10 +192,10 @@ Matrix &Matrix::lineExchange(const size_type &i, const size_type &j)
             return m;
         }
         else
-            throw std::out_of_range(reportException(""));
+            throw std::out_of_range(LOGMESSAGE(""));
     }
     else
-        throw std::invalid_argument(reportException("Is a matrix?"));
+        throw std::invalid_argument(LOGMESSAGE("Is a matrix?"));
 }
 Matrix &Matrix::lineMul(const size_type &i, const element_type &k)
 {
@@ -200,10 +212,10 @@ Matrix &Matrix::lineMul(const size_type &i, const element_type &k)
             return result;
         }
         else
-            throw std::out_of_range(reportException(""));
+            throw std::out_of_range(LOGMESSAGE(""));
     }
     else
-        throw std::invalid_argument(reportException("Is a matrix?"));
+        throw std::invalid_argument(LOGMESSAGE("Is a matrix?"));
 }
 Matrix &Matrix::lineMulToLine(const size_type &i, const element_type &k, const size_type &j)
 {
@@ -222,10 +234,10 @@ Matrix &Matrix::lineMulToLine(const size_type &i, const element_type &k, const s
             return ret;
         }
         else
-            throw std::out_of_range(reportException(""));
+            throw std::out_of_range(LOGMESSAGE(""));
     }
     else
-        throw std::invalid_argument(reportException("Is a matrix?"));
+        throw std::invalid_argument(LOGMESSAGE("Is a matrix?"));
 }
 Matrix &Matrix::transpose()
 {
@@ -248,20 +260,16 @@ Matrix &Matrix::transpose()
         return m = std::move(result);
     }
     else
-        throw std::invalid_argument(reportException("Is a matrix?"));
+        throw std::invalid_argument(LOGMESSAGE("Is a matrix?"));
 }
 Matrix::size_type Matrix::rankOfMatrix()
 {
     auto &m = rowSimplestForm();
     auto &&r = size() - 1;
-    size_type ret = 0;
     row_type row(getColumn(), 0);
     while (m[r] == row)
-    {
-        ++ret;
         --r;
-    }
-    return ret;
+    return r + 1;
 }
 Matrix Matrix::getInverseMatrix() const
 {
@@ -279,28 +287,25 @@ Matrix Matrix::getInverseMatrix() const
         return std::move(ret);
     }
 }
+#include <iomanip>
 std::string Matrix::toString() const
 {
-    std::stringstream ret;
-    ret << '[';
-    for (auto &r : *this)
+    std::stringstream ss;
+    auto &m = *this;
+    ss << "{\n";
+    for (auto &line : m)
     {
-        ret << '[';
-        std::stringstream tmp;
-        for (auto &v : r)
-            tmp << v << ',';
-        std::string &&s = tmp.str();
-        auto pos = s.rfind(',');
-        if (pos != std::string::npos)
-            s.erase(pos, 1);
-        ret << s << "],";
+        std::stringstream s;
+        s << std::setprecision(5);
+        for (auto &v : line)
+            s << v << ' ';
+        auto &&str = s.str();
+        str.pop_back();
+        ss << str << '\n';
     }
-    ret << ']';
-    std::string s(ret.str());
-    auto &&pos = s.rfind(',');
-    if (pos != std::string::npos)
-        s.erase(pos, 1);
-    return std::move(s);
+    auto &&str = ss.str();
+    str.pop_back();
+    return str + "\n}";
 }
 std::string Matrix::toLaTeX() const
 {
@@ -339,7 +344,7 @@ Matrix Matrix ::UnitMatrix(const size_type &n)
     }
     return result;
 }
-Matrix Matrix::AssignValuesRandomly(const size_type &r = 3, const size_type &c = 3, const element_type &inf = 0, const element_type &sup = 10)
+Matrix Matrix::AssignValuesRandomly(const size_type &r, const size_type &c, const element_type &inf, const element_type &sup)
 {
     static std::default_random_engine rd(static_cast<unsigned>(time(nullptr))); // 将用于获得随机数引擎的种子
     Matrix ret;

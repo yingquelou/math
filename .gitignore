@@ -3,6 +3,10 @@
 ##
 ## Get latest from https://github.com/github/gitignore/blob/master/VisualStudio.gitignore
 *.txt
+*.i
+*.o
+*.s
+*.make
 *.vscode
 *.exe
 *.out
@@ -341,3 +345,4 @@ ASALocalRun/
 
 # BeatPulse healthcheck temp database
 healthchecksdb
+build

@@ -1,4 +1,3 @@
-#pragma once
 #include "Line.h"
 using namespace std;
 Line::Line() : A(0), B(0), C(0)  {}

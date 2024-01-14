@@ -5,7 +5,7 @@ template <typename T>
 class learn_template_for_class
 {
 private:
-    T /* data */;
+    // T /* data */;
 
 public:
     learn_template_for_class(T /* args */) = delete;
