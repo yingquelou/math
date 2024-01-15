@@ -1,0 +1,8 @@
+cmake_minimum_required(VERSION 3.8)
+file(GLOB SRCLIST *.cpp)
+foreach(ITEM ${SRCLIST})
+cmake_path(GET ITEM STEM CURFILENAME)
+project(${CURFILENAME} LANGUAGES CXX)
+add_executable(${CURFILENAME} ${ITEM})
+# message(${CURFILENAME})
+endforeach(ITEM)
