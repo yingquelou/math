@@ -56,7 +56,7 @@ public:
 public: // 重载运算符 定义矩阵的某些运算
     // 使用父类的运算符=
     using super_type::operator=;
-    Matrix &operator=(Matrix m) { return swap(m), *this; }
+    // Matrix &operator=(Matrix m) { return swap(m), *this; }
 
     /**
      * \brief 转换函数 判断当前矩阵是否符合数学定义

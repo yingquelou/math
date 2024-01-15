@@ -1,5 +1,4 @@
 #include "Line.h"
-#include "Line.cpp"
 using namespace std;
 int main(void)
 {

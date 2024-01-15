@@ -42,7 +42,8 @@ static Dtype Determinant(int Order, Dtype **a)
     return Sum;
 }
 #include <stdlib.h>
-#define n 4
+#define n 10
+#include <time.h>
 int main(void)
 {
     srand((unsigned)time(NULL));

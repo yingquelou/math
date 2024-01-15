@@ -5,7 +5,6 @@ using std::cin;
 using std::cout;
 using std::endl;
 #include "Point.h"
-#include "Point.cpp"
 int main(void)
 {
     /* 创建一个点或向量 */

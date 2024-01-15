@@ -1,17 +1,5 @@
 cmake_minimum_required(VERSION 3.8)
 
-file(GLOB SRCLIST1 *.cpp)
-
-foreach(ITEM ${SRCLIST1})
-cmake_path(GET ITEM STEM CURFILENAME)
-project(${CURFILENAME} LANGUAGES CXX)
-add_executable(${CURFILENAME} ${ITEM})
-endforeach(ITEM)
-
-file(GLOB SRCLIST2 *.c)
-
-foreach(ITEM ${SRCLIST2})
-cmake_path(GET ITEM STEM CURFILENAME)
-project(${CURFILENAME} LANGUAGES C)
-add_executable(${CURFILENAME} ${ITEM})
-endforeach(ITEM)
+cmake_path(GET CMAKE_CURRENT_LIST_DIR STEM PROJ)
+add_executable(${PROJ} Matrix.cpp MatrixMain.cpp)
+message(${PROJ})

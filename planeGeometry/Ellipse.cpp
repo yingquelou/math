@@ -1,4 +1,3 @@
-#pragma once
 #include "Ellipse.h"
 Ellipse::Ellipse(void)
 {

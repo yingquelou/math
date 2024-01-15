@@ -11,7 +11,7 @@ int main(void)
     for (size_t i = 1; i <= 100; ++i)
     {
         str = toRomanNum(i);
-        printf("%d:%s\n", i, str);
+        printf("%ld:%s\n", i, str);
         free(str);
     }
     return 0;
