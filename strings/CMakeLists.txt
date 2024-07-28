@@ -1,0 +1,5 @@
+cmake_path(GET CMAKE_CURRENT_LIST_DIR STEM PROJ)
+# add_executable(${PROJ} test_kmp.c kmp.c)
+find_package(Boost REQUIRED COMPONENTS iostreams)
+add_executable(${PROJ} test.cpp)
+target_link_libraries(${PROJ} Boost::iostreams)

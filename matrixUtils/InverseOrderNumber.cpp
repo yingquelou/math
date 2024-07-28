@@ -1,5 +1,6 @@
 #include <iostream>
 #include <string>
+#include <stdint.h>
 auto &os = std::cout;
 /**
  * \brief 求解排列的逆序数
