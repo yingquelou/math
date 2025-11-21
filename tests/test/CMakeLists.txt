@@ -1,0 +1,6 @@
+file(GLOB SRCLIST *.c *.cpp)
+set(CMAKE_CXX_STANDARD 17)
+foreach(ITEM ${SRCLIST})
+    cmake_path(GET ITEM STEM CURFILENAME)
+    add_executable(${CURFILENAME} ${ITEM})
+endforeach(ITEM)
