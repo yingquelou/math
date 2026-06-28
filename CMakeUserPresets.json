@@ -1,0 +1,254 @@
+{
+    "version": 6,
+    "include": [
+        "CMakePresets.json"
+    ],
+    "configurePresets": [
+        {
+            "name": "a_e_x64",
+            "hidden": true,
+            "architecture": {
+                "strategy": "external",
+                "value": "x64"
+            }
+        },
+        {
+            "name": "a_e_x86",
+            "hidden": true,
+            "architecture": {
+                "strategy": "external",
+                "value": "win32"
+            }
+        },
+        {
+            "name": "t_e_x64",
+            "hidden": true,
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x64"
+            }
+        },
+        {
+            "name": "t_e_x86",
+            "hidden": true,
+            "toolset": {
+                "strategy": "external",
+                "value": "host=x86"
+            }
+        },
+        {
+            "name": "msvc",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_C_COMPILER": "cl.exe",
+                "CMAKE_CXX_COMPILER": "cl.exe"
+            }
+        },
+        {
+            "name": "msvc_x86",
+            "inherits": [
+                "dir",
+                "ninja_multi",
+                "msvc",
+                "t_e_x86",
+                "a_e_x86"
+            ],
+            "description": "MSVC x86 configuration"
+        },
+        {
+            "name": "msvc_x64",
+            "inherits": [
+                "dir",
+                "ninja_multi",
+                "msvc",
+                "t_e_x64",
+                "a_e_x64"
+            ],
+            "description": "MSVC x64 configuration"
+        },
+        {
+            "name": "msvc_x86_x64",
+            "inherits": [
+                "dir",
+                "ninja_multi",
+                "msvc",
+                "t_e_x86",
+                "a_e_x64"
+            ],
+            "description": "MSVC x86 host targeting x64"
+        },
+        {
+            "name": "msvc_x64_x86",
+            "inherits": [
+                "dir",
+                "ninja_multi",
+                "msvc",
+                "t_e_x64",
+                "a_e_x86"
+            ],
+            "description": "MSVC x64 host targeting x86"
+        },
+        {
+            "name": "MinGW_Debug",
+            "generator": "MinGW Makefiles",
+            "inherits": [
+                "dir",
+                "debug"
+            ]
+        },
+        {
+            "name": "MinGW_Release",
+            "generator": "MinGW Makefiles",
+            "inherits": [
+                "dir",
+                "release"
+            ]
+        },
+        {
+            "name": "Unix_Debug",
+            "generator": "Unix Makefiles",
+            "inherits": [
+                "dir",
+                "debug"
+            ]
+        },
+        {
+            "name": "Unix_Release",
+            "generator": "Unix Makefiles",
+            "inherits": [
+                "dir",
+                "release"
+            ]
+        },
+        {
+            "name": "NMake_Debug",
+            "generator": "NMake Makefiles",
+            "inherits": [
+                "dir",
+                "debug"
+            ]
+        },
+        {
+            "name": "Borland_Debug",
+            "generator": "Borland Makefiles",
+            "inherits": [
+                "dir",
+                "debug"
+            ]
+        },
+        {
+            "name": "MSYS_Debug",
+            "generator": "MSYS Makefiles",
+            "inherits": [
+                "dir",
+                "debug"
+            ]
+        },
+        {
+            "name": "MSYS_Release",
+            "generator": "MSYS Makefiles",
+            "inherits": [
+                "dir",
+                "release"
+            ]
+        }
+    ],
+    "buildPresets": [
+        {
+            "name": "msvc_x86_debug",
+            "configurePreset": "msvc_x86",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x86_release",
+            "configurePreset": "msvc_x86",
+            "inherits": "release"
+        },
+        {
+            "name": "msvc_x64_debug",
+            "configurePreset": "msvc_x64",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x64_release",
+            "configurePreset": "msvc_x64",
+            "inherits": "release"
+        },
+        {
+            "name": "msvc_x86_x64_debug",
+            "configurePreset": "msvc_x86_x64",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x86_x64_release",
+            "configurePreset": "msvc_x86_x64",
+            "inherits": "release"
+        },
+        {
+            "name": "msvc_x64_x86_debug",
+            "configurePreset": "msvc_x64_x86",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x64_x86_release",
+            "configurePreset": "msvc_x64_x86",
+            "inherits": "release"
+        },
+        {
+            "name": "MSYS_Debug",
+            "configurePreset": "MSYS_Debug",
+            "inherits": [
+                "debug"
+            ]
+        },
+        {
+            "name": "MSYS_Release",
+            "configurePreset": "MSYS_Release",
+            "inherits": [
+                "release"
+            ]
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "msvc_x86_debug",
+            "configurePreset": "msvc_x86",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x86_release",
+            "configurePreset": "msvc_x86",
+            "inherits": "release"
+        },
+        {
+            "name": "msvc_x64_debug",
+            "configurePreset": "msvc_x64",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x64_release",
+            "configurePreset": "msvc_x64",
+            "inherits": "release"
+        },
+        {
+            "name": "msvc_x86_x64_debug",
+            "configurePreset": "msvc_x86_x64",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x86_x64_release",
+            "configurePreset": "msvc_x86_x64",
+            "inherits": "release"
+        },
+        {
+            "name": "msvc_x64_x86_debug",
+            "configurePreset": "msvc_x64_x86",
+            "inherits": "debug"
+        },
+        {
+            "name": "msvc_x64_x86_release",
+            "configurePreset": "msvc_x64_x86",
+            "inherits": "release"
+        }
+    ]
+}

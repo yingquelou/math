@@ -1,1 +1,1 @@
-add_directories()
+add_subdirectories()

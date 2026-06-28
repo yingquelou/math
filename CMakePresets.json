@@ -6,187 +6,149 @@
     },
     "configurePresets": [
         {
-            "name": "base",
+            "name": "dir",
             "hidden": true,
-            "description": "Base configuration for all presets",
             "binaryDir": "${sourceDir}/out/build/${presetName}",
-            "installDir": "${sourceDir}/out/install/${presetName}"
+            "installDir": "${sourceDir}/out/install/${presetName}",
+            "cacheVariables": {
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "1"
+            }
+        },
+        {
+            "name": "debug",
+            "description": "Recommended for inherits of Single-Config generator",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Debug"
+            }
+        },
+        {
+            "name": "release",
+            "description": "Recommended for inherits of Single-Config generator",
+            "hidden": true,
+            "cacheVariables": {
+                "CMAKE_BUILD_TYPE": "Release"
+            }
         },
         {
             "name": "ninja_multi",
             "hidden": true,
-            "inherits": "base",
-            "description": "Ninja Multi-Config generator",
             "generator": "Ninja Multi-Config",
             "cacheVariables": {
                 "CMAKE_CONFIGURATION_TYPES": "Debug;Release"
             }
         },
         {
-            "name": "gcc",
-            "inherits": "ninja_multi",
-            "description": "GCC compiler (gcc/g++)",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "gcc",
-                "CMAKE_CXX_COMPILER": "g++"
-            }
-        },
-        {
-            "name": "clang",
-            "inherits": "ninja_multi",
-            "description": "Clang compiler (clang/clang++)",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "clang",
-                "CMAKE_CXX_COMPILER": "clang++"
-            }
-        },
-        {
-            "name": "msvc_base",
-            "hidden": true,
-            "inherits": "ninja_multi",
-            "cacheVariables": {
-                "CMAKE_C_COMPILER": "cl.exe",
-                "CMAKE_CXX_COMPILER": "cl.exe"
-            }
-        },
-        {
-            "name": "msvc_x86",
-            "inherits": "msvc_base",
-            "description": "MSVC x86 configuration",
-            "architecture": {
-                "strategy": "external",
-                "value": "win32"
-            },
-            "toolset": {
-                "strategy": "external",
-                "value": "host=x86"
-            }
-        },
-        {
-            "name": "msvc_x64",
-            "inherits": "msvc_base",
-            "description": "MSVC x64 configuration",
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            },
-            "toolset": {
-                "strategy": "external",
-                "value": "host=x64"
-            }
-        },
-        {
-            "name": "msvc_x86_x64",
-            "inherits": "msvc_base",
-            "description": "MSVC x86 host targeting x64",
-            "architecture": {
-                "strategy": "external",
-                "value": "x64"
-            },
-            "toolset": {
-                "strategy": "external",
-                "value": "host=x86"
-            }
-        },
-        {
-            "name": "msvc_x64_x86",
-            "inherits": "msvc_base",
-            "description": "MSVC x64 host targeting x86",
-            "architecture": {
-                "strategy": "external",
-                "value": "win32"
-            },
-            "toolset": {
-                "strategy": "external",
-                "value": "host=x64"
-            }
+            "name": "default",
+            "inherits": [
+                "dir",
+                "ninja_multi"
+            ]
         }
     ],
     "buildPresets": [
         {
-            "name": "build_debug",
+            "name": "debug",
+            "hidden": true,
+            "description": "Recommended for inherits of Multi-Config generator",
+            "configuration": "Debug"
+        },
+        {
+            "name": "release",
+            "hidden": true,
+            "description": "Recommended for inherits of Multi-Config generator",
+            "configuration": "Release"
+        },
+        {
+            "name": "default_debug",
+            "configurePreset": "default",
+            "inherits": "debug"
+        },
+        {
+            "name": "default_release",
+            "configurePreset": "default",
+            "inherits": "release"
+        }
+    ],
+    "testPresets": [
+        {
+            "name": "debug",
             "hidden": true,
             "configuration": "Debug"
         },
         {
-            "name": "build_release",
+            "name": "release",
             "hidden": true,
             "configuration": "Release"
         },
         {
-            "name": "build_relwithdebinfo",
+            "name": "default_debug",
+            "configurePreset": "default",
+            "inherits": "debug"
+        },
+        {
+            "name": "default_release",
+            "configurePreset": "default",
+            "inherits": "release"
+        }
+    ],
+    "packagePresets": [
+        {
+            "name": "debug",
             "hidden": true,
-            "configuration": "RelWithDebInfo"
+            "configurePreset": "default",
+            "configurations": [
+                "Debug"
+            ]
         },
         {
-            "name": "build_minsizerel",
+            "name": "release",
             "hidden": true,
-            "configuration": "MinSizeRel"
+            "configurePreset": "default",
+            "configurations": [
+                "Release"
+            ]
         },
         {
-            "name": "gcc_debug",
-            "configurePreset": "gcc",
-            "inherits": "build_debug"
+            "name": "default_debug",
+            "inherits": [
+                "debug"
+            ],
+            "generators": [
+                "ZIP"
+            ]
         },
         {
-            "name": "gcc_release",
-            "configurePreset": "gcc",
-            "inherits": "build_release"
-        },
+            "name": "default_release",
+            "inherits": [
+                "release"
+            ],
+            "generators": [
+                "ZIP"
+            ]
+        }
+    ],
+    "workflowPresets": [
         {
-            "name": "clang_debug",
-            "configurePreset": "clang",
-            "inherits": "build_debug"
-        },
-        {
-            "name": "clang_release",
-            "configurePreset": "clang",
-            "inherits": "build_release"
-        },
-        {
-            "name": "clang_relwithdebinfo",
-            "configurePreset": "clang",
-            "inherits": "build_relwithdebinfo"
-        },
-        {
-            "name": "msvc_x86_debug",
-            "configurePreset": "msvc_x86",
-            "inherits": "build_debug"
-        },
-        {
-            "name": "msvc_x86_release",
-            "configurePreset": "msvc_x86",
-            "inherits": "build_release"
-        },
-        {
-            "name": "msvc_x64_debug",
-            "configurePreset": "msvc_x64",
-            "inherits": "build_debug"
-        },
-        {
-            "name": "msvc_x64_release",
-            "configurePreset": "msvc_x64",
-            "inherits": "build_release"
-        },
-        {
-            "name": "msvc_x86_x64_debug",
-            "configurePreset": "msvc_x86_x64",
-            "inherits": "build_debug"
-        },
-        {
-            "name": "msvc_x86_x64_release",
-            "configurePreset": "msvc_x86_x64",
-            "inherits": "build_release"
-        },
-        {
-            "name": "msvc_x64_x86_debug",
-            "configurePreset": "msvc_x64_x86",
-            "inherits": "build_debug"
-        },
-        {
-            "name": "msvc_x64_x86_release",
-            "configurePreset": "msvc_x64_x86",
-            "inherits": "build_release"
+            "name": "default",
+            "steps": [
+                {
+                    "type": "configure",
+                    "name": "default"
+                },
+                {
+                    "type": "build",
+                    "name": "default_release"
+                },
+                {
+                    "type": "test",
+                    "name": "default_release"
+                },
+                {
+                    "type": "package",
+                    "name": "default_release"
+                }
+            ]
         }
     ]
 }

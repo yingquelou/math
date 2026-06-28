@@ -1,5 +1,0 @@
-file(GLOB SRCLIST *.c)
-foreach(ITEM ${SRCLIST})
-    cmake_path(GET ITEM STEM CURFILENAME)
-    add_library(${CURFILENAME} ${ITEM})
-endforeach(ITEM)

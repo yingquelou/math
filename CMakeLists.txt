@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 3.10)
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_SOURCE_DIR}/cmake_module ${CMAKE_MODULE_PATH})
 include(router)
+include(CPack)
 cmake_path(GET CMAKE_CURRENT_LIST_DIR FILENAME PROJ)
 project(${PROJ})
-add_directories()
+add_subdirectories(EXCLUDE)
