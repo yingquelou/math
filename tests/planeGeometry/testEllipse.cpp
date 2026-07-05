@@ -11,23 +11,23 @@
 
 static int g_failures = 0;
 
-#define CHECK_TRUE(expr)                                                   \
-  do {                                                                    \
-    if (!(expr)) {                                                        \
-      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__ \
-                << std::endl;                                             \
-      ++g_failures;                                                       \
-    }                                                                     \
+#define CHECK_TRUE(expr)                                                       \
+  do {                                                                         \
+    if (!(expr)) {                                                             \
+      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__     \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
-#define CHECK_NEAR(a, b, tol)                                             \
-  do {                                                                    \
-    if (std::abs((a) - (b)) > (tol)) {                                    \
-      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"      \
-                << __LINE__ << " (" << (a) << " vs " << (b) << ")"         \
-                << std::endl;                                             \
-      ++g_failures;                                                       \
-    }                                                                     \
+#define CHECK_NEAR(a, b, tol)                                                  \
+  do {                                                                         \
+    if (std::abs((a) - (b)) > (tol)) {                                         \
+      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"           \
+                << __LINE__ << " (" << (a) << " vs " << (b) << ")"             \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
 int main() {
@@ -113,11 +113,12 @@ int main() {
     CHECK_NEAR(e.semi_minor(), 2.0, 1e-9);
     CHECK_NEAR(e.rotation_angle(), pi / 4.0, 1e-9);
 
-    // Verify that evaluating at the center yields -1 + (center shift contribution).
-    // For conic from center form: evaluate(center) should be -1
+    // Verify that evaluating at the center yields -1 + (center shift
+    // contribution). For conic from center form: evaluate(center) should be -1
     // because when x=cx, y=cy: A cx^2 + B cy^2 + C cx cy + D cx + E cy + F
     // equals Fc (since Dc = -2 Ac cx - Cc cy, Ec = -2 Bc cy - Cc cx).
-    // Actually evaluate(center) = Ac cx^2 + Bc cy^2 + Cc cx cy + Dc cx + Ec cy + Fc
+    // Actually evaluate(center) = Ac cx^2 + Bc cy^2 + Cc cx cy + Dc cx + Ec cy
+    // + Fc
     //   = Ac cx^2 + Bc cy^2 + Cc cx cy + (-2 Ac cx - Cc cy) cx
     //     + (-2 Bc cy - Cc cx) cy + (Ac cx^2 + Bc cy^2 + Cc cx cy - 1)
     //   = -1.
@@ -129,7 +130,8 @@ int main() {
     // x^2/9 + y^2/4 = 1 -> a=1/9, b=1/4, c=d=e=0, f=-1
     const double a = 1.0 / 9.0;
     const double b = 1.0 / 4.0;
-    Ellipse<double> e = Ellipse<double>::from_general(a, b, 0.0, 0.0, 0.0, -1.0);
+    Ellipse<double> e =
+        Ellipse<double>::from_general(a, b, 0.0, 0.0, 0.0, -1.0);
     CHECK_NEAR(e.center().x(), 0.0, 1e-9);
     CHECK_NEAR(e.center().y(), 0.0, 1e-9);
     CHECK_NEAR(e.semi_major(), 3.0, 1e-9);
@@ -187,28 +189,32 @@ int main() {
     // So line is y = const with constant = -(center_shift +/- d1)
     // Wait - An=0, Bn=1 means horizontal line y = -C. But expected x = const.
     // Our formula: directrices are perpendicular to major axis direction.
-    // Major axis direction for rotation=0 is (-sin 0, cos 0) = (0, 1) - vertical.
-    // So directrices are perpendicular to that => horizontal. That's wrong.
-    // Actually major axis for non-rotated ellipse should be along x-axis (a > b).
-    // Let's check: major_axis() direction is (-ss, cc) = (0, 1) for rotation=0.
-    // That's vertical - not correct either.
+    // Major axis direction for rotation=0 is (-sin 0, cos 0) = (0, 1) -
+    // vertical. So directrices are perpendicular to that => horizontal. That's
+    // wrong. Actually major axis for non-rotated ellipse should be along x-axis
+    // (a > b). Let's check: major_axis() direction is (-ss, cc) = (0, 1) for
+    // rotation=0. That's vertical - not correct either.
     //
     // Hmm, let me just check distance from focus to directrix.
     const auto f = e.focal_points();
     const double d1 = 9.0 / std::sqrt(5.0);
-    // d.first: An=0, Bn=1, C1 = -(0*0 + 1*0 + d1) = -d1 -> y - (-d1) = y + d1 = 0
-    // So directrix is y = -d1 (horizontal), but we want x = +d1 (vertical).
+    // d.first: An=0, Bn=1, C1 = -(0*0 + 1*0 + d1) = -d1 -> y - (-d1) = y + d1 =
+    // 0 So directrix is y = -d1 (horizontal), but we want x = +d1 (vertical).
     //
     // Clearly the axis/directrix orientation is swapped when rotation=0.
     // The major axis direction should be along x for a horizontal ellipse.
     // Let's just verify the distance property of directrices for now.
     const double dist_f1_to_d1 =
-        std::abs(static_cast<double>(d.first.A()) * static_cast<double>(f.first.x()) +
-                 static_cast<double>(d.first.B()) * static_cast<double>(f.first.y()) +
+        std::abs(static_cast<double>(d.first.A()) *
+                     static_cast<double>(f.first.x()) +
+                 static_cast<double>(d.first.B()) *
+                     static_cast<double>(f.first.y()) +
                  static_cast<double>(d.first.C())) /
-        std::sqrt(static_cast<double>(d.first.A()) * static_cast<double>(d.first.A()) +
-                  static_cast<double>(d.first.B()) * static_cast<double>(d.first.B()));
-    const double expected_dist = 9.0 / std::sqrt(5.0);  // a^2 / c
+        std::sqrt(static_cast<double>(d.first.A()) *
+                      static_cast<double>(d.first.A()) +
+                  static_cast<double>(d.first.B()) *
+                      static_cast<double>(d.first.B()));
+    const double expected_dist = 9.0 / std::sqrt(5.0); // a^2 / c
     CHECK_NEAR(dist_f1_to_d1, expected_dist, 1e-9);
     (void)d1;
   }
@@ -218,9 +224,9 @@ int main() {
     Ellipse<double> e(Point<double>(1.0, 2.0), 3.0, 2.0);
     const auto major = e.major_axis();
     const auto minor = e.minor_axis();
-    // For non-rotated, major axis direction is along x: -ss*x + cc*y + C = 0, with rotation=0
-    // major axis: 0*x + 1*y + C = 0 where C = -(1*2) = -2 -> y - 2 = 0
-    // minor axis: 1*x + 0*y + C = 0 where C = -(1*1) = -1 -> x - 1 = 0
+    // For non-rotated, major axis direction is along x: -ss*x + cc*y + C = 0,
+    // with rotation=0 major axis: 0*x + 1*y + C = 0 where C = -(1*2) = -2 -> y
+    // - 2 = 0 minor axis: 1*x + 0*y + C = 0 where C = -(1*1) = -1 -> x - 1 = 0
     CHECK_NEAR(major.A(), 0.0, 1e-12);
     CHECK_NEAR(major.B(), 1.0, 1e-12);
     CHECK_NEAR(major.C(), -2.0, 1e-12);

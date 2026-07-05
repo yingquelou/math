@@ -28,8 +28,7 @@ namespace planeGeometry {
  * @tparam T          Numeric type (matches the variant).
  * @tparam ConicType Concrete conic type to extract.
  */
-template <typename T, typename ConicType>
-struct conic_extractor {
+template <typename T, typename ConicType> struct conic_extractor {
   typedef ConicType result_t;
   result_t operator()() const { return result_t(); }
   result_t operator()(const Circle<T> &v) const { return select(v); }
@@ -37,7 +36,7 @@ struct conic_extractor {
   result_t operator()(const Parabola<T> &v) const { return select(v); }
   result_t operator()(const Hyperbola<T> &v) const { return select(v); }
 
- private:
+private:
   template <typename U>
   typename std::enable_if<std::is_same<U, ConicType>::value, ConicType>::type
   select(const U &u) const {
@@ -71,9 +70,8 @@ struct conic_extractor {
  *
  * @tparam T Numeric type (e.g. double).
  */
-template <typename T>
-class conic_intersect {
- public:
+template <typename T> class conic_intersect {
+public:
   /** @brief Maximum number of real intersection points (Bezout bound). */
   static constexpr std::size_t kMaxPoints = 4;
 
@@ -90,8 +88,7 @@ class conic_intersect {
    * Helper used by the free `intersect()` function.
    */
   static conic_intersect dispatch_variant(conic_variant<T> &f,
-                                          conic_variant<T> &g,
-                                          double tol) {
+                                          conic_variant<T> &g, double tol) {
     // Use 'kind' enum (same underlying value as index_t).
     using kind_t = typename detail::conic_storage<T>::kind;
     const kind_t fk = static_cast<kind_t>(f.which());
@@ -102,20 +99,25 @@ class conic_intersect {
     // Direct access via a public helper on the variant.
     // We call get_copy<ConicType>(variant) for both sides.
     switch (fk) {
-      case kind_t::circle_k:    return dispatch_f<Circle<T>>(f, g, gk, tol);
-      case kind_t::ellipse_k:   return dispatch_f<Ellipse<T>>(f, g, gk, tol);
-      case kind_t::parabola_k:  return dispatch_f<Parabola<T>>(f, g, gk, tol);
-      case kind_t::hyperbola_k: return dispatch_f<Hyperbola<T>>(f, g, gk, tol);
-      default: break;
+    case kind_t::circle_k:
+      return dispatch_f<Circle<T>>(f, g, gk, tol);
+    case kind_t::ellipse_k:
+      return dispatch_f<Ellipse<T>>(f, g, gk, tol);
+    case kind_t::parabola_k:
+      return dispatch_f<Parabola<T>>(f, g, gk, tol);
+    case kind_t::hyperbola_k:
+      return dispatch_f<Hyperbola<T>>(f, g, gk, tol);
+    default:
+      break;
     }
     return conic_intersect();
   }
 
- private:
+private:
   template <typename ConicA>
-  static conic_intersect dispatch_f(
-      conic_variant<T> &f, conic_variant<T> &g,
-      typename detail::conic_storage<T>::kind gk, double tol) {
+  static conic_intersect dispatch_f(conic_variant<T> &f, conic_variant<T> &g,
+                                    typename detail::conic_storage<T>::kind gk,
+                                    double tol) {
     using kind_t = typename detail::conic_storage<T>::kind;
     // Extract f's value via a visitor.  Use std::move to force rvalue
     // deduction of the visitor template parameter, otherwise the
@@ -125,11 +127,16 @@ class conic_intersect {
     conic_variant<T> &fc = f;
     ConicA fa = fc.visit(std::move(exA));
     switch (gk) {
-      case kind_t::circle_k:    return conic_intersect::compute(fa, extract_g<T, Circle<T>>(g), tol);
-      case kind_t::ellipse_k:   return conic_intersect::compute(fa, extract_g<T, Ellipse<T>>(g), tol);
-      case kind_t::parabola_k:  return conic_intersect::compute(fa, extract_g<T, Parabola<T>>(g), tol);
-      case kind_t::hyperbola_k: return conic_intersect::compute(fa, extract_g<T, Hyperbola<T>>(g), tol);
-      default: break;
+    case kind_t::circle_k:
+      return conic_intersect::compute(fa, extract_g<T, Circle<T>>(g), tol);
+    case kind_t::ellipse_k:
+      return conic_intersect::compute(fa, extract_g<T, Ellipse<T>>(g), tol);
+    case kind_t::parabola_k:
+      return conic_intersect::compute(fa, extract_g<T, Parabola<T>>(g), tol);
+    case kind_t::hyperbola_k:
+      return conic_intersect::compute(fa, extract_g<T, Hyperbola<T>>(g), tol);
+    default:
+      break;
     }
     return conic_intersect();
   }
@@ -140,7 +147,7 @@ class conic_intersect {
     return g.visit(std::move(ex));
   }
 
- public:
+public:
   /**
    * @brief Compute the intersection of two conic sections.
    *
@@ -158,7 +165,7 @@ class conic_intersect {
    */
   template <typename ConicA, typename ConicB>
   static conic_intersect compute(const ConicA &f, const ConicB &g,
-                                double tol = 1e-12) {
+                                 double tol = 1e-12) {
     const double a1 = static_cast<double>(f.coef_x2());
     const double b1 = static_cast<double>(f.coef_y2());
     const double c1 = static_cast<double>(f.coef_xy());
@@ -178,27 +185,24 @@ class conic_intersect {
 
     bool eliminated_y = (std::abs(b1) > tol) || (std::abs(b2) > tol);
     if (eliminated_y) {
-      eliminate_and_solve_y(a1, b1, c1, d1, e1, ff1,
-                            a2, b2, c2, d2, e2, ff2,
+      eliminate_and_solve_y(a1, b1, c1, d1, e1, ff1, a2, b2, c2, d2, e2, ff2,
                             tol, raw);
     } else if ((std::abs(a1) > tol) || (std::abs(a2) > tol)) {
       // Swap x <-> y (and a <-> b, d <-> e), eliminate y in the swapped
       // system, then swap back the result points.
       std::vector<Point<T>> swapped;
-      eliminate_and_solve_y(b1, a1, c1, e1, d1, ff1,
-                             b2, a2, c2, e2, d2, ff2,
-                             tol, swapped);
+      eliminate_and_solve_y(b1, a1, c1, e1, d1, ff1, b2, a2, c2, e2, d2, ff2,
+                            tol, swapped);
       for (const auto &p : swapped) {
         raw.push_back(Point<T>(p.y(), p.x()));
       }
     } else {
       // Both linear in x and y -> at most one intersection (line-line).
       Point<T> p;
-      Line<T> l1(static_cast<T>(d1), static_cast<T>(e1),
-                 static_cast<T>(ff1));
-      Line<T> l2(static_cast<T>(d2), static_cast<T>(e2),
-                 static_cast<T>(ff2));
-      if (l1.intersection_with(l2, p)) raw.push_back(p);
+      Line<T> l1(static_cast<T>(d1), static_cast<T>(e1), static_cast<T>(ff1));
+      Line<T> l2(static_cast<T>(d2), static_cast<T>(e2), static_cast<T>(ff2));
+      if (l1.intersection_with(l2, p))
+        raw.push_back(p);
     }
 
     // --- Dedup & refine -------------------------------------------------
@@ -207,19 +211,21 @@ class conic_intersect {
       for (const auto &q : result.points) {
         const double dx = static_cast<double>(p.x() - q.x());
         const double dy = static_cast<double>(p.y() - q.y());
-        if (dx * dx + dy * dy < 1e-6) { dup = true; break; }
+        if (dx * dx + dy * dy < 1e-6) {
+          dup = true;
+          break;
+        }
       }
       if (!dup && result.points.size() < kMaxPoints) {
         Point<T> q = p;
-        refine_on_conics(q, a1, b1, c1, d1, e1, ff1,
-                         a2, b2, c2, d2, e2, ff2);
+        refine_on_conics(q, a1, b1, c1, d1, e1, ff1, a2, b2, c2, d2, e2, ff2);
         result.points.push_back(q);
       }
     }
     return result;
   }
 
- private:
+private:
   /**
    * @brief Eliminate @f$ y @f$ from the two conics, producing a
    *        polynomial in @f$ x @f$ whose roots give the @f$ x @f$
@@ -230,10 +236,10 @@ class conic_intersect {
    * @param tol Tolerance.
    * @param out Output: intersection points (unsorted, possibly dup).
    */
-  static void eliminate_and_solve_y(
-      double a1, double b1, double c1, double d1, double e1, double ff1,
-      double a2, double b2, double c2, double d2, double e2, double ff2,
-      double tol, std::vector<Point<T>> &out) {
+  static void eliminate_and_solve_y(double a1, double b1, double c1, double d1,
+                                    double e1, double ff1, double a2, double b2,
+                                    double c2, double d2, double e2, double ff2,
+                                    double tol, std::vector<Point<T>> &out) {
     // Write F and G as polynomials in y with coefficients in R[x]:
     //   F(x, y) = b1 y^2 + c1 y + R1(x)
     //   G(x, y) = b2 y^2 + c2 y + R2(x)
@@ -274,26 +280,30 @@ class conic_intersect {
       // y(x) = -D(x) / C.  Each coefficient of y is -1/C times the
       // corresponding coefficient of D.
       double y_coef[3];
-      for (int k = 0; k < 3; ++k) y_coef[k] = -D_coef[k] / C;
+      for (int k = 0; k < 3; ++k)
+        y_coef[k] = -D_coef[k] / C;
 
       // Substitute into F(x, y) = b1 y^2 + c1 y + R1(x) = 0:
       //   b1 y(x)^2 + c1 y(x) + R1(x) = 0
       // Build q(x) = b1 * y(x)^2 + c1 * y(x) + R1(x).
       auto poly_scale = [](const std::vector<double> &p, double s) {
         std::vector<double> r(p.size());
-        for (size_t i = 0; i < p.size(); ++i) r[i] = s * p[i];
+        for (size_t i = 0; i < p.size(); ++i)
+          r[i] = s * p[i];
         return r;
       };
       auto poly_add = [](const std::vector<double> &p,
-                        const std::vector<double> &q) {
+                         const std::vector<double> &q) {
         size_t n = std::max(p.size(), q.size());
         std::vector<double> r(n, 0.0);
-        for (size_t i = 0; i < p.size(); ++i) r[i] += p[i];
-        for (size_t i = 0; i < q.size(); ++i) r[i] += q[i];
+        for (size_t i = 0; i < p.size(); ++i)
+          r[i] += p[i];
+        for (size_t i = 0; i < q.size(); ++i)
+          r[i] += q[i];
         return r;
       };
       auto poly_mul = [](const std::vector<double> &p,
-                        const std::vector<double> &q) {
+                         const std::vector<double> &q) {
         std::vector<double> r(p.size() + q.size() - 1, 0.0);
         for (size_t i = 0; i < p.size(); ++i) {
           for (size_t j = 0; j < q.size(); ++j) {
@@ -304,7 +314,7 @@ class conic_intersect {
       };
 
       std::vector<double> y_vec(y_coef, y_coef + 3);
-      std::vector<double> y2 = poly_mul(y_vec, y_vec);   // y(x)^2, degree 4
+      std::vector<double> y2 = poly_mul(y_vec, y_vec); // y(x)^2, degree 4
       std::vector<double> y2b1 = poly_scale(y2, b1);
       std::vector<double> yc = poly_scale(y_vec, c1);
       std::vector<double> R1(R1_coef, R1_coef + 3);
@@ -312,7 +322,8 @@ class conic_intersect {
     }
 
     // Strip leading (highest-degree) near-zero coefficients.
-    while (q.size() > 1 && std::abs(q.back()) < 1e-14) q.pop_back();
+    while (q.size() > 1 && std::abs(q.back()) < 1e-14)
+      q.pop_back();
 
     // Solve q(x) = 0 for real x.
     std::vector<double> xs;
@@ -323,7 +334,8 @@ class conic_intersect {
     if (q.size() == 2) {
       // Linear: q[0] + q[1] x = 0.
       double x = -q[0] / q[1];
-      if (std::isfinite(x)) xs.push_back(x);
+      if (std::isfinite(x))
+        xs.push_back(x);
     } else if (q.size() == 3) {
       // Quadratic: q[0] + q[1] x + q[2] x^2 = 0.
       solve_quadratic_real(q[2], q[1], q[0], xs, tol);
@@ -334,9 +346,11 @@ class conic_intersect {
       // Quartic or higher: reduce to degree-4 if possible via deflation;
       // otherwise treat as quartic (with trailing near-zero coefficients
       // stripped above).
-      if (q.size() > 5) q.resize(5);
+      if (q.size() > 5)
+        q.resize(5);
       double quartic[5];
-      for (int i = 0; i < 5; ++i) quartic[i] = q[4 - i];
+      for (int i = 0; i < 5; ++i)
+        quartic[i] = q[4 - i];
       solve_quartic_real(quartic, xs, tol);
     }
 
@@ -356,7 +370,8 @@ class conic_intersect {
       } else if (std::abs(A2y) > std::abs(A1y)) {
         solve_quadratic_real(A2y, B2y, C2y, ys, tol);
       } else if (std::abs(B1y) > std::abs(B2y)) {
-        if (std::abs(B1y) > tol) ys.push_back(-C1y / B1y);
+        if (std::abs(B1y) > tol)
+          ys.push_back(-C1y / B1y);
       } else if (std::abs(B2y) > tol) {
         ys.push_back(-C2y / B2y);
       } else {
@@ -368,14 +383,16 @@ class conic_intersect {
           if (disc >= 0.0) {
             const double sq = std::sqrt(disc);
             ys.push_back(sq);
-            if (sq > tol) ys.push_back(-sq);
+            if (sq > tol)
+              ys.push_back(-sq);
           }
         } else if (std::abs(A2y) > tol) {
           const double disc = -C2y / A2y;
           if (disc >= 0.0) {
             const double sq = std::sqrt(disc);
             ys.push_back(sq);
-            if (sq > tol) ys.push_back(-sq);
+            if (sq > tol)
+              ys.push_back(-sq);
           }
         }
       }
@@ -392,18 +409,18 @@ class conic_intersect {
 
   /** @brief 4x4 determinant (general-purpose). */
   static double det4(double M[4][4]) {
-    return M[0][0] * (M[1][1] * (M[2][2] * M[3][3] - M[2][3] * M[3][2])
-                     - M[1][2] * (M[2][1] * M[3][3] - M[2][3] * M[3][1])
-                     + M[1][3] * (M[2][1] * M[3][2] - M[2][2] * M[3][1]))
-         - M[0][1] * (M[1][0] * (M[2][2] * M[3][3] - M[2][3] * M[3][2])
-                     - M[1][2] * (M[2][0] * M[3][3] - M[2][3] * M[3][0])
-                     + M[1][3] * (M[2][0] * M[3][2] - M[2][2] * M[3][0]))
-         + M[0][2] * (M[1][0] * (M[2][1] * M[3][3] - M[2][3] * M[3][1])
-                     - M[1][1] * (M[2][0] * M[3][3] - M[2][3] * M[3][0])
-                     + M[1][3] * (M[2][0] * M[3][1] - M[2][1] * M[3][0]))
-         - M[0][3] * (M[1][0] * (M[2][1] * M[3][2] - M[2][2] * M[3][1])
-                     - M[1][1] * (M[2][0] * M[3][2] - M[2][2] * M[3][0])
-                     + M[1][2] * (M[2][0] * M[3][1] - M[2][1] * M[3][0]));
+    return M[0][0] * (M[1][1] * (M[2][2] * M[3][3] - M[2][3] * M[3][2]) -
+                      M[1][2] * (M[2][1] * M[3][3] - M[2][3] * M[3][1]) +
+                      M[1][3] * (M[2][1] * M[3][2] - M[2][2] * M[3][1])) -
+           M[0][1] * (M[1][0] * (M[2][2] * M[3][3] - M[2][3] * M[3][2]) -
+                      M[1][2] * (M[2][0] * M[3][3] - M[2][3] * M[3][0]) +
+                      M[1][3] * (M[2][0] * M[3][2] - M[2][2] * M[3][0])) +
+           M[0][2] * (M[1][0] * (M[2][1] * M[3][3] - M[2][3] * M[3][1]) -
+                      M[1][1] * (M[2][0] * M[3][3] - M[2][3] * M[3][0]) +
+                      M[1][3] * (M[2][0] * M[3][1] - M[2][1] * M[3][0])) -
+           M[0][3] * (M[1][0] * (M[2][1] * M[3][2] - M[2][2] * M[3][1]) -
+                      M[1][1] * (M[2][0] * M[3][2] - M[2][2] * M[3][0]) +
+                      M[1][2] * (M[2][0] * M[3][1] - M[2][1] * M[3][0]));
   }
 
   /**
@@ -412,21 +429,22 @@ class conic_intersect {
    *        @f$ [z^0, z^1, ..., z^{2p}] @f$ (ascending power order).
    */
   static std::vector<double> poly_pow(double a, double b, double c, int p) {
-    if (p == 0) return {1.0};
+    if (p == 0)
+      return {1.0};
     // Compute (a x^2 + b x + c)^p in ascending-power order [x^0, x^1, ...].
     //
     // Given p(x) = sum_{k=0}^n p_k x^k stored as [p_0, p_1, ..., p_n],
     // the product q(x) = (a x^2 + b x + c) p(x) has
     //   q_k = c p_k + b p_{k-1} + a p_{k-2}   (with p_{-1} = p_{-2} = 0)
     // The resulting polynomial has degree n+2 (at most).
-    std::vector<double> result = {c};  // degree-0 polynomial "c"
+    std::vector<double> result = {c}; // degree-0 polynomial "c"
     for (int i = 0; i < p; ++i) {
       const int n = (int)result.size();  // current degree = n - 1
-      std::vector<double> v(n + 2, 0.0);  // degree increases by 2
+      std::vector<double> v(n + 2, 0.0); // degree increases by 2
       for (int k = 0; k < n + 2; ++k) {
-        double s = c * (k < n ? result[k] : 0.0)
-                 + b * (k >= 1 && k - 1 < n ? result[k - 1] : 0.0)
-                 + a * (k >= 2 && k - 2 < n ? result[k - 2] : 0.0);
+        double s = c * (k < n ? result[k] : 0.0) +
+                   b * (k >= 1 && k - 1 < n ? result[k - 1] : 0.0) +
+                   a * (k >= 2 && k - 2 < n ? result[k - 2] : 0.0);
         v[k] = s;
       }
       result = std::move(v);
@@ -437,11 +455,10 @@ class conic_intersect {
   /**
    * @brief Newton refinement on both conic polynomials simultaneously.
    */
-  static void refine_on_conics(Point<T> &p,
-                               double a1, double b1, double c1,
-                               double d1, double e1, double ff1,
-                               double a2, double b2, double c2,
-                               double d2, double e2, double ff2) {
+  static void refine_on_conics(Point<T> &p, double a1, double b1, double c1,
+                               double d1, double e1, double ff1, double a2,
+                               double b2, double c2, double d2, double e2,
+                               double ff2) {
     double x = static_cast<double>(p.x());
     double y = static_cast<double>(p.y());
     for (int iter = 0; iter < 10; ++iter) {
@@ -449,15 +466,19 @@ class conic_intersect {
       const double Fy = 2.0 * b1 * y + c1 * x + e1;
       const double Gx = 2.0 * a2 * x + c2 * y + d2;
       const double Gy = 2.0 * b2 * y + c2 * x + e2;
-      const double Fv = a1 * x * x + b1 * y * y + c1 * x * y + d1 * x + e1 * y + ff1;
-      const double Gv = a2 * x * x + b2 * y * y + c2 * x * y + d2 * x + e2 * y + ff2;
+      const double Fv =
+          a1 * x * x + b1 * y * y + c1 * x * y + d1 * x + e1 * y + ff1;
+      const double Gv =
+          a2 * x * x + b2 * y * y + c2 * x * y + d2 * x + e2 * y + ff2;
       const double det = Fx * Gy - Fy * Gx;
-      if (std::abs(det) < 1e-18) break;
+      if (std::abs(det) < 1e-18)
+        break;
       const double dx = -(Fv * Gy - Fy * Gv) / det;
       const double dy = -(Fx * Gv - Fv * Gx) / det;
       x += dx;
       y += dy;
-      if (dx * dx + dy * dy < 1e-20) break;
+      if (dx * dx + dy * dy < 1e-20)
+        break;
     }
     p = Point<T>(static_cast<T>(x), static_cast<T>(y));
   }
@@ -471,22 +492,29 @@ class conic_intersect {
       double max_val = std::abs(A[col][col]);
       for (int row = col + 1; row < 6; ++row) {
         const double v = std::abs(A[row][col]);
-        if (v > max_val) { max_val = v; pivot = row; }
+        if (v > max_val) {
+          max_val = v;
+          pivot = row;
+        }
       }
       if (pivot != col) {
-        for (int k = 0; k < 6; ++k) std::swap(A[col][k], A[pivot][k]);
+        for (int k = 0; k < 6; ++k)
+          std::swap(A[col][k], A[pivot][k]);
         std::swap(b[col], b[pivot]);
       }
-      if (std::abs(A[col][col]) < 1e-14) continue;
+      if (std::abs(A[col][col]) < 1e-14)
+        continue;
       for (int row = col + 1; row < 6; ++row) {
         const double f = A[row][col] / A[col][col];
-        for (int k = col; k < 6; ++k) A[row][k] -= f * A[col][k];
+        for (int k = col; k < 6; ++k)
+          A[row][k] -= f * A[col][k];
         b[row] -= f * b[col];
       }
     }
     for (int row = 5; row >= 0; --row) {
       double s = b[row];
-      for (int k = row + 1; k < 6; ++k) s -= A[row][k] * x[k];
+      for (int k = row + 1; k < 6; ++k)
+        s -= A[row][k] * x[k];
       const double d = A[row][row];
       x[row] = (std::abs(d) < 1e-14) ? 0.0 : s / d;
     }
@@ -494,15 +522,16 @@ class conic_intersect {
 
   /** @brief Solve @f$ a t^2 + b t + c = 0 @f$ for real @f$ t @f$. */
   static void solve_quadratic_real(double a, double b, double c,
-                                   std::vector<double> &out,
-                                   double tol) {
+                                   std::vector<double> &out, double tol) {
     if (std::abs(a) < tol) {
-      if (std::abs(b) < tol) return;
+      if (std::abs(b) < tol)
+        return;
       out.push_back(-c / b);
       return;
     }
     const double disc = b * b - 4.0 * a * c;
-    if (disc < -tol) return;
+    if (disc < -tol)
+      return;
     if (disc < tol) {
       out.push_back(-b / (2.0 * a));
       return;
@@ -514,9 +543,8 @@ class conic_intersect {
 
   /** @brief Solve the quartic @f$ p_0 t^4 + p_1 t^3 + p_2 t^2 + p_3 t + p_4
    *         = 0 @f$ for real @f$ t @f$. */
-  static void solve_quartic_real(const double p[5],
-                                std::vector<double> &out,
-                                double tol) {
+  static void solve_quartic_real(const double p[5], std::vector<double> &out,
+                                 double tol) {
     if (std::abs(p[0]) < tol) {
       std::vector<double> sub;
       solve_cubic_real(p[1], p[2], p[3], p[4], sub, tol);
@@ -531,10 +559,8 @@ class conic_intersect {
     // depressed: u^4 + P u^2 + Q u + R = 0 where t = u - a/4
     const double P = b - 3.0 * a * a / 8.0;
     const double Q = c - a * b / 2.0 + a * a * a / 8.0;
-    const double R = d - a * c / 4.0 + a * a * b / 16.0 - 3.0 * a * a * a * a / 256.0;
-
-    fprintf(stderr, "DBG quartic: a=%g b=%g c=%g d=%g\n", a, b, c, d);
-    fprintf(stderr, "DBG   P=%g Q=%g R=%g\n", P, Q, R);
+    const double R =
+        d - a * c / 4.0 + a * a * b / 16.0 - 3.0 * a * a * a * a / 256.0;
 
     // Resolvent cubic: m^3 - P m^2 / 2 - R m - (4 P R - Q^2) / 8 = 0
     const double c0 = 1.0;
@@ -543,19 +569,16 @@ class conic_intersect {
     const double c3 = -(4.0 * P * R - Q * Q) / 8.0;
     std::vector<double> mroots;
     solve_cubic_real(c0, c1, c2, c3, mroots, tol);
-    fprintf(stderr, "DBG   cubic mroots:");
-    for (auto v : mroots) fprintf(stderr, " %g", v);
-    fprintf(stderr, "\n");
-    if (mroots.empty()) return;
+    if (mroots.empty())
+      return;
     double m = mroots.front();
-    if (m < 0) m = 0;
+    if (m < 0)
+      m = 0;
 
-    const double s1 = (std::abs(2.0 * m - P) < tol)
-                          ? 0.0
-                          : std::sqrt(2.0 * m - P);
-    const double s2 = (std::abs(s1) < tol)
-                          ? std::sqrt(std::abs(P))
-                          : Q / (4.0 * s1);
+    const double s1 =
+        (std::abs(2.0 * m - P) < tol) ? 0.0 : std::sqrt(2.0 * m - P);
+    const double s2 =
+        (std::abs(s1) < tol) ? std::sqrt(std::abs(P)) : Q / (4.0 * s1);
 
     std::vector<double> uroots;
     {
@@ -568,9 +591,6 @@ class conic_intersect {
       solve_quadratic_real(1.0, -s1, m - s2, r2, tol);
       uroots.insert(uroots.end(), r2.begin(), r2.end());
     }
-    fprintf(stderr, "DBG   uroots:");
-    for (auto v : uroots) fprintf(stderr, " %g", v);
-    fprintf(stderr, "\n");
 
     for (double u : uroots) {
       double t = u - a / 4.0;
@@ -582,14 +602,15 @@ class conic_intersect {
       const double fp4 = p[4];
       for (int it = 0; it < 8; ++it) {
         const double val = (((fp0 * t + fp1) * t + fp2) * t + fp3) * t + fp4;
-        const double der = (4.0 * fp0 * t + 3.0 * fp1) * t * t
-                           + 2.0 * fp2 * t + fp3;
-        if (std::abs(der) < tol) break;
+        const double der =
+            (4.0 * fp0 * t + 3.0 * fp1) * t * t + 2.0 * fp2 * t + fp3;
+        if (std::abs(der) < tol)
+          break;
         t -= val / der;
       }
       const double val = (((fp0 * t + fp1) * t + fp2) * t + fp3) * t + fp4;
-      fprintf(stderr, "DBG   u=%g t=%g val=%g\n", u, t, val);
-      if (std::abs(val) < 1e-4) out.push_back(t);
+      if (std::abs(val) < 1e-4)
+        out.push_back(t);
     }
 
     std::sort(out.begin(), out.end());
@@ -615,7 +636,6 @@ class conic_intersect {
     const double Q = r - p * q / 3.0 + 2.0 * p * p * p / 27.0;
     const double disc = -4.0 * P * P * P - 27.0 * Q * Q;
     std::vector<double> roots;
-    fprintf(stderr, "DBG cubic: p=%g q=%g r=%g P=%g Q=%g disc=%g\n", p, q, r, P, Q, disc);
     if (disc > tol) {
       // Three distinct real roots (trigonometric case).
       const double m = 2.0 * std::sqrt(-P / 3.0);
@@ -644,7 +664,8 @@ class conic_intersect {
       for (int it = 0; it < 8; ++it) {
         const double val = a * t * t * t + b * t * t + c * t + d;
         const double der = 3.0 * a * t * t + 2.0 * b * t + c;
-        if (std::abs(der) < tol) break;
+        if (std::abs(der) < tol)
+          break;
         t -= val / der;
       }
     }
@@ -666,13 +687,12 @@ class conic_intersect {
  */
 template <typename T>
 conic_intersect<T> intersect(const conic_variant<T> &f_in,
-                             const conic_variant<T> &g_in,
-                             double tol = 1e-12) {
+                             const conic_variant<T> &g_in, double tol = 1e-12) {
   conic_variant<T> &f = const_cast<conic_variant<T> &>(f_in);
   conic_variant<T> &g = const_cast<conic_variant<T> &>(g_in);
   return conic_intersect<T>::dispatch_variant(f, g, tol);
 }
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

@@ -8,32 +8,32 @@
 
 static int g_failures = 0;
 
-#define CHECK_TRUE(expr)                                                 \
-  do {                                                                  \
-    if (!(expr)) {                                                      \
-      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__ \
-                << std::endl;                                           \
-      ++g_failures;                                                     \
-    }                                                                   \
+#define CHECK_TRUE(expr)                                                       \
+  do {                                                                         \
+    if (!(expr)) {                                                             \
+      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__     \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
-#define CHECK_EQ(a, b)                                                  \
-  do {                                                                  \
-    if (!((a) == (b))) {                                                \
-      std::cerr << "FAIL: " #a " == " #b " at " << __FILE__ << ":"      \
-                << __LINE__ << std::endl;                               \
-      ++g_failures;                                                     \
-    }                                                                   \
+#define CHECK_EQ(a, b)                                                         \
+  do {                                                                         \
+    if (!((a) == (b))) {                                                       \
+      std::cerr << "FAIL: " #a " == " #b " at " << __FILE__ << ":" << __LINE__ \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
-#define CHECK_NEAR(a, b, tol)                                           \
-  do {                                                                  \
-    if (std::abs((a) - (b)) > (tol)) {                                  \
-      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"    \
-                << __LINE__ << " (" << (a) << " vs " << (b) << ")"       \
-                << std::endl;                                           \
-      ++g_failures;                                                     \
-    }                                                                   \
+#define CHECK_NEAR(a, b, tol)                                                  \
+  do {                                                                         \
+    if (std::abs((a) - (b)) > (tol)) {                                         \
+      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"           \
+                << __LINE__ << " (" << (a) << " vs " << (b) << ")"             \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
 int main() {
@@ -269,7 +269,9 @@ int main() {
     try {
       Point<double> z;
       Point<double>::gram_schmidt(z, v);
-    } catch (const std::invalid_argument &) { threw = true; }
+    } catch (const std::invalid_argument &) {
+      threw = true;
+    }
     CHECK_TRUE(threw);
 
     Point<double> u2(1.0, 1.0);
@@ -277,7 +279,9 @@ int main() {
     bool threw2 = false;
     try {
       Point<double>::gram_schmidt(u2, v2);
-    } catch (const std::invalid_argument &) { threw2 = true; }
+    } catch (const std::invalid_argument &) {
+      threw2 = true;
+    }
     CHECK_TRUE(threw2);
   }
 

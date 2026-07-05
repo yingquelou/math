@@ -9,22 +9,22 @@
 #endif
 
 static int g_failures = 0;
-#define CHECK_TRUE(expr)                                                      \
-  do {                                                                       \
-    if (!(expr)) {                                                            \
+#define CHECK_TRUE(expr)                                                       \
+  do {                                                                         \
+    if (!(expr)) {                                                             \
       std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__     \
-                << std::endl;                                                \
-      ++g_failures;                                                           \
-    }                                                                         \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
-#define CHECK_NEAR(a, b, tol)                                                 \
-  do {                                                                       \
-    if (std::abs((a) - (b)) > (tol)) {                                        \
-      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"          \
+#define CHECK_NEAR(a, b, tol)                                                  \
+  do {                                                                         \
+    if (std::abs((a) - (b)) > (tol)) {                                         \
+      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"           \
                 << __LINE__ << " (" << (a) << " vs " << (b) << ")"             \
-                << std::endl;                                                \
-      ++g_failures;                                                           \
-    }                                                                         \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
 int main() {
@@ -40,9 +40,9 @@ int main() {
     CHECK_NEAR(p.focal_parameter(), 1.0, 1e-12);
     CHECK_NEAR(f.x(), 1.0, 1e-12);
     CHECK_NEAR(f.y(), 0.0, 1e-12);
-    CHECK_NEAR(d.A(), 1.0, 1e-12);   // directrix normal x-component
-    CHECK_NEAR(d.B(), 0.0, 1e-12);   // directrix normal y-component
-    CHECK_NEAR(d.C(), 1.0, 1e-12);   // line: 1*x + 0*y + 1 = 0, i.e. x=-1
+    CHECK_NEAR(d.A(), 1.0, 1e-12); // directrix normal x-component
+    CHECK_NEAR(d.B(), 0.0, 1e-12); // directrix normal y-component
+    CHECK_NEAR(d.C(), 1.0, 1e-12); // line: 1*x + 0*y + 1 = 0, i.e. x=-1
     CHECK_NEAR(p.eccentricity(), 1.0, 1e-12);
   }
 
@@ -92,9 +92,9 @@ int main() {
   // Test 6: vertex form round-trip via from_general.
   {
     Parabola<double> p1(Point<double>(3.0, -1.0), 2.5);
-    Parabola<double> p2 = Parabola<double>::from_general(
-        p1.coef_x2(), p1.coef_y2(), p1.coef_xy(), p1.coef_x1(),
-        p1.coef_y1(), p1.coef_c());
+    Parabola<double> p2 =
+        Parabola<double>::from_general(p1.coef_x2(), p1.coef_y2(), p1.coef_xy(),
+                                       p1.coef_x1(), p1.coef_y1(), p1.coef_c());
     CHECK_NEAR(p2.vertex().x(), p1.vertex().x(), 1e-9);
     CHECK_NEAR(p2.vertex().y(), p1.vertex().y(), 1e-9);
     CHECK_NEAR(p2.focal_parameter(), p1.focal_parameter(), 1e-9);
@@ -138,11 +138,11 @@ int main() {
   // returns +1 / true, point on other side returns -1 / false, point on
   // boundary returns 0 / false.
   {
-    Parabola<double> p;  // y^2 = 4x, focus at (1,0)
-    CHECK_TRUE(p.contains(Point<double>(0.5, 0.0)));   // inside
-    CHECK_TRUE(!p.contains(Point<double>(-1.0, 0.0))); // outside
-    CHECK_TRUE(!p.contains(Point<double>(0.0, 0.0)));  // on boundary
-    CHECK_TRUE(p.on_boundary(Point<double>(1.0, 2.0))); // y^2=4x, x=1 -> y=2
+    Parabola<double> p;                              // y^2 = 4x, focus at (1,0)
+    CHECK_TRUE(p.contains(Point<double>(0.5, 0.0))); // inside
+    CHECK_TRUE(!p.contains(Point<double>(-1.0, 0.0)));   // outside
+    CHECK_TRUE(!p.contains(Point<double>(0.0, 0.0)));    // on boundary
+    CHECK_TRUE(p.on_boundary(Point<double>(1.0, 2.0)));  // y^2=4x, x=1 -> y=2
     CHECK_TRUE(p.on_boundary(Point<double>(0.25, 1.0))); // y^2=4x -> x=0.25
     // y^2=4(2)=8 -> y=2√2 for x=2
     CHECK_TRUE(p.on_boundary(Point<double>(2.0, std::sqrt(8.0))));
@@ -179,7 +179,7 @@ int main() {
     const auto d = p.directrix();
     CHECK_NEAR(d.A(), 0.0, 1e-12);
     CHECK_NEAR(d.B(), 1.0, 1e-12);
-    CHECK_NEAR(d.C(), 0.0, 1e-12);  // line 0*x + 1*y + 0 = 0, i.e. y = 0
+    CHECK_NEAR(d.C(), 0.0, 1e-12); // line 0*x + 1*y + 0 = 0, i.e. y = 0
   }
 
   // Test 11: from_general round-trip stability — vertex form -> general
@@ -195,8 +195,10 @@ int main() {
     CHECK_NEAR(rt.focal_parameter(), src.focal_parameter(), 1e-9);
     // Allow for 2*pi periodicity on the rotation angle.
     double dtheta = rt.rotation_angle() - src.rotation_angle();
-    while (dtheta > pi) dtheta -= 2.0 * pi;
-    while (dtheta < -pi) dtheta += 2.0 * pi;
+    while (dtheta > pi)
+      dtheta -= 2.0 * pi;
+    while (dtheta < -pi)
+      dtheta += 2.0 * pi;
     CHECK_NEAR(dtheta, 0.0, 1e-9);
     const auto f1 = src.focus();
     const auto f2 = rt.focus();

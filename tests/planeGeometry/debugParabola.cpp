@@ -8,7 +8,7 @@
 int g_passed = 0, g_failed = 0;
 
 void recover(double a, double b, double C, double d, double e, double f,
-             double& cx, double& cy, double& p) {
+             double &cx, double &cy, double &p) {
   // Recover s, c (both >= 0; sign encoded in p)
   double sr, cr;
   if (std::abs(C) > 1e-15) {
@@ -47,8 +47,8 @@ void recover(double a, double b, double C, double d, double e, double f,
     }
   } else if (std::abs(sr * sr - cr * cr) < 1e-12 * (sr * sr + cr * cr)) {
     // s^2 == c^2 (45-degree rotation): solve tangent + F = 0 directly.
-    // Tangent parallel to (c, -s) with s = ±c gives either x + y = const or x - y = const.
-    // Use the gradient parallel-to-axis condition:
+    // Tangent parallel to (c, -s) with s = ±c gives either x + y = const or x -
+    // y = const. Use the gradient parallel-to-axis condition:
     //   s*F_x = c*F_y  ->  simplifies to a linear constraint.
     // With s^2 = c^2, the constraint becomes: s*F_x = c*F_y.
     //   F_x = 2ax + Cy + d, F_y = Cx + 2by + e
@@ -58,8 +58,9 @@ void recover(double a, double b, double C, double d, double e, double f,
     //   2s^3 x - 2s^3 y + sd = -2s^3 x + 2s^3 y + se  (since C = -2s^2)
     //   Rearr: 4s^3 (x - y) = se - sd
     //   x - y = (e - d) / (4s^2)  [when s = c]
-    // Then F(x, y) = 0: s^2 (x-y)^2 - 4s^2 (x+y) * p' / s^2 ... 
-    // Actually use the original F: F = (s(x-cx) - c(y-cy))^2 - 4p(c(x-cx) + s(y-cy))
+    // Then F(x, y) = 0: s^2 (x-y)^2 - 4s^2 (x+y) * p' / s^2 ...
+    // Actually use the original F: F = (s(x-cx) - c(y-cy))^2 - 4p(c(x-cx) +
+    // s(y-cy))
     //   = s^2 (x-y)^2 - 4p s (x+y)  (with s = c)
     // Solve (x-y) = K1 and (x+y) = K2 from F = 0.
     double K1 = (e - d) / (4.0 * sr * sr);
@@ -71,18 +72,19 @@ void recover(double a, double b, double C, double d, double e, double f,
   } else {
     // General case: K = (se - cd) / (4sc)
     double K = (sr * e - cr * d) / (4.0 * sr * cr);
-    double ssq = sr * sr + cr * cr;  // should be 1 by convention
+    double ssq = sr * sr + cr * cr; // should be 1 by convention
     cx = sr * K + cr * K * K / (4.0 * p);
     cy = -cr * K + sr * K * K / (4.0 * p);
   }
 }
 
-void testCase(const char* name, double cx0, double cy0, double p0, double rot) {
+void testCase(const char *name, double cx0, double cy0, double p0, double rot) {
   double s = std::sin(rot), c = std::cos(rot);
-  double a = s*s, b = c*c, C = -2*s*c;
-  double d = -4*p0*c - 2*s*s*cx0 + 2*s*c*cy0;
-  double e = -4*p0*s - 2*c*c*cy0 + 2*s*c*cx0;
-  double f = s*s*cx0*cx0 + c*c*cy0*cy0 - 2*s*c*cx0*cy0 + 4*p0*(c*cx0 + s*cy0);
+  double a = s * s, b = c * c, C = -2 * s * c;
+  double d = -4 * p0 * c - 2 * s * s * cx0 + 2 * s * c * cy0;
+  double e = -4 * p0 * s - 2 * c * c * cy0 + 2 * s * c * cx0;
+  double f = s * s * cx0 * cx0 + c * c * cy0 * cy0 - 2 * s * c * cx0 * cy0 +
+             4 * p0 * (c * cx0 + s * cy0);
 
   double cxr, cyr, pr;
   try {
@@ -92,7 +94,8 @@ void testCase(const char* name, double cx0, double cy0, double p0, double rot) {
     g_failed++;
     return;
   }
-  double Fv = a*cxr*cxr + b*cyr*cyr + C*cxr*cyr + d*cxr + e*cyr + f;
+  double Fv =
+      a * cxr * cxr + b * cyr * cyr + C * cxr * cyr + d * cxr + e * cyr + f;
 
   // Expected p may differ by sign - but sign should encode direction.
   // So we compare |p|.
@@ -109,7 +112,8 @@ void testCase(const char* name, double cx0, double cy0, double p0, double rot) {
     std::printf("%s OK: (%.4f, %.4f, p=%.4f)\n", name, cxr, cyr, pr);
     g_passed++;
   } else {
-    std::printf("%s FAIL: exp (%.3f,%.3f,p=%.3f) got (%.4f,%.4f,p=%.4f) Fv=%.3e psign_ok=%d\n",
+    std::printf("%s FAIL: exp (%.3f,%.3f,p=%.3f) got (%.4f,%.4f,p=%.4f) "
+                "Fv=%.3e psign_ok=%d\n",
                 name, cx0, cy0, p0, cxr, cyr, pr, Fv, ok_psign);
     g_failed++;
   }
@@ -117,14 +121,14 @@ void testCase(const char* name, double cx0, double cy0, double p0, double rot) {
 
 int main() {
   testCase("t0: rot=0, (1,2), p=2", 1.0, 2.0, 2.0, 0.0);
-  testCase("t1: rot=pi/4, (0.5,0.5), p=1", 0.5, 0.5, 1.0, M_PI/4);
-  testCase("t2: rot=pi/2, (1,2), p=2", 1.0, 2.0, 2.0, M_PI/2);
+  testCase("t1: rot=pi/4, (0.5,0.5), p=1", 0.5, 0.5, 1.0, M_PI / 4);
+  testCase("t2: rot=pi/2, (1,2), p=2", 1.0, 2.0, 2.0, M_PI / 2);
   testCase("t3: rot=0, (0,0), p=1", 0.0, 0.0, 1.0, 0.0);
   testCase("t4: rot=0, (3,-1), p=2.5", 3.0, -1.0, 2.5, 0.0);
   testCase("t5: rot=pi, (1,2), p=2", 1.0, 2.0, 2.0, M_PI);
-  testCase("t6: rot=pi/3, (2,3), p=1.5", 2.0, 3.0, 1.5, M_PI/3);
+  testCase("t6: rot=pi/3, (2,3), p=1.5", 2.0, 3.0, 1.5, M_PI / 3);
   testCase("t7: rot=0, (0,0), p=3", 0.0, 0.0, 3.0, 0.0);
-  testCase("t8: rot=pi/6, (-1,-2), p=0.5", -1.0, -2.0, 0.5, M_PI/6);
+  testCase("t8: rot=pi/6, (-1,-2), p=0.5", -1.0, -2.0, 0.5, M_PI / 6);
 
   std::printf("\n%d passed, %d failed\n", g_passed, g_failed);
   return g_failed > 0 ? 1 : 0;

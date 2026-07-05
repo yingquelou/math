@@ -1,6 +1,6 @@
-#include <iostream>
 #include "Line.hpp"
 #include "Point.hpp"
+#include <iostream>
 
 int main() {
   using planeGeometry::Line;

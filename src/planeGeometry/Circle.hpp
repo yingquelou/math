@@ -31,11 +31,10 @@ namespace planeGeometry {
  *   @li `radius() >= 0` (non-negative radius).
  *   @li `center()` returns the unique center point.
  */
-template <typename T>
-class Circle : public ConicBase<Circle<T>, T> {
+template <typename T> class Circle : public ConicBase<Circle<T>, T> {
   friend class ConicBase<Circle<T>, T>;
 
- private:
+private:
   Point<T> center_;
   T radius_;
 
@@ -58,7 +57,7 @@ class Circle : public ConicBase<Circle<T>, T> {
     radius_ = static_cast<T>(std::sqrt(std::max(0.0, r2)));
   }
 
- public:
+public:
   /**
    * @brief Default constructor. Creates the unit circle
    *        @f$ x^2 + y^2 = 1 @f$ (center at origin, radius 1).
@@ -78,12 +77,11 @@ class Circle : public ConicBase<Circle<T>, T> {
    *       @f$ F(x,y) = (x - c_x)^2 + (y - c_y)^2 - r^2 @f$.
    */
   Circle(const Point<T> &center, T radius)
-      : ConicBase<Circle<T>, T>(
-            T(1), T(1), T(),
-            static_cast<T>(-2) * center.x(),
-            static_cast<T>(-2) * center.y(),
-            center.x() * center.x() + center.y() * center.y() -
-                radius * radius),
+      : ConicBase<Circle<T>, T>(T(1), T(1), T(),
+                                static_cast<T>(-2) * center.x(),
+                                static_cast<T>(-2) * center.y(),
+                                center.x() * center.x() +
+                                    center.y() * center.y() - radius * radius),
         center_(center), radius_(radius) {}
 
   /**
@@ -92,8 +90,7 @@ class Circle : public ConicBase<Circle<T>, T> {
    * @param cy Center @f$ y @f$.
    * @param radius Radius (must be non-negative).
    */
-  Circle(T cx, T cy, T radius)
-      : Circle(Point<T>(cx, cy), radius) {}
+  Circle(T cx, T cy, T radius) : Circle(Point<T>(cx, cy), radius) {}
 
   /**
    * @brief Construct a circle from general-form coefficients.
@@ -131,8 +128,12 @@ class Circle : public ConicBase<Circle<T>, T> {
       throw std::invalid_argument("Circle::from_general: a must be positive");
     }
     Circle result;
-    result.a_ = a; result.b_ = b; result.c_ = c;
-    result.d_ = d; result.e_ = e; result.f_ = f;
+    result.a_ = a;
+    result.b_ = b;
+    result.c_ = c;
+    result.d_ = d;
+    result.e_ = e;
+    result.f_ = f;
     result.recompute_from_coeffs();
     return result;
   }
@@ -201,14 +202,14 @@ class Circle : public ConicBase<Circle<T>, T> {
    */
   int relative_position(const Point<T> &p, T tol = T(1e-12)) const {
     const int fs = this->f_sign(p, tol);
-    if (fs == 0) return 0;
-    const double sign_a =
-        (static_cast<double>(this->a_) > 0.0) ? 1.0 : -1.0;
+    if (fs == 0)
+      return 0;
+    const double sign_a = (static_cast<double>(this->a_) > 0.0) ? 1.0 : -1.0;
     const double sign_F = (fs > 0) ? 1.0 : -1.0;
     return (sign_a * sign_F < 0.0) ? 1 : -1;
   }
 };
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

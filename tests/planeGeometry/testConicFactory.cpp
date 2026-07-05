@@ -7,8 +7,8 @@
 #include <string>
 #include <utility>
 
-#include "conic_factory.hpp"
 #include "Point.hpp"
+#include "conic_factory.hpp"
 
 using namespace planeGeometry;
 
@@ -89,8 +89,8 @@ struct property_visitor {
   }
   result_t operator()(const Hyperbola<double> &h) const {
     std::ostringstream oss;
-    oss << "Hyperbola(a=" << h.real_semi_axis()
-        << ",b=" << h.imag_semi_axis() << ")";
+    oss << "Hyperbola(a=" << h.real_semi_axis() << ",b=" << h.imag_semi_axis()
+        << ")";
     return oss.str();
   }
 };
@@ -103,7 +103,7 @@ void require(bool cond, const std::string &msg) {
   std::cout << "PASS: " << msg << std::endl;
 }
 
-}  // namespace
+} // namespace
 
 int main() {
   std::cout << "=== conic_factory tests ===" << std::endl;
@@ -141,19 +141,23 @@ int main() {
     auto vc = make_conic(1.0, 1.0, 0.0, 0.0, 0.0, -1.0);
     std::string sc = visit_conic(vc, property_visitor());
     require(sc.size() == 26, "property_visitor(Circle): size");
-    require(sc.compare(0, 7, "Circle(") == 0, "property_visitor(Circle): prefix");
+    require(sc.compare(0, 7, "Circle(") == 0,
+            "property_visitor(Circle): prefix");
 
     auto ve = make_conic(0.25, 1.0, 0.0, 0.0, 0.0, -1.0);
     std::string se = visit_conic(ve, property_visitor());
-    require(se.compare(0, 8, "Ellipse(") == 0, "property_visitor(Ellipse): prefix");
+    require(se.compare(0, 8, "Ellipse(") == 0,
+            "property_visitor(Ellipse): prefix");
 
     auto vp = make_conic(1.0, 0.0, 0.0, 0.0, -1.0, 0.0);
     std::string sp = visit_conic(vp, property_visitor());
-    require(sp.compare(0, 9, "Parabola(") == 0, "property_visitor(Parabola): prefix");
+    require(sp.compare(0, 9, "Parabola(") == 0,
+            "property_visitor(Parabola): prefix");
 
     auto vh = make_conic(1.0, -1.0, 0.0, 0.0, 0.0, -1.0);
     std::string sh = visit_conic(vh, property_visitor());
-    require(sh.compare(0, 10, "Hyperbola(") == 0, "property_visitor(Hyperbola): prefix");
+    require(sh.compare(0, 10, "Hyperbola(") == 0,
+            "property_visitor(Hyperbola): prefix");
   }
 
   // Variant-based no-if/switch tag dispatch (C++17 only)

@@ -16,10 +16,9 @@ namespace planeGeometry {
  *
  * @tparam T A concrete conic type (e.g. `Circle<double>`).
  */
-template <typename T>
-struct conic_traits;
+template <typename T> struct conic_traits;
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #include "Circle.hpp"
 #include "Ellipse.hpp"
@@ -33,8 +32,7 @@ namespace planeGeometry {
  *        special case of an ellipse).
  * @tparam T Numeric type.
  */
-template <typename T>
-struct conic_traits<Circle<T>> {
+template <typename T> struct conic_traits<Circle<T>> {
   using tag = ellipse_tag;
 };
 
@@ -42,8 +40,7 @@ struct conic_traits<Circle<T>> {
  * @brief Specialization for Ellipse: tag is `ellipse_tag`.
  * @tparam T Numeric type.
  */
-template <typename T>
-struct conic_traits<Ellipse<T>> {
+template <typename T> struct conic_traits<Ellipse<T>> {
   using tag = ellipse_tag;
 };
 
@@ -51,8 +48,7 @@ struct conic_traits<Ellipse<T>> {
  * @brief Specialization for Hyperbola: tag is `hyperbola_tag`.
  * @tparam T Numeric type.
  */
-template <typename T>
-struct conic_traits<Hyperbola<T>> {
+template <typename T> struct conic_traits<Hyperbola<T>> {
   using tag = hyperbola_tag;
 };
 
@@ -60,8 +56,7 @@ struct conic_traits<Hyperbola<T>> {
  * @brief Specialization for Parabola: tag is `parabola_tag`.
  * @tparam T Numeric type.
  */
-template <typename T>
-struct conic_traits<Parabola<T>> {
+template <typename T> struct conic_traits<Parabola<T>> {
   using tag = parabola_tag;
 };
 
@@ -78,10 +73,11 @@ struct conic_traits<Parabola<T>> {
  * @return A default-constructed tag of the appropriate type.
  */
 template <typename T>
-inline constexpr typename conic_traits<T>::tag conic_tag_v(const T &conic) noexcept {
+inline constexpr typename conic_traits<T>::tag
+conic_tag_v(const T &conic) noexcept {
   return typename conic_traits<T>::tag{};
 }
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

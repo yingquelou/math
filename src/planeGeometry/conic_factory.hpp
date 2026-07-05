@@ -36,8 +36,7 @@ namespace detail {
  *
  * @tparam T Numeric type used by the stored conic.
  */
-template <typename T>
-struct conic_storage {
+template <typename T> struct conic_storage {
   /** @brief The set of concrete conic kinds that can be stored. */
   enum class kind { monostate_k, circle_k, ellipse_k, parabola_k, hyperbola_k };
 
@@ -50,7 +49,7 @@ struct conic_storage {
    */
   static const size_t kStorageSize =
       (sizeof(Circle<T>) > sizeof(Ellipse<T>) ? sizeof(Circle<T>)
-                                               : sizeof(Ellipse<T>));
+                                              : sizeof(Ellipse<T>));
   static const size_t kStorageAlign =
       (std::alignment_of<Circle<T>>::value >
                std::alignment_of<Ellipse<T>>::value
@@ -95,20 +94,20 @@ struct conic_storage {
   /** @brief Destroy the currently stored object, if any. */
   void destroy() {
     switch (which) {
-      case kind::circle_k:
-        reinterpret_cast<Circle<T> *>(&storage)->~Circle<T>();
-        break;
-      case kind::ellipse_k:
-        reinterpret_cast<Ellipse<T> *>(&storage)->~Ellipse<T>();
-        break;
-      case kind::parabola_k:
-        reinterpret_cast<Parabola<T> *>(&storage)->~Parabola<T>();
-        break;
-      case kind::hyperbola_k:
-        reinterpret_cast<Hyperbola<T> *>(&storage)->~Hyperbola<T>();
-        break;
-      case kind::monostate_k:
-        break;
+    case kind::circle_k:
+      reinterpret_cast<Circle<T> *>(&storage)->~Circle<T>();
+      break;
+    case kind::ellipse_k:
+      reinterpret_cast<Ellipse<T> *>(&storage)->~Ellipse<T>();
+      break;
+    case kind::parabola_k:
+      reinterpret_cast<Parabola<T> *>(&storage)->~Parabola<T>();
+      break;
+    case kind::hyperbola_k:
+      reinterpret_cast<Hyperbola<T> *>(&storage)->~Hyperbola<T>();
+      break;
+    case kind::monostate_k:
+      break;
     }
     which = kind::monostate_k;
   }
@@ -118,8 +117,7 @@ struct conic_storage {
    * @tparam U Type of the conic to construct (normally deduced from @p u).
    * @param u  Conic instance to construct from (forwarding reference).
    */
-  template <typename U>
-  void construct(U &&u) {
+  template <typename U> void construct(U &&u) {
     typedef typename std::remove_reference<U>::type V;
     ::new (&storage) V(std::forward<U>(u));
     which = kind_for<V>();
@@ -131,14 +129,18 @@ struct conic_storage {
    * @tparam U Concrete conic type.
    * @return The matching `kind` value (or `monostate_k` if not a conic).
    */
-  template <typename U>
-  static kind kind_for() {
-    typedef typename std::remove_cv<
-        typename std::remove_reference<U>::type>::type plain;
-    if (std::is_same<plain, Circle<T>>::value) return kind::circle_k;
-    if (std::is_same<plain, Ellipse<T>>::value) return kind::ellipse_k;
-    if (std::is_same<plain, Parabola<T>>::value) return kind::parabola_k;
-    if (std::is_same<plain, Hyperbola<T>>::value) return kind::hyperbola_k;
+  template <typename U> static kind kind_for() {
+    typedef
+        typename std::remove_cv<typename std::remove_reference<U>::type>::type
+            plain;
+    if (std::is_same<plain, Circle<T>>::value)
+      return kind::circle_k;
+    if (std::is_same<plain, Ellipse<T>>::value)
+      return kind::ellipse_k;
+    if (std::is_same<plain, Parabola<T>>::value)
+      return kind::parabola_k;
+    if (std::is_same<plain, Hyperbola<T>>::value)
+      return kind::hyperbola_k;
     return kind::monostate_k;
   }
 
@@ -157,71 +159,69 @@ struct conic_storage {
   template <typename Visitor>
   typename Visitor::result_t apply(Visitor &&visitor) const {
     switch (which) {
-      case kind::circle_k:
-        return std::forward<Visitor>(visitor)(
-            *reinterpret_cast<const Circle<T> *>(&storage));
-      case kind::ellipse_k:
-        return std::forward<Visitor>(visitor)(
-            *reinterpret_cast<const Ellipse<T> *>(&storage));
-      case kind::parabola_k:
-        return std::forward<Visitor>(visitor)(
-            *reinterpret_cast<const Parabola<T> *>(&storage));
-      case kind::hyperbola_k:
-        return std::forward<Visitor>(visitor)(
-            *reinterpret_cast<const Hyperbola<T> *>(&storage));
-      case kind::monostate_k:
-        return std::forward<Visitor>(visitor)();
+    case kind::circle_k:
+      return std::forward<Visitor>(visitor)(
+          *reinterpret_cast<const Circle<T> *>(&storage));
+    case kind::ellipse_k:
+      return std::forward<Visitor>(visitor)(
+          *reinterpret_cast<const Ellipse<T> *>(&storage));
+    case kind::parabola_k:
+      return std::forward<Visitor>(visitor)(
+          *reinterpret_cast<const Parabola<T> *>(&storage));
+    case kind::hyperbola_k:
+      return std::forward<Visitor>(visitor)(
+          *reinterpret_cast<const Hyperbola<T> *>(&storage));
+    case kind::monostate_k:
+      return std::forward<Visitor>(visitor)();
     }
     return std::forward<Visitor>(visitor)();
   }
 
- private:
+private:
   /** @brief Copy-construct the stored object from @p other. */
   void copy_from(const conic_storage &other) {
     switch (other.which) {
-      case kind::circle_k:
-        construct(*reinterpret_cast<const Circle<T> *>(&other.storage));
-        break;
-      case kind::ellipse_k:
-        construct(*reinterpret_cast<const Ellipse<T> *>(&other.storage));
-        break;
-      case kind::parabola_k:
-        construct(*reinterpret_cast<const Parabola<T> *>(&other.storage));
-        break;
-      case kind::hyperbola_k:
-        construct(*reinterpret_cast<const Hyperbola<T> *>(&other.storage));
-        break;
-      case kind::monostate_k:
-        which = kind::monostate_k;
-        break;
+    case kind::circle_k:
+      construct(*reinterpret_cast<const Circle<T> *>(&other.storage));
+      break;
+    case kind::ellipse_k:
+      construct(*reinterpret_cast<const Ellipse<T> *>(&other.storage));
+      break;
+    case kind::parabola_k:
+      construct(*reinterpret_cast<const Parabola<T> *>(&other.storage));
+      break;
+    case kind::hyperbola_k:
+      construct(*reinterpret_cast<const Hyperbola<T> *>(&other.storage));
+      break;
+    case kind::monostate_k:
+      which = kind::monostate_k;
+      break;
     }
   }
 
   /** @brief Move-construct the stored object from @p other. */
   void move_from(conic_storage &&other) {
     switch (other.which) {
-      case kind::circle_k:
-        construct(std::move(*reinterpret_cast<Circle<T> *>(&other.storage)));
-        break;
-      case kind::ellipse_k:
-        construct(std::move(*reinterpret_cast<Ellipse<T> *>(&other.storage)));
-        break;
-      case kind::parabola_k:
-        construct(
-            std::move(*reinterpret_cast<Parabola<T> *>(&other.storage)));
-        break;
-      case kind::hyperbola_k:
-        construct(
-            std::move(*reinterpret_cast<Hyperbola<T> *>(&other.storage)));
-        break;
-      case kind::monostate_k:
-        which = kind::monostate_k;
-        break;
+    case kind::circle_k:
+      construct(std::move(*reinterpret_cast<Circle<T> *>(&other.storage)));
+      break;
+    case kind::ellipse_k:
+      construct(std::move(*reinterpret_cast<Ellipse<T> *>(&other.storage)));
+      break;
+    case kind::parabola_k:
+      construct(std::move(*reinterpret_cast<Parabola<T> *>(&other.storage)));
+      break;
+    case kind::hyperbola_k:
+      construct(std::move(*reinterpret_cast<Hyperbola<T> *>(&other.storage)));
+      break;
+    case kind::monostate_k:
+      which = kind::monostate_k;
+      break;
     }
   }
 };
 
-}  // namespace detail
+} // namespace detail
 
 #if PLANE_GEOMETRY_HAS_STD_VARIANT
 
@@ -234,7 +234,7 @@ struct conic_storage {
  */
 template <typename T>
 using conic_variant = std::variant<std::monostate, Circle<T>, Ellipse<T>,
-                                    Parabola<T>, Hyperbola<T>>;
+                                   Parabola<T>, Hyperbola<T>>;
 
 #else
 
@@ -247,11 +247,12 @@ using conic_variant = std::variant<std::monostate, Circle<T>, Ellipse<T>,
  *
  * @tparam T Numeric type.
  */
-template <typename T>
-class conic_variant {
- public:
+template <typename T> class conic_variant {
+public:
   /** @brief Construct an empty (monostate) variant. */
-  conic_variant() noexcept { storage_.which = detail::conic_storage<T>::kind::monostate_k; }
+  conic_variant() noexcept {
+    storage_.which = detail::conic_storage<T>::kind::monostate_k;
+  }
 
   /** @brief Construct from a Circle. */
   conic_variant(const Circle<T> &c) { storage_.construct(c); }
@@ -281,15 +282,19 @@ class conic_variant {
    * @param u  Conic to assign.
    * @return Reference to `*this`.
    */
-  template <typename U>
-  conic_variant &operator=(U &&u) {
+  template <typename U> conic_variant &operator=(U &&u) {
     storage_.construct(std::forward<U>(u));
     return *this;
   }
 
   /** @brief Enumeration of the possible variant states. */
-  enum class index_t { monostate = 0, circle = 1, ellipse = 2, parabola = 3,
-                       hyperbola = 4 };
+  enum class index_t {
+    monostate = 0,
+    circle = 1,
+    ellipse = 2,
+    parabola = 3,
+    hyperbola = 4
+  };
 
   /**
    * @brief Return the current variant state as an `index_t` enum.
@@ -321,7 +326,7 @@ class conic_variant {
     return storage_.apply(std::forward<Visitor>(visitor));
   }
 
- private:
+private:
   /** @brief The type-erased storage. */
   detail::conic_storage<T> storage_;
 };
@@ -419,6 +424,6 @@ auto visit_conic(conic_variant<T> &&v, Visitor &&visitor)
 
 #endif
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

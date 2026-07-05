@@ -18,13 +18,14 @@ namespace planeGeometry {
  * @param theta Rotation angle in radians.
  * @return A `tensor::Tensor<T, 2>` containing the 2x2 rotation matrix.
  */
-template <typename T>
-tensor::Tensor<T, 2> rotation_matrix(T theta) {
+template <typename T> tensor::Tensor<T, 2> rotation_matrix(T theta) {
   const T c = std::cos(theta);
   const T s = std::sin(theta);
   tensor::Tensor<T, 2> m(2, 2);
-  m(0, 0) = c;  m(0, 1) = -s;
-  m(1, 0) = s;  m(1, 1) = c;
+  m(0, 0) = c;
+  m(0, 1) = -s;
+  m(1, 0) = s;
+  m(1, 1) = c;
   return m;
 }
 
@@ -38,8 +39,7 @@ tensor::Tensor<T, 2> rotation_matrix(T theta) {
  * @param theta Rotation angle in radians.
  * @return The rotated point.
  */
-template <typename T>
-Point<T> rotate_about_origin(const Point<T>& p, T theta) {
+template <typename T> Point<T> rotate_about_origin(const Point<T> &p, T theta) {
   tensor::Tensor<T, 2> R = rotation_matrix(theta);
   tensor::Tensor<T, 1> v(2);
   v[0] = p.x();
@@ -61,7 +61,7 @@ Point<T> rotate_about_origin(const Point<T>& p, T theta) {
  * @return The rotated point.
  */
 template <typename T>
-Point<T> rotate_about(const Point<T>& p, const Point<T>& center, T theta) {
+Point<T> rotate_about(const Point<T> &p, const Point<T> &center, T theta) {
   tensor::Tensor<T, 2> R = rotation_matrix(theta);
   tensor::Tensor<T, 1> v(2);
   v[0] = p.x() - center.x();
@@ -79,8 +79,7 @@ Point<T> rotate_about(const Point<T>& p, const Point<T>& center, T theta) {
  * @param dy Translation in @f$ y @f$.
  * @return The translated point @f$ (x + dx,\; y + dy) @f$.
  */
-template <typename T>
-Point<T> translate(const Point<T>& p, T dx, T dy) {
+template <typename T> Point<T> translate(const Point<T> &p, T dx, T dy) {
   return Point<T>(p.x() + dx, p.y() + dy);
 }
 
@@ -97,11 +96,10 @@ Point<T> translate(const Point<T>& p, T dx, T dy) {
  * @return The transformed point.
  */
 template <typename T>
-Point<T> rigid_transform(const Point<T>& p, T theta, T dx, T dy) {
+Point<T> rigid_transform(const Point<T> &p, T theta, T dx, T dy) {
   const T c = std::cos(theta);
   const T s = std::sin(theta);
-  return Point<T>(c * p.x() - s * p.y() + dx,
-                  s * p.x() + c * p.y() + dy);
+  return Point<T>(c * p.x() - s * p.y() + dx, s * p.x() + c * p.y() + dy);
 }
 
 /**
@@ -115,11 +113,10 @@ Point<T> rigid_transform(const Point<T>& p, T theta, T dx, T dy) {
  * @param sy Scale factor for @f$ y @f$.
  * @return The scaled point.
  */
-template <typename T>
-Point<T> scale(const Point<T>& p, T sx, T sy) {
+template <typename T> Point<T> scale(const Point<T> &p, T sx, T sy) {
   return Point<T>(sx * p.x(), sy * p.y());
 }
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

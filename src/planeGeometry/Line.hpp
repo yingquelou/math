@@ -21,14 +21,13 @@ namespace planeGeometry {
  * @note 当 A 与 B 同时为零时，直线处于"不存在"状态（is_valid() 返回 false）。
  *       多数计算方法在此状态下将返回 false 或 0。
  */
-template <typename T>
-class Line {
- private:
+template <typename T> class Line {
+private:
   T A_;
   T B_;
   T C_;
 
- public:
+public:
   /**
    * @brief 默认构造，A=B=C=0（is_valid() 为 false）
    */
@@ -123,8 +122,7 @@ class Line {
    * @param normal 法向量
    * @return 新 Line；若 normal 为零向量则返回 invalid 状态
    */
-  static Line from_point_normal(const Point<T> &p,
-                                const Point<T> &normal) {
+  static Line from_point_normal(const Point<T> &p, const Point<T> &normal) {
     if (std::abs(normal.x()) < 1e-15 && std::abs(normal.y()) < 1e-15) {
       return Line();
     }
@@ -149,9 +147,8 @@ class Line {
    * @return true 当 |A1*B2 - A2*B1| < tol
    */
   bool is_parallel_to(const Line &other, double tol = 1e-12) const {
-    const double det =
-        static_cast<double>(A_) * static_cast<double>(other.B_) -
-        static_cast<double>(B_) * static_cast<double>(other.A_);
+    const double det = static_cast<double>(A_) * static_cast<double>(other.B_) -
+                       static_cast<double>(B_) * static_cast<double>(other.A_);
     return std::abs(det) < tol;
   }
 
@@ -193,24 +190,21 @@ class Line {
    * @return true 当两直线有效且相交（非平行）
    */
   bool intersection_with(const Line &other, Point<T> &out,
-                        double tol = 1e-12) const {
+                         double tol = 1e-12) const {
     if (!is_valid() || !other.is_valid()) {
       return false;
     }
-    const double det =
-        static_cast<double>(A_) * static_cast<double>(other.B_) -
-        static_cast<double>(B_) * static_cast<double>(other.A_);
+    const double det = static_cast<double>(A_) * static_cast<double>(other.B_) -
+                       static_cast<double>(B_) * static_cast<double>(other.A_);
     if (std::abs(det) < tol) {
       return false;
     }
-    const double x =
-        (static_cast<double>(B_) * static_cast<double>(other.C_) -
-         static_cast<double>(C_) * static_cast<double>(other.B_)) /
-        det;
-    const double y =
-        (static_cast<double>(C_) * static_cast<double>(other.A_) -
-         static_cast<double>(A_) * static_cast<double>(other.C_)) /
-        det;
+    const double x = (static_cast<double>(B_) * static_cast<double>(other.C_) -
+                      static_cast<double>(C_) * static_cast<double>(other.B_)) /
+                     det;
+    const double y = (static_cast<double>(C_) * static_cast<double>(other.A_) -
+                      static_cast<double>(A_) * static_cast<double>(other.C_)) /
+                     det;
     out = Point<T>(static_cast<T>(x), static_cast<T>(y));
     return true;
   }
@@ -240,10 +234,11 @@ class Line {
     if (n1 < 1e-15 || n2 < 1e-15) {
       return 0.0;
     }
-    double cosine =
-        static_cast<double>(d1.dot(d2)) / (n1 * n2);
-    if (cosine > 1.0) cosine = 1.0;
-    if (cosine < -1.0) cosine = -1.0;
+    double cosine = static_cast<double>(d1.dot(d2)) / (n1 * n2);
+    if (cosine > 1.0)
+      cosine = 1.0;
+    if (cosine < -1.0)
+      cosine = -1.0;
     const double acute = std::acos(std::abs(cosine));
     if (acute > M_PI / 2.0) {
       return M_PI - acute;
@@ -259,8 +254,7 @@ class Line {
   double distance_to(const Point<T> &p) const {
     const double num =
         std::abs(static_cast<double>(A_ * p.x() + B_ * p.y() + C_));
-    const double den =
-        std::sqrt(static_cast<double>(A_ * A_ + B_ * B_));
+    const double den = std::sqrt(static_cast<double>(A_ * A_ + B_ * B_));
     if (den < 1e-15) {
       return 0.0;
     }
@@ -276,13 +270,11 @@ class Line {
     if (!is_parallel_to(other)) {
       return 0.0;
     }
-    const double len2 =
-        static_cast<double>(A_ * A_ + B_ * B_);
+    const double len2 = static_cast<double>(A_ * A_ + B_ * B_);
     if (len2 < 1e-15) {
       return 0.0;
     }
-    return std::abs(static_cast<double>(C_ - other.C_)) /
-           std::sqrt(len2);
+    return std::abs(static_cast<double>(C_ - other.C_)) / std::sqrt(len2);
   }
 
   Point<T> foot_of_perpendicular(const Point<T> &p) const {
@@ -290,7 +282,8 @@ class Line {
     const double B = static_cast<double>(B_);
     const double C = static_cast<double>(C_);
     const double denom = A * A + B * B;
-    if (denom < 1e-15) return Point<T>(p);
+    if (denom < 1e-15)
+      return Point<T>(p);
     const double t = -(A * p.x() + B * p.y() + C) / denom;
     return Point<T>(static_cast<T>(p.x() + A * t),
                     static_cast<T>(p.y() + B * t));
@@ -304,13 +297,18 @@ class Line {
 
   bool angle_bisector(const Line &other, Line &bisector1,
                       Line &bisector2) const {
-    if (!is_valid() || !other.is_valid()) return false;
-    if (is_parallel_to(other)) return false;
+    if (!is_valid() || !other.is_valid())
+      return false;
+    if (is_parallel_to(other))
+      return false;
     Point<T> inter;
-    if (!intersection_with(other, inter)) return false;
+    if (!intersection_with(other, inter))
+      return false;
     const double len1 = std::sqrt(static_cast<double>(A_ * A_ + B_ * B_));
-    const double len2 = std::sqrt(static_cast<double>(other.A_ * other.A_ + other.B_ * other.B_));
-    if (len1 < 1e-15 || len2 < 1e-15) return false;
+    const double len2 = std::sqrt(
+        static_cast<double>(other.A_ * other.A_ + other.B_ * other.B_));
+    if (len1 < 1e-15 || len2 < 1e-15)
+      return false;
     const double nx1 = static_cast<double>(A_) / len1;
     const double ny1 = static_cast<double>(B_) / len1;
     const double nx2 = static_cast<double>(other.A_) / len2;
@@ -321,11 +319,11 @@ class Line {
     const double s = ny1 - ny2;
     if (std::abs(p * p + q * q) > 1e-15) {
       bisector1 = Line<T>(static_cast<T>(p), static_cast<T>(q),
-                           static_cast<T>(-(p * inter.x() + q * inter.y())));
+                          static_cast<T>(-(p * inter.x() + q * inter.y())));
     }
     if (std::abs(r * r + s * s) > 1e-15) {
       bisector2 = Line<T>(static_cast<T>(r), static_cast<T>(s),
-                           static_cast<T>(-(r * inter.x() + s * inter.y())));
+                          static_cast<T>(-(r * inter.x() + s * inter.y())));
     }
     return true;
   }
@@ -342,6 +340,6 @@ class Line {
   }
 };
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

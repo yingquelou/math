@@ -1234,8 +1234,7 @@ public:
             typename = typename std::enable_if<detail::has_mul<U>::value>::type>
   self_type cwiseProduct(const self_type &other) const {
     if (!same_shape(other)) {
-      throw std::invalid_argument(
-          "Matrix::cwiseProduct: shape mismatch");
+      throw std::invalid_argument("Matrix::cwiseProduct: shape mismatch");
     }
     self_type r(shape_[0], shape_[1]);
     for (std::size_t i = 0; i < data_.size(); ++i)
@@ -1349,8 +1348,8 @@ public:
   }
 
   template <typename U = T,
-            typename = typename std::enable_if<
-                detail::has_add<U>::value && detail::has_mul<U>::value>::type>
+            typename = typename std::enable_if<detail::has_add<U>::value &&
+                                               detail::has_mul<U>::value>::type>
   static self_type outer_product(const vector_type &u, const vector_type &v) {
     const size_type m = u.size();
     const size_type n = v.size();
@@ -1362,8 +1361,8 @@ public:
   }
 
   template <typename U = T,
-            typename = typename std::enable_if<
-                detail::has_add<U>::value && detail::has_mul<U>::value>::type>
+            typename = typename std::enable_if<detail::has_add<U>::value &&
+                                               detail::has_mul<U>::value>::type>
   T frobenius_norm() const {
     T sum = T();
     for (auto v : data_)
@@ -1373,26 +1372,30 @@ public:
   }
 
   template <typename U = T,
-            typename = typename std::enable_if<
-                detail::has_sub<U>::value && detail::has_mul<U>::value>::type>
+            typename = typename std::enable_if<detail::has_sub<U>::value &&
+                                               detail::has_mul<U>::value>::type>
   bool is_symmetric(T tol = T(1e-12)) const {
-    if (shape_[0] != shape_[1]) return false;
+    if (shape_[0] != shape_[1])
+      return false;
     for (size_type i = 0; i < shape_[0]; ++i)
       for (size_type j = i + 1; j < shape_[1]; ++j)
-        if (std::abs((*this)(i, j) - (*this)(j, i)) > tol) return false;
+        if (std::abs((*this)(i, j) - (*this)(j, i)) > tol)
+          return false;
     return true;
   }
 
   template <typename U = T,
-            typename = typename std::enable_if<
-                detail::has_add<U>::value && detail::has_mul<U>::value>::type>
+            typename = typename std::enable_if<detail::has_add<U>::value &&
+                                               detail::has_mul<U>::value>::type>
   bool is_orthogonal(T tol = T(1e-12)) const {
-    if (shape_[0] != shape_[1]) return false;
+    if (shape_[0] != shape_[1])
+      return false;
     const self_type prod = (*this) * this->transpose();
     const self_type id = eye(shape_[0]);
     for (size_type i = 0; i < shape_[0]; ++i)
       for (size_type j = 0; j < shape_[1]; ++j)
-        if (std::abs(prod(i, j) - id(i, j)) > tol) return false;
+        if (std::abs(prod(i, j) - id(i, j)) > tol)
+          return false;
     return true;
   }
 

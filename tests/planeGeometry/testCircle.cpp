@@ -1,10 +1,25 @@
+#include "Circle.hpp"
 #include <cmath>
 #include <iostream>
-#include "Circle.hpp"
 
 static int g_failures = 0;
-#define CHECK_TRUE(expr) do { if (!(expr)) { std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__ << std::endl; ++g_failures; } } while (0)
-#define CHECK_NEAR(a, b, tol) do { if (std::abs((a)-(b)) > (tol)) { std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":" << __LINE__ << " (" << (a) << " vs " << (b) << ")" << std::endl; ++g_failures; } } while (0)
+#define CHECK_TRUE(expr)                                                       \
+  do {                                                                         \
+    if (!(expr)) {                                                             \
+      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__     \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
+  } while (0)
+#define CHECK_NEAR(a, b, tol)                                                  \
+  do {                                                                         \
+    if (std::abs((a) - (b)) > (tol)) {                                         \
+      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"           \
+                << __LINE__ << " (" << (a) << " vs " << (b) << ")"             \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
+  } while (0)
 
 int main() {
   using namespace planeGeometry;
@@ -36,7 +51,9 @@ int main() {
     bool threw = false;
     try {
       Circle<double>::from_general(1.0, 2.0, 0.0, 0.0, 0.0, -1.0);
-    } catch (const std::invalid_argument &) { threw = true; }
+    } catch (const std::invalid_argument &) {
+      threw = true;
+    }
     CHECK_TRUE(threw);
   }
 

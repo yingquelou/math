@@ -29,12 +29,11 @@ namespace planeGeometry {
  *       expose the correct geometric "inside / outside / on boundary"
  *       semantics for their specific shape.
  */
-template <typename Derived, typename T>
-class ConicBase {
- protected:
+template <typename Derived, typename T> class ConicBase {
+protected:
   T a_, b_, c_, d_, e_, f_;
 
- public:
+public:
   /** @brief Default constructor. All coefficients are zero. */
   ConicBase() : a_(T()), b_(T()), c_(T()), d_(T()), e_(T()), f_(T()) {}
 
@@ -93,9 +92,7 @@ class ConicBase {
    * @param c Coefficient @f$ c @f$.
    * @return The value of @f$ c^2 - 4 a b @f$.
    */
-  static T discriminant(T a, T b, T c) {
-    return c * c - 4 * a * b;
-  }
+  static T discriminant(T a, T b, T c) { return c * c - 4 * a * b; }
 
   /**
    * @brief Evaluate the quadratic form @f$ F(x,y) @f$ at point @p p.
@@ -105,12 +102,10 @@ class ConicBase {
   T evaluate(const Point<T> &p) const {
     const double x = static_cast<double>(p.x());
     const double y = static_cast<double>(p.y());
-    const double v = static_cast<double>(a_) * x * x +
-                     static_cast<double>(b_) * y * y +
-                     static_cast<double>(c_) * x * y +
-                     static_cast<double>(d_) * x +
-                     static_cast<double>(e_) * y +
-                     static_cast<double>(f_);
+    const double v =
+        static_cast<double>(a_) * x * x + static_cast<double>(b_) * y * y +
+        static_cast<double>(c_) * x * y + static_cast<double>(d_) * x +
+        static_cast<double>(e_) * y + static_cast<double>(f_);
     return static_cast<T>(v);
   }
 
@@ -123,7 +118,7 @@ class ConicBase {
    */
   static conic_tag derived_tag() { return ellipse_tag{}; }
 
- protected:
+protected:
   /**
    * @brief Return the raw sign of @f$ F(P) @f$.
    * @param p   Point to evaluate at.
@@ -134,11 +129,12 @@ class ConicBase {
    */
   int f_sign(const Point<T> &p, T tol) const {
     const double F = static_cast<double>(evaluate(p));
-    if (std::abs(F) < static_cast<double>(tol)) return 0;
+    if (std::abs(F) < static_cast<double>(tol))
+      return 0;
     return (F > 0.0) ? 1 : -1;
   }
 
- public:
+public:
   /**
    * @brief Base-level semantics: returns the sign of @f$ F(P) @f$ only.
    *
@@ -197,6 +193,6 @@ class ConicBase {
   }
 };
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

@@ -21,8 +21,8 @@ int main() {
               << " e=" << p1.coef_y1() << " f=" << p1.coef_c() << std::endl;
     try {
       Parabola<double> p2 = Parabola<double>::from_general(
-          p1.coef_x2(), p1.coef_y2(), p1.coef_xy(), p1.coef_x1(),
-          p1.coef_y1(), p1.coef_c());
+          p1.coef_x2(), p1.coef_y2(), p1.coef_xy(), p1.coef_x1(), p1.coef_y1(),
+          p1.coef_c());
       std::cout << "  Recovered: vertex=(" << p2.vertex().x() << ","
                 << p2.vertex().y() << "), p=" << p2.focal_parameter()
                 << ", rot=" << p2.rotation_angle() << std::endl;

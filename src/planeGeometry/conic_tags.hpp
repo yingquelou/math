@@ -51,27 +51,22 @@ struct conic_tag {
  *
  * @tparam Tag One of the concrete tag types (`ellipse_tag`, etc.).
  */
-template <typename Tag>
-struct conic_tag_of;
+template <typename Tag> struct conic_tag_of;
 
 /** @brief `ellipse_tag -> ellipse_tag`. */
-template <>
-struct conic_tag_of<ellipse_tag> {
+template <> struct conic_tag_of<ellipse_tag> {
   using type = ellipse_tag;
 };
 /** @brief `parabola_tag -> parabola_tag`. */
-template <>
-struct conic_tag_of<parabola_tag> {
+template <> struct conic_tag_of<parabola_tag> {
   using type = parabola_tag;
 };
 /** @brief `hyperbola_tag -> hyperbola_tag`. */
-template <>
-struct conic_tag_of<hyperbola_tag> {
+template <> struct conic_tag_of<hyperbola_tag> {
   using type = hyperbola_tag;
 };
 /** @brief `degenerate_tag -> degenerate_tag`. */
-template <>
-struct conic_tag_of<degenerate_tag> {
+template <> struct conic_tag_of<degenerate_tag> {
   using type = degenerate_tag;
 };
 
@@ -87,6 +82,6 @@ inline constexpr conic_tag make_conic_tag(Tag) noexcept {
   return typename conic_tag_of<Tag>::type{};
 }
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

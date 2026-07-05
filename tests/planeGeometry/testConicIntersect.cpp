@@ -9,28 +9,28 @@ using namespace planeGeometry;
 static int g_tests = 0;
 static int g_passed = 0;
 
-#define CHECK(cond, msg)                                    \
-  do {                                                      \
-    ++g_tests;                                              \
-    if (!(cond)) {                                          \
-      std::printf("FAIL: %s\n", msg);                       \
-    } else {                                                \
-      ++g_passed;                                           \
-    }                                                       \
+#define CHECK(cond, msg)                                                       \
+  do {                                                                         \
+    ++g_tests;                                                                 \
+    if (!(cond)) {                                                             \
+      std::printf("FAIL: %s\n", msg);                                          \
+    } else {                                                                   \
+      ++g_passed;                                                              \
+    }                                                                          \
   } while (0)
 
 static bool point_close(const Point<double> &a, const Point<double> &b,
-                       double tol = 1e-6) {
+                        double tol = 1e-6) {
   const double dx = a.x() - b.x();
   const double dy = a.y() - b.y();
   return (dx * dx + dy * dy) < tol * tol;
 }
 
 static bool contains_point(const std::vector<Point<double>> &pts,
-                           const Point<double> &target,
-                           double tol = 1e-6) {
+                           const Point<double> &target, double tol = 1e-6) {
   for (const auto &p : pts) {
-    if (point_close(p, target, tol)) return true;
+    if (point_close(p, target, tol))
+      return true;
   }
   return false;
 }
@@ -86,7 +86,7 @@ int main() {
     std::printf("DBG T4 size=%zu\n", res.points.size());
     std::fflush(stdout);
     CHECK(res.points.size() == 2, "circle-parabola count");
-    CHECK(contains_point(res.points, Point<double>(xval,  yval), 1e-5),
+    CHECK(contains_point(res.points, Point<double>(xval, yval), 1e-5),
           "circle-parabola (+x, +y)");
     CHECK(contains_point(res.points, Point<double>(xval, -yval), 1e-5),
           "circle-parabola (+x, -y)");
@@ -111,19 +111,24 @@ int main() {
     }
     std::printf("\n");
     std::fflush(stdout);
-    std::printf("DBG T5 before (+,+)\n"); std::fflush(stdout);
-    CHECK(contains_point(res.points, Point<double>( xexp,  yexp)),
+    std::printf("DBG T5 before (+,+)\n");
+    std::fflush(stdout);
+    CHECK(contains_point(res.points, Point<double>(xexp, yexp)),
           "circle-hyperbola (+,+)");
-    std::printf("DBG T5 before (+,-)\n"); std::fflush(stdout);
-    CHECK(contains_point(res.points, Point<double>( xexp, -yexp)),
+    std::printf("DBG T5 before (+,-)\n");
+    std::fflush(stdout);
+    CHECK(contains_point(res.points, Point<double>(xexp, -yexp)),
           "circle-hyperbola (+,-)");
-    std::printf("DBG T5 before (-,+)\n"); std::fflush(stdout);
-    CHECK(contains_point(res.points, Point<double>(-xexp,  yexp)),
+    std::printf("DBG T5 before (-,+)\n");
+    std::fflush(stdout);
+    CHECK(contains_point(res.points, Point<double>(-xexp, yexp)),
           "circle-hyperbola (-,+)");
-    std::printf("DBG T5 before (-,-)\n"); std::fflush(stdout);
+    std::printf("DBG T5 before (-,-)\n");
+    std::fflush(stdout);
     CHECK(contains_point(res.points, Point<double>(-xexp, -yexp)),
           "circle-hyperbola (-,-)");
-    std::printf("DBG T5 done\n"); std::fflush(stdout);
+    std::printf("DBG T5 done\n");
+    std::fflush(stdout);
   }
 
   // Test 6: Ellipse x Parabola (two intersections)
@@ -141,12 +146,13 @@ int main() {
     std::fflush(stdout);
     CHECK(res.points.size() == 2, "ellipse-parabola count");
     std::printf("DBG T6 points:");
-    for (auto &p : res.points) std::printf(" (%g,%g)", p.x(), p.y());
+    for (auto &p : res.points)
+      std::printf(" (%g,%g)", p.x(), p.y());
     std::printf(" expected: (%g,%g) (%g,%g)\n", xval, yval, xval, -yval);
     std::fflush(stdout);
-    CHECK(contains_point(res.points, Point<double>( xval, yval), 1e-5),
+    CHECK(contains_point(res.points, Point<double>(xval, yval), 1e-5),
           "ellipse-parabola (+x, +y)");
-    CHECK(contains_point(res.points, Point<double>( xval, -yval), 1e-5),
+    CHECK(contains_point(res.points, Point<double>(xval, -yval), 1e-5),
           "ellipse-parabola (+x, -y)");
   }
 
@@ -176,18 +182,20 @@ int main() {
   {
     conic_variant<double> v1(Circle<double>(Point<double>(0.0, 0.0), 1.0));
     conic_variant<double> v2(Circle<double>(Point<double>(1.0, 0.0), 1.0));
-    std::printf("DBG T8 v1.which()=%d v2.which()=%d\n",
-                (int)v1.which(), (int)v2.which());
+    std::printf("DBG T8 v1.which()=%d v2.which()=%d\n", (int)v1.which(),
+                (int)v2.which());
     std::fflush(stdout);
     auto res = intersect(v1, v2);
     std::printf("DBG T8 size=%zu points:", res.points.size());
-    for (auto &p : res.points) std::printf(" (%g,%g)", p.x(), p.y());
+    for (auto &p : res.points)
+      std::printf(" (%g,%g)", p.x(), p.y());
     std::printf("\n");
     std::fflush(stdout);
-    // Two circles radius 1, distance 1 -> 2 intersections at (0.5, +/- sqrt(3)/2)
+    // Two circles radius 1, distance 1 -> 2 intersections at (0.5, +/-
+    // sqrt(3)/2)
     CHECK(res.points.size() == 2, "variant-circle-circle count");
     const double yexp = std::sqrt(3.0) / 2.0;
-    CHECK(contains_point(res.points, Point<double>(0.5,  yexp), 1e-5),
+    CHECK(contains_point(res.points, Point<double>(0.5, yexp), 1e-5),
           "variant-circle (+,+)");
     CHECK(contains_point(res.points, Point<double>(0.5, -yexp), 1e-5),
           "variant-circle (+,-)");

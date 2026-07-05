@@ -33,15 +33,14 @@ namespace planeGeometry {
  *       constructors; when the user supplies @f$ a < b @f$ the axes are
  *       swapped and the rotation is adjusted by @f$ \pi/2 @f$).
  */
-template <typename T>
-class Hyperbola : public ConicBase<Hyperbola<T>, T> {
+template <typename T> class Hyperbola : public ConicBase<Hyperbola<T>, T> {
   friend class ConicBase<Hyperbola<T>, T>;
 
- private:
+private:
   Point<T> center_;
-  T real_a_;     // real semi-axis (transverse)
-  T imag_b_;     // imaginary semi-axis (conjugate)
-  T rotation_;   // angle (radians) of the transverse axis
+  T real_a_;   // real semi-axis (transverse)
+  T imag_b_;   // imaginary semi-axis (conjugate)
+  T rotation_; // angle (radians) of the transverse axis
 
   /**
    * @brief Recompute geometric representation (center, semi-axes, rotation)
@@ -86,7 +85,8 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     const double ss = std::sin(theta);
     const double Ap = A * cc * cc + C * cc * ss + B * ss * ss;
     const double Bp = A * ss * ss - C * cc * ss + B * cc * cc;
-    const double Fp = F + A * cx * cx + B * cy * cy + C * cx * cy + D * cx + E * cy;
+    const double Fp =
+        F + A * cx * cx + B * cy * cy + C * cx * cy + D * cx + E * cy;
 
     if (std::abs(Ap) < 1e-15 || std::abs(Bp) < 1e-15 || std::abs(Fp) < 1e-15) {
       real_a_ = T(1);
@@ -97,13 +97,16 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     // Canonical form after rotation:  Ap U^2 + Bp V^2 = -Fp
     // where U = c(x-cx) + s(y-cy), V = -s(x-cx) + c(y-cy).
     // With signs s_A = sign(Ap), s_B = sign(Bp):
-    //   (s_A Ap) U^2 + (s_B Bp) V^2 = -Fp   =>  a^2 = -Fp/(s_A Ap), b^2 = -Fp/(s_B Bp)
+    //   (s_A Ap) U^2 + (s_B Bp) V^2 = -Fp   =>  a^2 = -Fp/(s_A Ap), b^2 =
+    //   -Fp/(s_B Bp)
     const double sA = (Ap >= 0.0) ? 1.0 : -1.0;
     const double sB = (Bp >= 0.0) ? 1.0 : -1.0;
     double a2 = -Fp / (sA * Ap);
     double b2 = -Fp / (sB * Bp);
-    if (a2 <= 0.0) a2 = 1.0;
-    if (b2 <= 0.0) b2 = 1.0;
+    if (a2 <= 0.0)
+      a2 = 1.0;
+    if (b2 <= 0.0)
+      b2 = 1.0;
     double a = std::sqrt(a2);
     double b = std::sqrt(b2);
     if (a < b) {
@@ -119,17 +122,14 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     imag_b_ = static_cast<T>(b);
   }
 
- public:
+public:
   /**
    * @brief Default constructor. Creates the unit hyperbola
    *        @f$ x^2 - y^2 = 1 @f$.
    */
   Hyperbola()
       : ConicBase<Hyperbola<T>, T>(T(), T(), T(), T(), T(), T()),
-        center_(T(), T(0)),
-        real_a_(T(1)),
-        imag_b_(T(1)),
-        rotation_(T()) {
+        center_(T(), T(0)), real_a_(T(1)), imag_b_(T(1)), rotation_(T()) {
     // Unit hyperbola x^2 - y^2 = 1: a = b = 1, center at origin.
     // A = 1, B = -1, C = D = E = 0, F = -1.
     this->a_ = T(1);
@@ -150,11 +150,8 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
    * @param f Constant term @f$ f @f$.
    */
   Hyperbola(T a, T b, T c, T d, T e, T f)
-      : ConicBase<Hyperbola<T>, T>(a, b, c, d, e, f),
-        center_(T(), T(0)),
-        real_a_(T(1)),
-        imag_b_(T(1)),
-        rotation_(T()) {
+      : ConicBase<Hyperbola<T>, T>(a, b, c, d, e, f), center_(T(), T(0)),
+        real_a_(T(1)), imag_b_(T(1)), rotation_(T()) {
     recompute_from_coeffs();
   }
 
@@ -171,10 +168,7 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
    * @param rotation Rotation angle of the transverse axis (radians).
    */
   Hyperbola(const Point<T> &center, T a, T b, T rotation = T())
-      : center_(center),
-        real_a_(a),
-        imag_b_(b),
-        rotation_(rotation) {
+      : center_(center), real_a_(a), imag_b_(b), rotation_(rotation) {
     if (real_a_ < imag_b_) {
       using std::swap;
       swap(real_a_, imag_b_);
@@ -185,10 +179,10 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     }
     const double cc = std::cos(static_cast<double>(rotation_));
     const double ss = std::sin(static_cast<double>(rotation_));
-    const double inv_a2 = 1.0 / (static_cast<double>(real_a_) *
-                                  static_cast<double>(real_a_));
-    const double inv_b2 = 1.0 / (static_cast<double>(imag_b_) *
-                                  static_cast<double>(imag_b_));
+    const double inv_a2 =
+        1.0 / (static_cast<double>(real_a_) * static_cast<double>(real_a_));
+    const double inv_b2 =
+        1.0 / (static_cast<double>(imag_b_) * static_cast<double>(imag_b_));
     // With shifted coordinates x' = x - cx, y' = y - cy, the hyperbola is
     //   (c x' + s y')^2 / a^2 - (-s x' + c y')^2 / b^2 = 1.
     // Expanding and collecting x^2, y^2, xy, x, y and constant terms gives
@@ -204,8 +198,7 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     const double cy = static_cast<double>(center.y());
     const double Dcoef = -(2.0 * Ac * cx + Cc * cy);
     const double Ecoef = -(2.0 * Bc * cy + Cc * cx);
-    const double Fcoef =
-        Ac * cx * cx + Bc * cy * cy + Cc * cx * cy - 1.0;
+    const double Fcoef = Ac * cx * cx + Bc * cy * cy + Cc * cx * cy - 1.0;
     this->a_ = static_cast<T>(Ac);
     this->b_ = static_cast<T>(Bc);
     this->c_ = static_cast<T>(Cc);
@@ -303,7 +296,8 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
 
   /**
    * @brief Return the two focal points.
-   * @return Pair of foci along the transverse axis, offset by `focal_distance()`.
+   * @return Pair of foci along the transverse axis, offset by
+   * `focal_distance()`.
    */
   std::pair<Point<T>, Point<T>> focal_points() const {
     const double c = static_cast<double>(focal_distance());
@@ -335,10 +329,9 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     const double Bn = ss;
     const double C1 = -(An * center_.x() + Bn * center_.y() - d1);
     const double C2 = -(An * center_.x() + Bn * center_.y() + d1);
-    return std::make_pair(Line<T>(static_cast<T>(An), static_cast<T>(Bn),
-                                  static_cast<T>(C1)),
-                          Line<T>(static_cast<T>(An), static_cast<T>(Bn),
-                                  static_cast<T>(C2)));
+    return std::make_pair(
+        Line<T>(static_cast<T>(An), static_cast<T>(Bn), static_cast<T>(C1)),
+        Line<T>(static_cast<T>(An), static_cast<T>(Bn), static_cast<T>(C2)));
   }
 
   /**
@@ -365,10 +358,9 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     double B2 = cc + r * ss;
     double C2 = (ss * center_.x() - cc * center_.y()) +
                 r * (cc * center_.x() + ss * center_.y());
-    return std::make_pair(Line<T>(static_cast<T>(A1), static_cast<T>(B1),
-                                  static_cast<T>(C1)),
-                          Line<T>(static_cast<T>(A2), static_cast<T>(B2),
-                                  static_cast<T>(C2)));
+    return std::make_pair(
+        Line<T>(static_cast<T>(A1), static_cast<T>(B1), static_cast<T>(C1)),
+        Line<T>(static_cast<T>(A2), static_cast<T>(B2), static_cast<T>(C2)));
   }
 
   /**
@@ -403,17 +395,20 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
     const auto f = focal_points();
     const double d1 = line.distance_to(f.first);
     const double d2 = line.distance_to(f.second);
-    if (d1 <= tol || d2 <= tol) return false;
+    if (d1 <= tol || d2 <= tol)
+      return false;
     const double sign1 =
         (static_cast<double>(line.A()) * static_cast<double>(f.first.x()) +
-         static_cast<double>(line.B()) * static_cast<double>(f.first.y()) +
-         static_cast<double>(line.C()) > 0.0)
+             static_cast<double>(line.B()) * static_cast<double>(f.first.y()) +
+             static_cast<double>(line.C()) >
+         0.0)
             ? 1.0
             : -1.0;
     const double sign2 =
         (static_cast<double>(line.A()) * static_cast<double>(f.second.x()) +
-         static_cast<double>(line.B()) * static_cast<double>(f.second.y()) +
-         static_cast<double>(line.C()) > 0.0)
+             static_cast<double>(line.B()) * static_cast<double>(f.second.y()) +
+             static_cast<double>(line.C()) >
+         0.0)
             ? 1.0
             : -1.0;
     (void)d1;
@@ -437,6 +432,6 @@ class Hyperbola : public ConicBase<Hyperbola<T>, T> {
   }
 };
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

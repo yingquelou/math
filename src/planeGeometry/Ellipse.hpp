@@ -35,11 +35,10 @@ namespace planeGeometry {
  *       accordingly so that the geometric shape is preserved.
  *   @li `semi_major() > 0` and `semi_minor() > 0` for valid ellipses.
  */
-template <typename T>
-class Ellipse : public ConicBase<Ellipse<T>, T> {
+template <typename T> class Ellipse : public ConicBase<Ellipse<T>, T> {
   friend class ConicBase<Ellipse<T>, T>;
 
- private:
+private:
   Point<T> center_;
   T semi_a_;
   T semi_b_;
@@ -87,7 +86,8 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
     const double ss = std::sin(theta);
     const double Ap = A * cc * cc + C * cc * ss + B * ss * ss;
     const double Bp = A * ss * ss - C * cc * ss + B * cc * cc;
-    const double Fp = F + A * cx * cx + B * cy * cy + C * cx * cy + D * cx + E * cy;
+    const double Fp =
+        F + A * cx * cx + B * cy * cy + C * cx * cy + D * cx + E * cy;
 
     if (std::abs(Ap) < 1e-15 || std::abs(Bp) < 1e-15) {
       semi_a_ = T(1);
@@ -102,17 +102,14 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
     }
   }
 
- public:
+public:
   /**
    * @brief Default constructor. Creates a unit circle centered at origin
    *        (a degenerate ellipse with @f$ a = b = 1 @f$).
    */
   Ellipse()
       : ConicBase<Ellipse<T>, T>(T(), T(), T(), T(), T(), T()),
-        center_(T(), T(0)),
-        semi_a_(T(1)),
-        semi_b_(T(1)),
-        rotation_(T()) {}
+        center_(T(), T(0)), semi_a_(T(1)), semi_b_(T(1)), rotation_(T()) {}
 
   /**
    * @brief Construct an ellipse from general-form coefficients.
@@ -124,11 +121,8 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
    * @param f Constant term @f$ f @f$.
    */
   Ellipse(T a, T b, T c, T d, T e, T f)
-      : ConicBase<Ellipse<T>, T>(a, b, c, d, e, f),
-        center_(T(), T(0)),
-        semi_a_(T(1)),
-        semi_b_(T(1)),
-        rotation_(T()) {
+      : ConicBase<Ellipse<T>, T>(a, b, c, d, e, f), center_(T(), T(0)),
+        semi_a_(T(1)), semi_b_(T(1)), rotation_(T()) {
     recompute_from_coeffs();
   }
 
@@ -146,18 +140,17 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
    * @param rotation Rotation angle of the major axis (radians).
    */
   Ellipse(const Point<T> &center, T a, T b, T rotation = T())
-      : center_(center),
-        semi_a_(a),
-        semi_b_(b),
-        rotation_(rotation) {
+      : center_(center), semi_a_(a), semi_b_(b), rotation_(rotation) {
     if (semi_a_ < semi_b_) {
       using std::swap;
       swap(semi_a_, semi_b_);
     }
     const double cc = std::cos(static_cast<double>(rotation));
     const double ss = std::sin(static_cast<double>(rotation));
-    const double inv_a2 = 1.0 / (static_cast<double>(semi_a_) * static_cast<double>(semi_a_));
-    const double inv_b2 = 1.0 / (static_cast<double>(semi_b_) * static_cast<double>(semi_b_));
+    const double inv_a2 =
+        1.0 / (static_cast<double>(semi_a_) * static_cast<double>(semi_a_));
+    const double inv_b2 =
+        1.0 / (static_cast<double>(semi_b_) * static_cast<double>(semi_b_));
     const double Ac = cc * cc * inv_a2 + ss * ss * inv_b2;
     const double Bc = ss * ss * inv_a2 + cc * cc * inv_b2;
     const double Cc = 2.0 * cc * ss * (inv_a2 - inv_b2);
@@ -312,8 +305,8 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
     const double a = static_cast<double>(semi_a_);
     const double b = static_cast<double>(semi_b_);
     const double h = (a - b) * (a - b) / ((a + b) * (a + b));
-    return static_cast<T>(
-        M_PI * (a + b) * (1.0 + 3.0 * h / (10.0 + std::sqrt(4.0 - 3.0 * h))));
+    return static_cast<T>(M_PI * (a + b) *
+                          (1.0 + 3.0 * h / (10.0 + std::sqrt(4.0 - 3.0 * h))));
   }
 
   /**
@@ -346,10 +339,9 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
     const double Bn = cc;
     const double C1 = -(An * center_.x() + Bn * center_.y() - d1);
     const double C2 = -(An * center_.x() + Bn * center_.y() + d1);
-    return std::make_pair(Line<T>(static_cast<T>(An), static_cast<T>(Bn),
-                                  static_cast<T>(C1)),
-                          Line<T>(static_cast<T>(An), static_cast<T>(Bn),
-                                  static_cast<T>(C2)));
+    return std::make_pair(
+        Line<T>(static_cast<T>(An), static_cast<T>(Bn), static_cast<T>(C1)),
+        Line<T>(static_cast<T>(An), static_cast<T>(Bn), static_cast<T>(C2)));
   }
 
   /**
@@ -388,9 +380,9 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
    */
   int relative_position(const Point<T> &p, T tol = T(1e-12)) const {
     const int fs = this->f_sign(p, tol);
-    if (fs == 0) return 0;
-    const double sign_a =
-        (static_cast<double>(this->a_) > 0.0) ? 1.0 : -1.0;
+    if (fs == 0)
+      return 0;
+    const double sign_a = (static_cast<double>(this->a_) > 0.0) ? 1.0 : -1.0;
     const double sign_F = (fs > 0) ? 1.0 : -1.0;
     return (sign_a * sign_F < 0.0) ? 1 : -1;
   }
@@ -408,6 +400,6 @@ class Ellipse : public ConicBase<Ellipse<T>, T> {
   }
 };
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

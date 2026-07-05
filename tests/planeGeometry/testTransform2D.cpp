@@ -1,10 +1,25 @@
+#include "transform2D.hpp"
 #include <cmath>
 #include <iostream>
-#include "transform2D.hpp"
 
 static int g_failures = 0;
-#define CHECK_TRUE(expr) do { if (!(expr)) { std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__ << std::endl; ++g_failures; } } while (0)
-#define CHECK_NEAR(a, b, tol) do { if (std::abs((a)-(b)) > (tol)) { std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":" << __LINE__ << " (" << (a) << " vs " << (b) << ")" << std::endl; ++g_failures; } } while (0)
+#define CHECK_TRUE(expr)                                                       \
+  do {                                                                         \
+    if (!(expr)) {                                                             \
+      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__     \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
+  } while (0)
+#define CHECK_NEAR(a, b, tol)                                                  \
+  do {                                                                         \
+    if (std::abs((a) - (b)) > (tol)) {                                         \
+      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"           \
+                << __LINE__ << " (" << (a) << " vs " << (b) << ")"             \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
+  } while (0)
 
 int main() {
   using namespace planeGeometry;
@@ -54,7 +69,8 @@ int main() {
     Point<double> r = rotate_about(p, center, M_PI / 2.0);
     double new_dist = (r - center).norm();
     CHECK_NEAR(new_dist, orig_dist, 1e-12);
-    auto d1 = (rotate_about_origin(Point<double>(p.x() - center.x(), p.y() - center.y()), M_PI / 2.0));
+    auto d1 = (rotate_about_origin(
+        Point<double>(p.x() - center.x(), p.y() - center.y()), M_PI / 2.0));
     CHECK_NEAR(r.x(), center.x() + d1.x(), 1e-9);
     CHECK_NEAR(r.y(), center.y() + d1.y(), 1e-9);
   }

@@ -9,23 +9,23 @@
 
 static int g_failures = 0;
 
-#define CHECK_TRUE(expr)                                                 \
-  do {                                                                  \
-    if (!(expr)) {                                                      \
-      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__ \
-                << std::endl;                                           \
-      ++g_failures;                                                     \
-    }                                                                   \
+#define CHECK_TRUE(expr)                                                       \
+  do {                                                                         \
+    if (!(expr)) {                                                             \
+      std::cerr << "FAIL: " #expr << " at " << __FILE__ << ":" << __LINE__     \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
-#define CHECK_NEAR(a, b, tol)                                           \
-  do {                                                                  \
-    if (std::abs((a) - (b)) > (tol)) {                                  \
-      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"    \
-                << __LINE__ << " (" << (a) << " vs " << (b) << ")"     \
-                << std::endl;                                           \
-      ++g_failures;                                                     \
-    }                                                                   \
+#define CHECK_NEAR(a, b, tol)                                                  \
+  do {                                                                         \
+    if (std::abs((a) - (b)) > (tol)) {                                         \
+      std::cerr << "FAIL: " #a " near " #b " at " << __FILE__ << ":"           \
+                << __LINE__ << " (" << (a) << " vs " << (b) << ")"             \
+                << std::endl;                                                  \
+      ++g_failures;                                                            \
+    }                                                                          \
   } while (0)
 
 int main() {

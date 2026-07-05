@@ -1,6 +1,5 @@
 #include "name.h"
-int main(void)
-{
-    name q;
-    return 0;
+int main(void) {
+  name q;
+  return 0;
 }

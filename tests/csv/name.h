@@ -1,12 +1,11 @@
 #pragma once
 #include <map>
 #include <string>
-class name
-{
+class name {
 private:
-    std::multimap<std::string, std::string> table;
+  std::multimap<std::string, std::string> table;
 
 public:
-    name();
-    ~name();
+  name();
+  ~name();
 };

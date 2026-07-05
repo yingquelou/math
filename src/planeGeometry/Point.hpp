@@ -22,16 +22,15 @@ namespace planeGeometry {
  * @note 默认构造产生零向量 (0, 0)。类同时可作为"点"与"向量"使用，
  *       并提供 using Vector = Point<double>; 作为常见别名。
  */
-template <typename T>
-class Point {
- public:
+template <typename T> class Point {
+public:
   /** @brief 底层存储类型别名（tensor::Tensor<T, 1>） */
   using tensor_type = tensor::Tensor<T, 1>;
 
- private:
+private:
   tensor_type vec_;
 
- public:
+public:
   /**
    * @brief 默认构造，零向量 (0, 0)
    */
@@ -168,8 +167,7 @@ class Point {
     if (n1 < 1e-15 || n2 < 1e-15) {
       return 0.0;
     }
-    const double cosine =
-        static_cast<double>(dot(other)) / (n1 * n2);
+    const double cosine = static_cast<double>(dot(other)) / (n1 * n2);
     const double clamped = cosine > 1.0 ? 1.0 : (cosine < -1.0 ? -1.0 : cosine);
     return std::acos(clamped);
   }
@@ -186,8 +184,7 @@ class Point {
       throw std::invalid_argument(
           "Point::projection_on: target is a zero vector");
     }
-    const double scale =
-        static_cast<double>(dot(target)) / (n2 * n2);
+    const double scale = static_cast<double>(dot(target)) / (n2 * n2);
     return Point(static_cast<T>(target.vec_[0] * scale),
                  static_cast<T>(target.vec_[1] * scale));
   }
@@ -248,11 +245,13 @@ class Point {
     }
     Point e1(static_cast<T>(u.vec_[0] / n_u), static_cast<T>(u.vec_[1] / n_u));
     const double v_along = v.dot(e1);
-    Point proj(static_cast<T>(e1.vec_[0] * v_along), static_cast<T>(e1.vec_[1] * v_along));
+    Point proj(static_cast<T>(e1.vec_[0] * v_along),
+               static_cast<T>(e1.vec_[1] * v_along));
     Point v_perp(v.vec_[0] - proj.vec_[0], v.vec_[1] - proj.vec_[1]);
     const double n_perp = v_perp.norm();
     if (n_perp < 1e-15) {
-      throw std::invalid_argument("Point::gram_schmidt: v linearly dependent on u");
+      throw std::invalid_argument(
+          "Point::gram_schmidt: v linearly dependent on u");
     }
     Point e2(static_cast<T>(v_perp.vec_[0] / n_perp),
              static_cast<T>(v_perp.vec_[1] / n_perp));
@@ -282,6 +281,6 @@ class Point {
 /** @brief 常用别名：Point<double> */
 using Vector = Point<double>;
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif

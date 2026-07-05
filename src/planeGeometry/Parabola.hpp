@@ -36,14 +36,13 @@ namespace planeGeometry {
  *
  * @tparam T Numeric type (e.g., double, float).
  */
-template <typename T>
-class Parabola : public ConicBase<Parabola<T>, T> {
+template <typename T> class Parabola : public ConicBase<Parabola<T>, T> {
   friend class ConicBase<Parabola<T>, T>;
 
- private:
+private:
   Point<T> vertex_;
-  T p_;         // signed focal length
-  T rotation_;  // angle (radians) of the axis direction
+  T p_;        // signed focal length
+  T rotation_; // angle (radians) of the axis direction
 
   /**
    * @brief Set coefficients from the geometric representation.
@@ -59,17 +58,13 @@ class Parabola : public ConicBase<Parabola<T>, T> {
     this->a_ = static_cast<T>(-ss * ss);
     this->b_ = static_cast<T>(-cc * cc);
     this->c_ = static_cast<T>(2.0 * ss * cc);
-    this->d_ = static_cast<T>(4.0 * pval * cc +
-                               2.0 * ss * ss * cx -
-                               2.0 * ss * cc * cy);
-    this->e_ = static_cast<T>(4.0 * pval * ss +
-                               2.0 * cc * cc * cy -
-                               2.0 * ss * cc * cx);
-    this->f_ = static_cast<T>(-ss * ss * cx * cx -
-                               cc * cc * cy * cy +
-                               2.0 * ss * cc * cx * cy -
-                               4.0 * pval * cc * cx -
-                               4.0 * pval * ss * cy);
+    this->d_ = static_cast<T>(4.0 * pval * cc + 2.0 * ss * ss * cx -
+                              2.0 * ss * cc * cy);
+    this->e_ = static_cast<T>(4.0 * pval * ss + 2.0 * cc * cc * cy -
+                              2.0 * ss * cc * cx);
+    this->f_ = static_cast<T>(-ss * ss * cx * cx - cc * cc * cy * cy +
+                              2.0 * ss * cc * cx * cy - 4.0 * pval * cc * cx -
+                              4.0 * pval * ss * cy);
     vertex_ = Point<T>(static_cast<T>(cx), static_cast<T>(cy));
   }
 
@@ -152,8 +147,8 @@ class Parabola : public ConicBase<Parabola<T>, T> {
     const double pval = gnorm / 4.0;
 
     // Sanity check: the recovered vertex must satisfy F(cx, cy) ≈ 0.
-    const double Fv = A * cx * cx + B * cy * cy + C * cx * cy +
-                      D * cx + E * cy + F0;
+    const double Fv =
+        A * cx * cx + B * cy * cy + C * cx * cy + D * cx + E * cy + F0;
     if (std::abs(Fv) > 1e-6) {
       throw std::invalid_argument(
           "Parabola: recovered vertex does not lie on the conic");
@@ -164,14 +159,12 @@ class Parabola : public ConicBase<Parabola<T>, T> {
     vertex_ = Point<T>(static_cast<T>(cx), static_cast<T>(cy));
   }
 
- public:
+public:
   /** @brief Default constructor. Creates the unit parabola y^2 = 4x
    *  (p = 1, vertex at origin, opening along +x axis). */
   Parabola()
       : ConicBase<Parabola<T>, T>(T(0), T(-1), T(0), T(4), T(0), T(0)),
-        vertex_(T(0), T(0)),
-        p_(T(1)),
-        rotation_(T(0)) {}
+        vertex_(T(0), T(0)), p_(T(1)), rotation_(T(0)) {}
 
   /**
    * @brief Construct a parabola from vertex, signed focal length p, and
@@ -185,7 +178,7 @@ class Parabola : public ConicBase<Parabola<T>, T> {
   Parabola(const Point<T> &center, T p, T rotation = T())
       : vertex_(center), p_(p), rotation_(rotation) {
     set_coeffs_from_vertex_form(static_cast<double>(center.x()),
-                               static_cast<double>(center.y()));
+                                static_cast<double>(center.y()));
   }
 
   /**
@@ -196,12 +189,10 @@ class Parabola : public ConicBase<Parabola<T>, T> {
    *         does not satisfy the equation.
    */
   Parabola(T a, T b, T c, T d, T e, T f)
-      : ConicBase<Parabola<T>, T>(a, b, c, d, e, f),
-        vertex_(T(0), T(0)),
-        p_(T(1)),
-        rotation_(T(0)) {
-    const double disc = static_cast<double>(
-        ConicBase<Parabola<T>, T>::discriminant(a, b, c));
+      : ConicBase<Parabola<T>, T>(a, b, c, d, e, f), vertex_(T(0), T(0)),
+        p_(T(1)), rotation_(T(0)) {
+    const double disc =
+        static_cast<double>(ConicBase<Parabola<T>, T>::discriminant(a, b, c));
     if (std::abs(disc) > 1e-9) {
       throw std::invalid_argument(
           "Parabola(a,b,c,d,e,f): discriminant must be 0 (parabola)");
@@ -221,8 +212,8 @@ class Parabola : public ConicBase<Parabola<T>, T> {
    * (only vertex_, p_ and rotation_ are recovered).
    */
   static Parabola from_general(T a, T b, T c, T d, T e, T f) {
-    const double disc = static_cast<double>(
-        ConicBase<Parabola<T>, T>::discriminant(a, b, c));
+    const double disc =
+        static_cast<double>(ConicBase<Parabola<T>, T>::discriminant(a, b, c));
     if (std::abs(disc) > 1e-9) {
       throw std::invalid_argument(
           "Parabola::from_general: discriminant must be 0 (parabola)");
@@ -233,13 +224,12 @@ class Parabola : public ConicBase<Parabola<T>, T> {
     }
     // Detect the degenerate parallel-lines case: after rotating to
     // eliminate xy, both linear coefficients vanish.
-    const double theta = 0.5 * std::atan2(static_cast<double>(c),
-                                         static_cast<double>(a) -
-                                             static_cast<double>(b));
+    const double theta =
+        0.5 * std::atan2(static_cast<double>(c),
+                         static_cast<double>(a) - static_cast<double>(b));
     const double cc = std::cos(theta);
     const double ss = std::sin(theta);
-    const double Dp =
-        static_cast<double>(d) * cc + static_cast<double>(e) * ss;
+    const double Dp = static_cast<double>(d) * cc + static_cast<double>(e) * ss;
     const double Ep =
         -static_cast<double>(d) * ss + static_cast<double>(e) * cc;
     if (std::abs(Dp) < 1e-15 && std::abs(Ep) < 1e-15) {
@@ -290,9 +280,8 @@ class Parabola : public ConicBase<Parabola<T>, T> {
     const T nx = static_cast<T>(cc);
     const T ny = static_cast<T>(ss);
     const double Cval =
-        static_cast<double>(p_) -
-        (cc * static_cast<double>(vertex_.x()) +
-         ss * static_cast<double>(vertex_.y()));
+        static_cast<double>(p_) - (cc * static_cast<double>(vertex_.x()) +
+                                   ss * static_cast<double>(vertex_.y()));
     return Line<T>(nx, ny, static_cast<T>(Cval));
   }
 
@@ -301,9 +290,8 @@ class Parabola : public ConicBase<Parabola<T>, T> {
   Line<T> axis() const {
     const double cc = std::cos(static_cast<double>(rotation_));
     const double ss = std::sin(static_cast<double>(rotation_));
-    const double Cval =
-        -(-ss * static_cast<double>(vertex_.x()) +
-          cc * static_cast<double>(vertex_.y()));
+    const double Cval = -(-ss * static_cast<double>(vertex_.x()) +
+                          cc * static_cast<double>(vertex_.y()));
     return Line<T>(static_cast<T>(-ss), static_cast<T>(cc),
                    static_cast<T>(Cval));
   }
@@ -334,6 +322,6 @@ class Parabola : public ConicBase<Parabola<T>, T> {
   }
 };
 
-}  // namespace planeGeometry
+} // namespace planeGeometry
 
 #endif
