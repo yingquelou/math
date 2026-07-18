@@ -1,0 +1,17 @@
+﻿cmake_path(GET CMAKE_CURRENT_SOURCE_DIR FILENAME PROJ)
+set(CMAKE_C_STANDARD 11)
+add_library(${PROJ} RomanNumerals.c)
+target_sources(${PROJ} PUBLIC
+FILE_SET HEADERS BASE_DIRS ${CMAKE_CURRENT_SOURCE_DIR} FILES RomanNumerals.h
+)
+target_include_directories(${PROJ} PUBLIC
+$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}>
+$<INSTALL_INTERFACE:include/${PROJ}>)
+install(TARGETS ${PROJ} EXPORT ${PROJ}
+CONFIGURATIONS Release
+FILE_SET HEADERS DESTINATION include/${PROJ}
+)
+install(EXPORT ${PROJ}
+    CONFIGURATIONS Release
+    DESTINATION share/cmake/${PROJ}
+    FILE ${PROJ}Config.cmake)
