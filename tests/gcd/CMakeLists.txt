@@ -1,0 +1,16 @@
+set(CMAKE_C_STANDARD 11)
+set(CMAKE_C_STANDARD_REQUIRED ON)
+
+file(GLOB SOURCES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.c *.cpp *.cxx *.cc)
+string(JOIN ";." EXTENSIONS ${CMAKE_CXX_SOURCE_FILE_EXTENSIONS} ${CMAKE_C_SOURCE_FILE_EXTENSIONS} ${CMAKE_RC_SOURCE_FILE_EXTENSIONS})
+set(EXTENSIONS ".${EXTENSIONS}")
+
+foreach(SOURCE IN LISTS SOURCES)
+    cmake_path(GET SOURCE EXTENSION LAST_ONLY EXT)
+    if(EXT IN_LIST EXTENSIONS)
+        cmake_path(GET SOURCE STEM PROJ)
+        add_executable(${PROJ} ${SOURCE})
+        target_link_libraries(${PROJ} PRIVATE gcd)
+        add_test(${PROJ} ${PROJ})
+    endif()
+endforeach()
